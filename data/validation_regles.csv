@@ -1,0 +1,18 @@
+regle,statut,n,note
+Déjà dans la référence,non testée,0,aucune mesure passée de ce type dans le backtest
+Effet promis,confirmée,8,"6 améliorée(s), 2 dégradée(s) ; erreur médiane 61 % → 29 %"
+Médiane des estimations,non testée,0,aucune mesure passée de ce type dans le backtest
+Nouvelle assiette : risque juridique,non testée,0,aucune mesure passée de ce type dans le backtest
+Recette ponctuelle,non testée,0,aucune mesure passée de ce type dans le backtest
+Règle d'or,non testée,0,aucune mesure passée de ce type dans le backtest
+Réforme structurelle,mitigée,2,"1 améliorée(s), 1 dégradée(s) ; erreur médiane 78 % → 78 %"
+Substitution retraites,confirmée,2,"2 améliorée(s), 0 dégradée(s) ; erreur médiane 16 % → 4 %"
+Taux d'intérêt,non testée,0,aucune mesure passée de ce type dans le backtest
+Taux de recours,mitigée,8,"3 améliorée(s), 5 dégradée(s) ; erreur médiane 60 % → 50 %"
+Élasticité IS,non concluante,4,réalisés = chiffrages administratifs à comportement constant (is_25 ; T10b)
+Élasticité SMIC (hypothèse : emplois perdus),non testée,0,aucune mesure passée de ce type dans le backtest
+Élasticité capital,confirmée,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 55 % → 1 %"
+Élasticité carburants,non testée,0,aucune mesure passée de ce type dans le backtest
+Élasticité patrimoine,contredite,5,"0 améliorée(s), 5 dégradée(s) ; erreur médiane 3 % → 10 %"
+Élasticité revenus,non testée,0,aucune mesure passée de ce type dans le backtest
+Élasticité succession,non testée,0,aucune mesure passée de ce type dans le backtest

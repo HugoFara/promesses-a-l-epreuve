@@ -1,0 +1,8 @@
+# Python
+__pycache__/
+*.pyc
+.venv*/
+
+# Archive des sources (≈350 Mo de documents tiers) : non versionnée.
+# Index versionnés (URL, date, sha256) : recherche/*/sources.csv ; vérification : scripts/verifier_sources.py
+sources/

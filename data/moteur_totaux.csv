@@ -1,0 +1,13 @@
+fichier,groupe,composante,central,loi_votee_seule,p10,p50,p90
+application_lignes,NFP 2024 (LFI),solde,-160.3,-160.3,-204.2,-153.9,-104.4
+application_lignes,Ensemble 2024,solde,-25.7,-25.7,-30.8,-24.8,-18.8
+paniers,LFI intégral,Mesure phare,-110.4,-110.4,-128.5,-107.7,-87.4
+paniers,LFI intégral,Financement,40.9,44.5,35.6,40.8,46.3
+paniers,LFI intégral,solde,-69.6,-65.9,-86.4,-66.7,-47.6
+paniers,LFI ajusté,Mesure phare,-31.2,-31.2,-37.5,-31.8,-26.5
+paniers,LFI ajusté,investissement,-30.0,-30.0,-30.0,-30.0,-30.0
+paniers,LFI ajusté,Financement,40.9,44.5,35.6,40.8,46.3
+paniers,LFI ajusté,solde,9.7,13.3,2.4,9.0,15.6
+paniers,Ensemble,Mesure phare,-14.9,-14.9,-18.2,-14.9,-11.6
+paniers,Ensemble,Financement,7.7,13.1,6.4,7.7,8.9
+paniers,Ensemble,solde,-7.2,-1.8,-10.7,-7.2,-3.6

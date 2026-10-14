@@ -1,0 +1,21 @@
+regle,facteur,variable,references,base
+Aucune,1,0,,Coût mécanique : pas d'élasticité applicable
+Médiane des estimations,1,0,,Facteur 1 appliqué à la médiane des chiffrages indépendants
+Taux d'intérêt,1,0,taux_100pb spread_dette,Ligne déjà calculée (spread × dette) : pas de correction supplémentaire
+Règle d'or,1,0,,Investissement financé par emprunt : compté à part (déficit volontaire)
+Recette ponctuelle,0,0,,Recette non récurrente : nulle dans un solde 2027
+Déjà dans la référence,0,0,,Mesure entièrement comprise dans la référence (double compte)
+Déjà en partie dans la référence,,1,,Fraction non encore votée ; facteur propre à chaque ligne et justifié par le statut de référence (T1)
+Effet promis,0.333,0,cice_emploi tepa_heures,"Effets promis divisés par 3 (backtest couche 1 : CICE ≈0,3 ; TEPA ≈0)"
+Réforme structurelle,0.8,0,woerth_2010 retraites_2023,"Décote de mise en œuvre, à prix constants : retraites 2023 0,82 ; retraites 2010 0,86"
+Nouvelle assiette : risque juridique,0.8,0,woerth_2010 retraites_2023,Même décote que les réformes structurelles (assiette nouvelle sans précédent)
+Substitution retraites,0.8,0,retraite_report,≈20 % du coût compensé par moins de chômage et d'invalidité (Rabaté-Rochut)
+Taux de recours,0.65,0,nr_rsa,Prestation à la demande : recours ≈65 % comme le RSA
+Élasticité capital,0.45,0,capital_fr dividendes_fr pfu,"Backtest flat tax −55 % ; élasticité ≈0,77"
+Élasticité patrimoine,0.85,0,wealth_dk,Horizon ≈3 ans : érosion partielle (−30 % à 8 ans au Danemark)
+Élasticité revenus,0.9,0,eti_top,"Élasticité 0,15-0,2 pour le top 0,1 %"
+Élasticité succession,0.9,0,succession_us,"Élasticité ≈0,16 au taux net"
+Élasticité IS,0.73,0,is_shifting,"1 − 0,8 %/pt × (IS de base 25,83 + surtaxe 7,73 pts) : la baisse d'assiette touche aussi l'IS existant"
+Élasticité carburants,0.7,0,carbu_ct carbu_lt,"ε ≈ −0,3 (CT) à −0,65 (LT)"
+Élasticité SMIC (hypothèse : emplois perdus),1.1,0,smic,"Élasticité emploi ≈ −0,17 : coût alourdi par les emplois perdus"
+Effet emploi du SMIC,0.87,0,smic,Montant (Md€) des allocations et cotisations perdues : emplois perdus × coût d'un emploi perdu ; ligne de statique −1

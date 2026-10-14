@@ -1,0 +1,28 @@
+id,val_bas,val_central,val_haut,unite,source_type,source_ref,confiance,note
+un,,1,,facteur,constante,,high,
+zero,,0,,facteur,constante,,high,
+ratio_effet_promis,0,0.29,1.1,ratio réalisé / promis,backtest,cice_emploi tepa_heures isf_invest pfu_invest cice_emploi_ofce,medium,"Mode : CICE 0,29 ; bas : TEPA, ISF, PFU (0) ; haut : prévision OFCE du CICE (1,1)"
+facteur_reforme,0.822,0.842,0.862,ratio réalisé / annoncé,backtest,retraites_2023 woerth_2010,medium,"Ratios réalisé / annoncé à prix constants : retraites 2023 (0,822) et 2010 (0,862) ; central = moyenne"
+part_substitution,0.2,0.2,0.4,part des économies compensée,elasticite,retraite_report,high,Bas = central = France 2010 ; haut = Pays-Bas
+taux_recours,0.48,0.65,0.67,taux de recours,elasticite,nr_rsa nr_pa,high,"Central = 1 − non-recours RSA ; bas = prime d'activité (1 − 0,52) ; haut = 1 − 0,33 (RSA)"
+eps_capital,,0.77,,élasticité au taux net,elasticite,capital_fr,medium,
+eps_top,0.15,0.175,0.2,élasticité au taux net,elasticite,eti_top,high,
+eps_succession,0.08,0.16,0.34,élasticité au taux net,elasticite,succession_us,high,
+s_patrimoine,0.14,0.15,0.15,part de base perdue par point de taux à long terme,elasticite,wealth_nl wealth_dk,high,"Pays-Bas −1,4 % par 0,1 pt ; Danemark −30 % à 8 ans pour 2 %"
+s_is,,0.008,,part de base par point de taux,elasticite,is_shifting,high,
+eps_carbu,-0.4,-0.3,-0.21,élasticité-prix,elasticite,carbu_ct,high,Horizon 2027 : court terme
+eps_smic,-0.19,-0.17,,élasticité de l'emploi,elasticite,smic,high,
+t0_capital,,0.354,,taux marginal (PFU + CEHR 4 %),bareme,div_pfu_tmi_45 pfu_taux_2026 cehr_taux,high,"Foyer à la tranche de 45 % : PFU 31,4 % (LFSS 2026) + CEHR 4 % ; la majorité des dividendes est perçue par le top 0,1 % (div_concentration_01pct 62 %)"
+t1_capital,0.4254,0.4627,,taux marginal au barème (dividendes),bareme,div_tmi_45,high,"Barème 45 % après abattement de 40 %, CSG déductible, CEHR 4 % ; bas = CEHR assise sur 60 % (méthode France Stratégie, 44,78 %) et CEHR 3 % ; répartition des dividendes par tranche non publiée"
+delta_is,5.15,7.73,10.3,points de taux marginal,bareme,is_tmeff_2026_1_5_3md is_tmeff_2026_3md is_taux_normal,medium,"Surtaxe 2026 : 25 × 20,6 % = 5,15 pts (CA 1,5-3 Md€) et 25 × 41,2 % = 10,3 pts (> 3 Md€) ; milieu, pondération non publiée"
+perte_patrimoine,0.0615,0.13,0.2,part du rendement perdue,calcul,isf_taux_moyen wealth_nl wealth_dk wealth_co_rdt,medium,"Bas = 0,15 par point × taux moyen ISF 2017 0,41 % (réponse de long terme Pays-Bas / Danemark) ; haut = Colombie, perte immédiate jusqu'à 20 % ; central = milieu"
+dp_niches,0.316,0.395,0.473,hausse de prix relative,calcul,hausse_prix_gnr_agri hausse_prix_gnr_btp niche_gnr_agri_cout niche_gnr_btp_cout niche_trm_cout gazole_prix_2026,medium,"Moyenne pondérée par le coût des niches (GNR agricole 1,69 : +78,6 % ; transport routier 1,18 : +12 % ; GNR BTP 0,47 : +22,7 %) aux prix 2025 = 0,473 ; aux prix 2026, ≈1/3 plus faible = 0,316 ; central = milieu"
+a_sur_da_niches,,1.274,,accise existante / hausse d'accise,calcul,accise_gazole_2026 accise_gnr_agri accise_gnr_btp_2026 niche_gnr_agri_cout niche_gnr_btp_cout niche_trm_cout,medium,"GNR agricole 3,86 / 56,89 = 0,07 ; GNR BTP 36,79 / 23,96 = 1,54 ; transport routier 45,19 / 15,56 = 2,90 ; pondéré par le coût des niches"
+hausse_smic,,0.1439,,hausse relative du SMIC net,calcul,smic_net_2024,high,"1 600 / 1 398,70 − 1 ; base 2024, celle du chiffrage Montaigne"
+n_smic,,2200000,,salariés concernés,bareme,smic_effectif,high,
+cout_emploi_perdu,15131,16175,17219,€ par an et par emploi perdu,bareme,cout_emploi_perdu are_moyenne,low,Allocation moyenne + cotisations perdues (dérivation T4p) ; central = milieu
+statique_smic,17,19,21,"Md€ (coût statique, valeur absolue)",bareme,smic1600_cout_public_montaigne,high,"Montaigne : 19 (17-21), hors effets emploi"
+erreur_ligne,0.10,0.149,0.40,erreur absolue médiane d'un chiffrage de ligne,backtest,calibration_instituts mesures_cout,medium,"Central : erreur absolue médiane des chiffrages d'instituts sur les programmes Macron 2017/2022 (T10b, n = 22) ; bas : chiffrages gouvernementaux (couche 1, 10,0 % sur 25 mesures) ; haut : Institut Montaigne seul (40 %, n = 8). Bruit normal de médiane absolue égale, tronqué à ±90 %, indépendant par ligne"
+t0_is,,25.83,,"points (IS + contribution sociale 3,3 %)",bareme,is_taux_normal is_css,high,"25 × 1,033"
+emplois_perdus_smic,53856,53856,380000,emplois,calcul,smic smic_effectif smic_net_2024 smic1600_emplois_detruits_montaigne,low,"Mode : Dube 0,17 × 14,4 % × 2,2 M = 53 856 ; haut : estimation haute de Montaigne (230 000-380 000). Écart non tranché"
+part_commune_erreur,,0.5,,part de la variance d'erreur commune à un chiffreur,constante,,low,Hypothèse de modélisation (audit §3.5) : les erreurs d'un même chiffreur sont corrélées ; part non mesurée

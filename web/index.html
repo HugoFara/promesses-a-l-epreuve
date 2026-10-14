@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backtest des chiffrages</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+/* Palette : instance de référence validée (skill dataviz, references/palette.md) */
+:root {
+  --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-anthropic-serif: Georgia, "Times New Roman", serif;
+  --color-bg: #f9f9f7; --color-panel: #fcfcfb; --color-fg: #0b0b0b; --color-fg-muted: #52514e;
+  --color-border-line: #e1e0d9; --color-ok: #006300; --color-bad: #d03b3b;
+  --cds-surface-popover: #fcfcfb; --cds-border: #c3c2b7; --cds-text-secondary: #52514e;
+  --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.12);
+  --cds-chart-muted: #898781; --cds-chart-reference: #898781; --cds-chart-grid: #e1e0d9;
+  --cds-chart-status-critical: #d03b3b;
+  --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-lg: 16px;
+  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 12px; --cds-gap-lg: 20px; --cds-gap-xl: 32px;
+  --cds-radius: 8px; --cds-font-size-title: 1.75rem; --cds-font-size-heading: 1.1rem;
+  --cds-font-size-body: 0.95rem; --cds-font-size-caption: 0.8rem; --cds-font-weight-medium: 600;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #0d0d0d; --color-panel: #1a1a19; --color-fg: #f0efec; --color-fg-muted: #c3c2b7;
+    --color-border-line: #2c2c2a; --color-ok: #0ca30c; --color-bad: #e66767;
+    --cds-surface-popover: #1a1a19; --cds-border: #383835; --cds-text-secondary: #c3c2b7;
+    --cds-chart-grid: #2c2c2a;
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg: #0d0d0d; --color-panel: #1a1a19; --color-fg: #f0efec; --color-fg-muted: #c3c2b7;
+  --color-border-line: #2c2c2a; --color-ok: #0ca30c; --color-bad: #e66767;
+  --cds-surface-popover: #1a1a19; --cds-border: #383835; --cds-text-secondary: #c3c2b7; --cds-chart-grid: #2c2c2a;
+}
+body { margin: 0; padding: 24px 16px; background: var(--color-bg); color: var(--color-fg); }
+.dash-skeleton { color: transparent; background: var(--color-border-line); border-radius: 4px; }
+select { font: inherit; }
+</style>
+<script>
+(() => {
+  const SOURCES = {"mesures": "mesures_cout", "effets": "mesures_effets", "ps": "programmes_stabilite_fr", "pairs": "pairs_frankel_schreger", "regles": "regles_calibration", "elasticites": "elasticites", "hypotheses": "hypotheses_defaut", "application": "application_lignes", "programmes": "application_programmes", "parametres": "application_parametres", "paniers": "paniers"};
+  const sombre = matchMedia("(prefers-color-scheme: dark)").matches;
+  const store = {}, calcs = [], rappels = [];
+  window.dash = {
+    colors: sombre ? ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181"]
+                   : ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"],
+    data: nom => store[nom] || {status: "loading", data: null},
+    calc: (nom, def) => calcs.push([nom, def]),
+    onData: cb => rappels.push(cb),
+  };
+  addEventListener("DOMContentLoaded", () => {
+    Promise.all(Object.entries(SOURCES).map(([k, f]) =>
+      d3.csv(`../data/${f}.csv`).then(rows => { store[k] = {status: "ok", data: rows}; },
+                                     err => { store[k] = {status: "error", error: err}; })))
+    .then(() => {
+      for (const [nom, def] of calcs) {
+        try { store[nom] = {status: "ok", data: def.fn(...def.inputs.map(i => store[i].data))}; }
+        catch (e) { store[nom] = {status: "error", error: e}; console.error(nom, e); }
+      }
+      rappels.forEach(cb => cb());
+    });
+  });
+})();
+</script>
+</head>
+<body>
+<style>
+#dash-root { --dash-gutter: var(--cds-pad-lg); }
+.bt { font-family: var(--font-anthropic-sans); color: var(--color-fg); max-width: 72rem; margin-inline: auto; }
+.bt h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); }
+.bt .lede { font-size: var(--cds-font-size-body); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-lg); max-width: 50rem; line-height: 1.5; }
+.bt .lede b { color: var(--color-fg); font-weight: 600; }
+.bt .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr)); gap: var(--cds-gap-md); margin-bottom: var(--cds-gap-xl); }
+.bt .kpi, .bt .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); }
+.bt .kpi .lbl { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.35; min-height: 2.7em; }
+.bt .kpi .val { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; margin-top: var(--cds-gap-xs); }
+.bt .kpi .sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-xs); }
+.bt h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-xl) 0 var(--cds-gap-xs); }
+.bt .sec-note { font-size: var(--cds-font-size-body); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-md); max-width: 50rem; line-height: 1.5; }
+.bt .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
+.bt .card h3 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.bt .card .note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: var(--cds-gap-xs) 0 var(--cds-gap-md); line-height: 1.4; }
+.bt .chart { position: relative; min-height: 220px; }
+.bt .tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); display: none; z-index: 2; max-width: 16rem; }
+.bt .tip .t1 { color: var(--cds-text-secondary); margin-bottom: 2px; }
+.bt .legend { display: flex; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: var(--cds-gap-sm); flex-wrap: wrap; }
+.bt .legend i { display: inline-block; width: .7rem; height: .7rem; border-radius: 2px; margin-right: .35rem; vertical-align: -1px; }
+.bt .tbl-wrap { overflow: auto; max-height: 34rem; }
+.bt table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.bt th { text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); position: sticky; top: 0; background: var(--color-panel); vertical-align: bottom; }
+.bt td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); vertical-align: top; line-height: 1.4; }
+.bt td.num, .bt th.num { text-align: right; white-space: nowrap; }
+.bt td a { color: inherit; text-decoration: underline; text-decoration-color: var(--color-border-line); }
+.bt .pos { color: var(--color-ok); } .bt .neg { color: var(--color-bad); }
+.bt .pill { display: inline-block; padding: 0 .4rem; border-radius: 999px; border: 1px solid var(--color-border-line); white-space: nowrap; }
+.bt .method { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.55; }
+.bt .method p { margin: 0 0 var(--cds-gap-sm); }
+.bt .fail { display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: inherit; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.bt .fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+.bt [data-dash-source-state=empty] { color: transparent; }
+.bt [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+.bt .filters { display: flex; gap: var(--cds-gap-sm); flex-wrap: wrap; margin-bottom: var(--cds-gap-sm); }
+.bt .filters select, .bt .filters input { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); min-width: 10rem; }
+@media (max-width: 40rem) { .bt .hide-narrow { display: none; } }
+</style>
+
+<div class="bt">
+  <h1 id="titre">Backtest des chiffrages budgétaires</h1>
+  <p class="lede" id="lede">Les mesures sont plutôt bien chiffrées (erreur médiane de <b data-source="kpi_mesures" data-field="mediane_abs" data-row="0" class="dash-skeleton">—</b> sur leur coût), mais les trajectoires ne tiennent pas : à trois ans, le déficit réel dépasse la cible de <b data-source="kpi_ps" data-field="t3_hors_crise_abs" data-row="0" class="dash-skeleton">—</b> de PIB en moyenne hors crises, et c'est le cas dans <b data-source="kpi_ps" data-field="part_optimistes_t3" data-row="0" class="dash-skeleton">—</b> des programmes.</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="lbl">Erreur médiane sur le coût d'une mesure</div><div class="val dash-skeleton" data-source="kpi_mesures" data-field="mediane_abs" data-row="0">—</div><div class="sub">en valeur absolue</div></div>
+    <div class="kpi"><div class="lbl">Mesures chiffrées à ±15 % près</div><div class="val"><span class="dash-skeleton" data-source="kpi_mesures" data-field="n_15" data-row="0">—</span> / <span class="dash-skeleton" data-source="kpi_mesures" data-field="n" data-row="0">—</span></div><div class="sub">coût réel vs annoncé</div></div>
+    <div class="kpi"><div class="lbl">Erreur sur le déficit à 1 an, hors crises</div><div class="val dash-skeleton" data-source="kpi_ps" data-field="t1_hors_crise" data-row="0">—</div><div class="sub">points de PIB, programmes de stabilité</div></div>
+    <div class="kpi"><div class="lbl">Erreur sur le déficit à 3 ans, hors crises</div><div class="val dash-skeleton" data-source="kpi_ps" data-field="t3_hors_crise" data-row="0">—</div><div class="sub">points de PIB, <span data-source="kpi_ps" data-field="n3" data-row="0" class="dash-skeleton">—</span> programmes</div></div>
+    <div class="kpi"><div class="lbl">Programmes trop optimistes à 3 ans</div><div class="val dash-skeleton" data-source="kpi_ps" data-field="part_optimistes_t3" data-row="0">—</div><div class="sub">hors crises</div></div>
+  </div>
+
+  <h2 id="mesures">1. Le coût des mesures : peu d'erreurs, et elles s'expliquent</h2>
+  <p class="sec-note">Chaque mesure compare le chiffrage annoncé avant adoption à l'évaluation après coup. Un écart positif signifie que la mesure a été meilleure que prévu pour les finances publiques (coût plus faible, ou économie plus forte).</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Écart entre le réalisé et l'annoncé</h3>
+      <p class="note">En % du chiffrage initial ; vert = mieux pour le solde public, rouge = pire.</p>
+      <div class="chart" id="ch-ecarts" data-source="ecarts"></div>
+    </div>
+    <div class="card">
+      <h3>Détail par mesure</h3>
+      <p class="note">Md€ par an. La cause est celle que donnent les évaluations.</p>
+      <div class="tbl-wrap">
+        <table id="tb-cout" data-source="mesures" data-row-key="id">
+          <thead><tr>
+            <th data-field="mesure">Mesure</th>
+            <th class="num" data-field="ex_ante">Annoncé</th>
+            <th class="num" data-field="ex_post_central">Réalisé</th>
+            <th class="num" data-source="ecarts" data-field="ecart_pct">Écart</th>
+            <th data-field="cause_principale">Cause</th>
+            <th class="hide-narrow" data-field="confiance">Fiabilité</th>
+            <th class="hide-narrow" data-field="source_ex_ante">Avant</th>
+            <th class="hide-narrow" data-field="source_ex_post">Après</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <h2 id="effets">2. Les effets promis : c'est là que les annonces dérapent</h2>
+  <p class="sec-note">Les emplois, l'investissement ou les heures de travail annoncés sont rarement au rendez-vous. Les réformes des retraites sont l'exception : l'effet sur l'emploi des seniors a été plus fort que prévu.</p>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table id="tb-effets" data-source="effets" data-row-key="id">
+        <thead><tr>
+          <th data-field="mesure">Mesure</th>
+          <th data-field="effet">Effet</th>
+          <th data-field="annonce">Annoncé</th>
+          <th data-field="mesure_ex_post">Mesuré</th>
+          <th data-field="verdict">Verdict</th>
+          <th class="hide-narrow" data-field="source_ex_post">Source</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 id="trajectoires">3. Les trajectoires : l'erreur est dans l'agrégat</h2>
+  <p class="sec-note">Erreur des programmes de stabilité français sur le déficit public : déficit réalisé moins déficit prévu, en points de PIB. Négatif = prévision trop optimiste. Les années de crise (2009, 2010, 2020, 2021) sont grisées et exclues des moyennes.</p>
+  <div class="card">
+    <h3>Erreur par programme, à 1 an et à 3 ans</h3>
+    <p class="note">Millésime = année de rédaction du programme.</p>
+    <div class="legend"><span><i style="background: var(--cds-chart-muted)"></i>à 1 an</span><span><i id="lg-t3"></i>à 3 ans</span><span><i style="background: var(--cds-chart-grid)"></i>année cible en crise</span></div>
+    <div class="chart" id="ch-ps" data-source="erreurs_ps" style="min-height: 280px"></div>
+  </div>
+
+  <h2 id="pairs">4. Comparaison européenne</h2>
+  <p class="sec-note">Erreur moyenne des prévisions officielles de solde à 3 ans, en points de PIB (Frankel et Schreger, NBER). Ici, positif = trop optimiste.</p>
+  <div class="card">
+    <h3>Optimisme des prévisions à 3 ans, par pays</h3>
+    <p class="note">La France est proche de l'Espagne et de l'Italie ; les pays nordiques sont les plus prudents.</p>
+    <div class="chart" id="ch-pairs" data-source="pairs" style="min-height: 300px"></div>
+  </div>
+
+  <h2 id="regles">5. Règles de calibration pour lire les programmes 2027</h2>
+  <p class="sec-note">Corrections à appliquer aux chiffrages des candidats, tirées des écarts observés ci-dessus.</p>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table id="tb-regles" data-source="regles" data-row-key="id">
+        <thead><tr>
+          <th data-field="categorie">Type de chiffrage</th>
+          <th data-field="correction_2027">Correction</th>
+          <th data-field="base_empirique">Base empirique</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 id="elasticites">6. Élasticités : corriger un chiffrage statique</h2>
+  <p class="sec-note">Comment les contribuables, les entreprises et l'économie réagissent à une mesure, d'après des évaluations françaises et étrangères. La première table donne l'hypothèse à retenir par levier ; la seconde, chaque estimation avec sa source.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Nature des preuves</h3>
+      <p class="note">Nombre d'estimations par domaine et par méthode.</p>
+      <div class="legend" id="lg-methodes"></div>
+      <div class="chart" id="ch-methodes" data-source="elast_comptes" style="min-height: 200px"></div>
+    </div>
+    <div class="card">
+      <h3>Hypothèses par défaut, par levier</h3>
+      <p class="note">À appliquer aux chiffrages 2027 en l'absence d'étude propre à la mesure.</p>
+      <div class="tbl-wrap" style="max-height: 26rem">
+        <table id="tb-hyp" data-source="hypotheses" data-row-key="id">
+          <thead><tr>
+            <th data-field="levier">Levier</th>
+            <th data-field="hypothese">Hypothèse</th>
+            <th data-field="effet_chiffrage">Effet sur le chiffrage</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top: var(--cds-gap-md)">
+    <h3>Toutes les estimations</h3>
+    <p class="note">Filtrer par domaine ou chercher un mot (« TVA », « SMIC », « Danemark »…).</p>
+    <div class="filters">
+      <select id="f-domaine" aria-label="Domaine"><option value="">Tous les domaines</option></select>
+      <input id="f-texte" type="search" placeholder="Rechercher" aria-label="Rechercher">
+    </div>
+    <div class="tbl-wrap">
+      <table id="tb-elast" data-source="elasticites" data-row-key="id">
+        <thead><tr>
+          <th data-field="parametre">Paramètre</th>
+          <th data-field="valeur_centrale">Valeur</th>
+          <th class="hide-narrow" data-field="fourchette">Fourchette</th>
+          <th class="hide-narrow" data-field="pays_periode">Contexte</th>
+          <th class="hide-narrow" data-field="methode">Méthode</th>
+          <th data-field="usage_2027">Usage pour 2027</th>
+          <th class="hide-narrow" data-field="source">Source</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 id="application">7. Application : NFP et Ensemble aux législatives 2024</h2>
+  <p class="sec-note">Même grille pour les deux programmes. Point de départ : le chiffrage ligne par ligne de l'Institut Montaigne, seul organisme à avoir chiffré les deux mesure par mesure (orientation libérale). Une ligne qu'il n'a pas chiffrée prend la médiane des autres chiffrages indépendants. On applique ensuite les règles des sections 1 à 6, puis le biais de trajectoire commun aux deux, puisque les deux partent du programme de stabilité d'avril 2024. Le bouclage keynésien n'est pas compté : l'horizon 2027 est structurel.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Impact sur le solde public en 2027</h3>
+      <p class="note">Md€ par an ; négatif = hausse du déficit.</p>
+      <div class="legend" id="lg-app"></div>
+      <div class="chart" id="ch-app" data-source="app_totaux" style="min-height: 200px"></div>
+    </div>
+    <div class="card">
+      <h3>Déficit public 2027 qui en résulte</h3>
+      <p class="note">% du PIB : cible du programme de stabilité + biais historique à 3 ans + coût corrigé du programme. Trait : prévision actuelle du gouvernement pour 2027.</p>
+      <div class="legend" id="lg-def"></div>
+      <div class="chart" id="ch-def" data-source="app_totaux parametres" style="min-height: 200px"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top: var(--cds-gap-md)">
+    <h3>Ligne par ligne</h3>
+    <p class="note">Impact sur le solde en Md€/an. La colonne « Corrigé » applique le facteur de la règle au chiffrage indépendant.</p>
+    <div class="filters"><select id="f-prog" aria-label="Programme"><option value="">Les deux programmes</option></select></div>
+    <div class="tbl-wrap">
+      <table id="tb-app" data-source="app_lignes" data-row-key="id">
+        <thead><tr>
+          <th data-field="ligne">Mesure</th>
+          <th class="num" data-source="application" data-field="annonce_parti">Parti</th>
+          <th class="num" data-field="independant">Indépendant</th>
+          <th class="num" data-field="corrige">Corrigé</th>
+          <th data-field="regle">Règle</th>
+          <th class="hide-narrow" data-source="application" data-field="justification">Justification</th>
+          <th class="hide-narrow" data-source="application" data-field="autres_estimations">Autres chiffrages</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 id="paniers">8. Programmes à l'équilibre : financer les mesures phares</h2>
+  <p class="sec-note">On garde les mesures phares de chaque camp et on les finance avec des leviers compatibles avec son orientation : fiscalité du capital, du patrimoine et des grandes entreprises pour LFI ; économies de dépenses sans hausse d'impôts sur les ménages actifs pour Ensemble. Chaque levier est corrigé par les règles des sections 1 à 6. La référence est la loi en vigueur fin 2026 : les mesures déjà votées (plan santé 2026, contribution des collectivités, rabot des allègements, loi fraude) ne sont pas recomptées.</p>
+  <div class="card">
+    <h3>Coût des mesures phares et financement trouvé</h3>
+    <p class="note">Md€ par an, après correction. Pour la variante « LFI ajusté », la planification écologique est financée par emprunt (règle d'or) et sortie de l'équilibre.</p>
+    <div class="legend" id="lg-pan"></div>
+    <div class="chart" id="ch-pan" data-source="panier_totaux" style="min-height: 260px"></div>
+  </div>
+  <div class="card" style="margin-top: var(--cds-gap-md)">
+    <h3>Détail des paniers</h3>
+    <p class="note">Statique = chiffrage d'origine ; Corrigé = après facteur de la règle. Incertitude et payeurs pour chaque levier.</p>
+    <div class="filters"><select id="f-var" aria-label="Variante"><option value="">Toutes les variantes</option></select></div>
+    <div class="tbl-wrap">
+      <table id="tb-pan" data-source="panier_lignes" data-row-key="id">
+        <thead><tr>
+          <th data-field="ligne">Ligne</th>
+          <th data-field="role">Rôle</th>
+          <th class="num" data-source="paniers" data-field="statique">Statique</th>
+          <th class="num" data-field="corrige">Corrigé</th>
+          <th class="hide-narrow" data-source="paniers" data-field="regle">Règle</th>
+          <th class="hide-narrow" data-source="paniers" data-field="incertitude">Incertitude</th>
+          <th class="hide-narrow" data-source="paniers" data-field="qui_paie">Qui paie</th>
+          <th class="hide-narrow" data-source="paniers" data-field="source">Source</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 id="methode">Méthode et limites</h2>
+  <div class="card method">
+    <p>Le coût réalisé retient une valeur centrale quand les évaluations divergent (par exemple la flat tax, entre ≈0 et 1,7 Md€). Les fourchettes sont dans les données sources.</p>
+    <p>Seules les mesures adoptées sont observables : on ne peut pas tester les programmes perdants. L'échantillon est petit, donc les règles de calibration détectent des biais grossiers, pas des paramètres précis.</p>
+    <p>Pour les retraites, les montants « réalisés » sont des réestimations (DREES, Cour des comptes) et non des économies constatées. La réforme de 2014 et la baisse de l'IS n'ont pas d'évaluation du coût après coup et sont exclues des moyennes.</p>
+    <p>Les élasticités sont des ordres de grandeur. Les estimations étrangères (Danemark, Suisse, États-Unis…) se transposent mal quand les institutions diffèrent, notamment la déclaration du patrimoine par des tiers en France. Une vérification indépendante de dix valeurs clés a conduit à corriger trois lignes.</p>
+    <p>Section 7 : le résultat dépend du chiffrage de départ. Les chiffrages indépendants du NFP vont de ≈−50 (Asterès) à −179 Md€ (Montaigne) ; ceux d'Ensemble de +4 (iFRAP, par rapport au programme de stabilité) à −21 Md€ (Montaigne). Les corrections modifient le solde de quelques milliards à une dizaine ; l'écart entre chiffreurs pèse bien plus. Le programme LFI de 2027 n'est pas encore chiffré : celui du NFP 2024 en est le plus proche.</p>
+    <p>Les déficits réalisés sont les séries Eurostat actuelles, révisées depuis leur première publication. Les comparaisons internationales viennent de Frankel et Schreger (2013), dont la période s'arrête avant la crise de la dette en zone euro.</p>
+  </div>
+</div>
+
+<script>
+const FR = d3.formatLocale({decimal: ",", thousands: " ", grouping: [3], currency: ["", " €"], minus: "−"});
+const fPct0 = v => FR.format(".0f")(v) + " %";
+const fSigned0 = v => (v > 0 ? "+" : "") + FR.format(".0f")(v) + " %";
+const fPt1 = v => FR.format(".1f")(v) + " pt";
+const fMd = v => FR.format(".1f")(v);
+const num = x => (x === "" || x == null) ? NaN : Number(x);
+
+dash.calc("ecarts", {
+  inputs: ["mesures"],
+  title: "Écart réalisé vs annoncé",
+  description: "Pour chaque mesure, écart en % du chiffrage initial ; positif = meilleur pour le solde public.",
+  fn: (mesures) => mesures.map(m => {
+    const a = Number(m.ex_ante), p = Number(m.ex_post_central);
+    const ecart = m.sens === "cout" ? (a - p) / a * 100 : (p - a) / a * 100;
+    return {id: m.id, mesure: m.mesure, ecart_pct: ecart, cause: m.cause_principale};
+  })
+});
+
+dash.calc("kpi_mesures", {
+  inputs: ["ecarts"],
+  title: "Précision des chiffrages",
+  description: "Médiane des écarts absolus et nombre de mesures à ±15 %.",
+  fn: (ecarts) => {
+    const abs = ecarts.map(e => Math.abs(e.ecart_pct)).sort((a, b) => a - b);
+    const n = abs.length, mid = Math.floor(n / 2);
+    const mediane = n % 2 ? abs[mid] : (abs[mid - 1] + abs[mid]) / 2;
+    return [{mediane_abs: mediane, n_15: abs.filter(v => v <= 15).length, n: n}];
+  }
+});
+
+dash.calc("erreurs_ps", {
+  inputs: ["ps"],
+  title: "Erreurs des programmes de stabilité",
+  description: "Déficit réalisé moins déficit prévu, à 1 et 3 ans (points de PIB) ; crise = année cible 2009, 2010, 2020 ou 2021.",
+  fn: (ps) => ps.map(r => {
+    const e1 = Number(r.real_t1) - Number(r.prev_t1);
+    const e3 = r.real_t3 === "" ? null : Number(r.real_t3) - Number(r.prev_t3);
+    return {millesime: r.millesime, annee_t1: Number(r.annee_t1), annee_t3: Number(r.annee_t3),
+      e1: e1, e3: e3, crise_t1: [2009, 2020].includes(Number(r.annee_t1)),
+      crise_t3: [2009, 2010, 2020, 2021].includes(Number(r.annee_t3))};
+  })
+});
+
+dash.calc("kpi_ps", {
+  inputs: ["erreurs_ps"],
+  title: "Biais moyen hors crises",
+  description: "Moyenne des erreurs hors années de crise, et part des programmes trop optimistes à 3 ans.",
+  fn: (erreurs_ps) => {
+    const t1 = erreurs_ps.filter(r => !r.crise_t1).map(r => r.e1);
+    const t3 = erreurs_ps.filter(r => r.e3 !== null && !r.crise_t3).map(r => r.e3);
+    const mean = a => a.reduce((s, v) => s + v, 0) / a.length;
+    return [{t1_hors_crise: mean(t1), t3_hors_crise: mean(t3), t3_hors_crise_abs: Math.abs(mean(t3)),
+      n3: t3.length, part_optimistes_t3: t3.filter(v => v < 0).length / t3.length * 100}];
+  }
+});
+
+const fmt = {
+  mediane_abs: fPct0, n_15: v => String(v), n: v => String(v),
+  t1_hors_crise: fPt1, t3_hors_crise: fPt1, t3_hors_crise_abs: v => FR.format(".1f")(v) + " point",
+  n3: v => String(v), part_optimistes_t3: fPct0
+};
+
+function fillMarks() {
+  document.querySelectorAll(".bt [data-row='0'][data-field]").forEach(el => {
+    const d = dash.data(el.dataset.source);
+    if (d.status === "ok" && d.data && d.data[0]) {
+      const v = d.data[0][el.dataset.field];
+      el.textContent = fmt[el.dataset.field] ? fmt[el.dataset.field](v) : String(v);
+      el.classList.remove("dash-skeleton");
+    } else if (d.status !== "loading") {
+      el.textContent = "—"; el.classList.remove("dash-skeleton");
+    }
+  });
+}
+
+function failBox(el) { el.textContent = ""; const f = document.createElement("div"); f.className = "fail"; f.textContent = "Failed to load"; el.appendChild(f); el.classList.remove("dash-skeleton"); }
+
+function tip(box) {
+  let t = box.querySelector(".tip");
+  if (!t) { t = document.createElement("div"); t.className = "tip"; box.appendChild(t); }
+  return {
+    show(ev, title, line) {
+      t.textContent = "";
+      const a = document.createElement("div"); a.className = "t1"; a.textContent = title; t.appendChild(a);
+      const b = document.createElement("div"); b.textContent = line; t.appendChild(b);
+      t.style.display = "block";
+      const r = box.getBoundingClientRect();
+      let x = ev.clientX - r.left + 12, y = ev.clientY - r.top + 12;
+      const w = t.offsetWidth, h = t.offsetHeight;
+      if (x + w > r.width) x = Math.max(0, ev.clientX - r.left - w - 12);
+      if (y + h > r.height) y = Math.max(0, ev.clientY - r.top - h - 12);
+      t.style.left = x + "px"; t.style.top = y + "px";
+    },
+    hide() { t.style.display = "none"; }
+  };
+}
+
+function drawEcarts() {
+  const box = document.getElementById("ch-ecarts");
+  const d = dash.data("ecarts");
+  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
+  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
+  const rows = d.data.slice().sort((a, b) => b.ecart_pct - a.ecart_pct);
+  const W = Math.max(280, box.clientWidth), rowH = 40, top = 6, H = top + rows.length * rowH + 22;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Écart réalisé vs annoncé par mesure");
+  const ext = d3.max(rows, r => Math.abs(r.ecart_pct));
+  const x = d3.scaleLinear([-ext * 1.1, ext * 1.1], [46, W - 46]);
+  const ticks = x.ticks(4);
+  svg.append("g").selectAll("line").data(ticks).join("line").attr("x1", v => x(v)).attr("x2", v => x(v)).attr("y1", top).attr("y2", H - 20).attr("stroke", "var(--cds-chart-grid)");
+  svg.append("g").selectAll("text").data(ticks).join("text").attr("x", v => x(v)).attr("y", H - 6).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(v => fSigned0(v));
+  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", top).attr("y2", H - 20).attr("stroke", "var(--cds-chart-axis)");
+  const tp = tip(box);
+  const g = svg.append("g").selectAll("g").data(rows).join("g").attr("transform", (r, i) => `translate(0,${top + i * rowH})`);
+  // Libellé au-dessus de la barre, aligné à gauche et tronqué à la largeur du graphique (texte complet dans l'infobulle)
+  g.append("text").attr("x", 0).attr("y", 12).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)")
+    .text(r => r.mesure).each(function () {
+      const el = d3.select(this), full = el.text();
+      let n = full.length;
+      while (n > 4 && this.getComputedTextLength() > W - 8) el.text(full.slice(0, --n) + "…");
+    }).append("title").text(r => r.mesure);
+  g.append("rect").attr("x", r => Math.min(x(0), x(r.ecart_pct))).attr("width", r => Math.max(2, Math.abs(x(r.ecart_pct) - x(0)))).attr("y", 18).attr("height", 14).attr("rx", 4)
+    .attr("fill", r => r.ecart_pct >= 0 ? "var(--color-ok)" : "var(--cds-chart-status-critical)")
+    .on("mousemove", (ev, r) => tp.show(ev, r.mesure, fSigned0(r.ecart_pct) + " · " + r.cause)).on("mouseleave", () => tp.hide());
+  g.append("text").attr("x", r => r.ecart_pct >= 0 ? x(r.ecart_pct) + 4 : x(r.ecart_pct) - 4).attr("y", 29).attr("text-anchor", r => r.ecart_pct >= 0 ? "start" : "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(r => fSigned0(r.ecart_pct));
+}
+
+function link(td, url) {
+  if (url && /^https?:\/\//.test(url)) { const a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "lien"; td.appendChild(a); }
+}
+
+function drawCoutTable() {
+  const tb = document.querySelector("#tb-cout tbody");
+  const d = dash.data("mesures"), e = dash.data("ecarts");
+  tb.textContent = "";
+  if (d.status !== "ok") return;
+  const ec = new Map((e.status === "ok" ? e.data : []).map(r => [r.id, r.ecart_pct]));
+  d.data.forEach(r => {
+    const tr = document.createElement("tr"); tr.dataset.key = r.id;
+    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
+    td(r.mesure);
+    td(fMd(num(r.ex_ante)), "num");
+    td(fMd(num(r.ex_post_central)), "num");
+    const v = ec.get(r.id);
+    td(v === undefined ? "—" : fSigned0(v), "num " + (v > 0.5 ? "pos" : v < -0.5 ? "neg" : ""));
+    td(r.cause_principale);
+    const cf = td("", "hide-narrow"); const s = document.createElement("span"); s.className = "pill"; s.textContent = r.confiance; cf.appendChild(s);
+    link(td("", "hide-narrow"), r.source_ex_ante);
+    link(td("", "hide-narrow"), r.source_ex_post);
+    tb.appendChild(tr);
+  });
+}
+
+function drawSimpleTable(id, src, cols, linkCol) {
+  const tb = document.querySelector(`#${id} tbody`);
+  const d = dash.data(src);
+  tb.textContent = "";
+  if (d.status !== "ok") return;
+  d.data.forEach(r => {
+    const tr = document.createElement("tr"); tr.dataset.key = r.id;
+    cols.forEach(c => { const td = document.createElement("td"); td.textContent = r[c]; tr.appendChild(td); });
+    if (linkCol) { const td = document.createElement("td"); td.className = "hide-narrow"; link(td, r[linkCol]); tr.appendChild(td); }
+    tb.appendChild(tr);
+  });
+}
+
+function drawPS() {
+  const box = document.getElementById("ch-ps");
+  const d = dash.data("erreurs_ps");
+  document.getElementById("lg-t3").style.background = dash.colors[0];
+  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
+  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
+  const rows = d.data;
+  const W = Math.max(280, box.clientWidth), H = 280, m = {t: 10, r: 6, b: 26, l: 36};
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Erreurs des programmes de stabilité");
+  const x = d3.scaleBand(rows.map(r => r.millesime), [m.l, W - m.r]).paddingInner(0.25).paddingOuter(0.1);
+  const xs = d3.scaleBand(["e1", "e3"], [0, x.bandwidth()]).padding(0.08);
+  const vals = rows.flatMap(r => [r.e1, r.e3]).filter(v => v !== null);
+  const y = d3.scaleLinear([Math.min(0, d3.min(vals)) * 1.05, Math.max(0, d3.max(vals)) * 1.15 + 0.2], [H - m.b, m.t]).nice();
+  const yt = y.ticks(5);
+  svg.append("g").selectAll("line").data(yt).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", v => y(v)).attr("y2", v => y(v)).attr("stroke", v => v === 0 ? "var(--cds-chart-axis)" : "var(--cds-chart-grid)");
+  svg.append("g").selectAll("text").data(yt).join("text").attr("x", m.l - 6).attr("y", v => y(v) + 4).attr("text-anchor", "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(v => FR.format(".0f")(v));
+  const step = W < 520 ? 3 : 2;
+  svg.append("g").selectAll("text").data(rows.filter((r, i) => i % step === 0)).join("text").attr("x", r => x(r.millesime) + x.bandwidth() / 2).attr("y", H - 8).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(r => r.millesime.slice(3, 7));
+  const tp = tip(box);
+  const bar = (key, color, crisisKey) => svg.append("g").selectAll("rect").data(rows.filter(r => r[key] !== null)).join("rect")
+    .attr("x", r => x(r.millesime) + xs(key)).attr("width", xs.bandwidth())
+    .attr("y", r => Math.min(y(0), y(r[key]))).attr("height", r => Math.max(1, Math.abs(y(r[key]) - y(0)))).attr("rx", 2)
+    .attr("fill", r => r[crisisKey] ? "var(--cds-chart-grid)" : color)
+    .on("mousemove", (ev, r) => tp.show(ev, r.millesime + (r[crisisKey] ? " (crise)" : ""), (key === "e1" ? "À 1 an (" + r.annee_t1 + ") : " : "À 3 ans (" + r.annee_t3 + ") : ") + (r[key] > 0 ? "+" : "") + fPt1(r[key])))
+    .on("mouseleave", () => tp.hide());
+  bar("e1", "var(--cds-chart-muted)", "crise_t1");
+  bar("e3", dash.colors[0], "crise_t3");
+}
+
+function drawPairs() {
+  const box = document.getElementById("ch-pairs");
+  const d = dash.data("pairs");
+  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
+  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
+  const rows = d.data.map(r => ({pays: r.pays, v: Number(r.erreur_3ans), v1: Number(r.erreur_1an)})).sort((a, b) => b.v - a.v);
+  const W = Math.max(280, box.clientWidth), rowH = 26, H = rows.length * rowH + 24;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Optimisme des prévisions par pays");
+  const tmp = svg.append("text").style("font-size", "var(--cds-font-size-caption)");
+  const labW = d3.max(rows, r => { tmp.text(r.pays); return tmp.node().getComputedTextLength(); }) + 10;
+  tmp.text("+7,6"); const valW = tmp.node().getComputedTextLength() + 8; tmp.remove();
+  const x = d3.scaleLinear([Math.min(0, d3.min(rows, r => r.v)), d3.max(rows, r => r.v)], [labW, W - valW]);
+  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", 0).attr("y2", H - 20).attr("stroke", "var(--cds-chart-axis)");
+  const tp = tip(box);
+  const g = svg.append("g").selectAll("g").data(rows).join("g").attr("transform", (r, i) => `translate(0,${i * rowH})`);
+  g.append("text").attr("x", labW - 8).attr("y", 16).attr("text-anchor", "end").attr("fill", r => r.pays === "France" ? "var(--color-fg)" : "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", r => r.pays === "France" ? 600 : 400).text(r => r.pays);
+  g.append("rect").attr("x", r => Math.min(x(0), x(r.v))).attr("width", r => Math.max(2, Math.abs(x(r.v) - x(0)))).attr("y", 5).attr("height", 15).attr("rx", 4)
+    .attr("fill", r => r.pays === "France" ? dash.colors[0] : "var(--cds-chart-muted)")
+    .on("mousemove", (ev, r) => tp.show(ev, r.pays, "3 ans : " + (r.v > 0 ? "+" : "") + fPt1(r.v) + " · 1 an : " + (r.v1 > 0 ? "+" : "") + fPt1(r.v1))).on("mouseleave", () => tp.hide());
+  g.append("text").attr("x", r => x(Math.max(0, r.v)) + 4).attr("y", 17).attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(r => (r.v > 0 ? "+" : "") + FR.format(".1f")(r.v));
+}
+
+dash.calc("elast_comptes", {
+  inputs: ["elasticites"],
+  title: "Estimations par domaine et méthode",
+  description: "Nombre d'estimations de la table d'élasticités, par domaine et par méthode.",
+  fn: (elasticites) => {
+    const m = new Map();
+    elasticites.forEach(r => { const k = r.domaine + "|" + r.methode; m.set(k, (m.get(k) || 0) + 1); });
+    return [...m].map(([k, n]) => ({domaine: k.split("|")[0], methode: k.split("|")[1], n: n}));
+  }
+});
+
+const METHODES = ["Expérimentation aléatoire", "Quasi-expérience", "Méta-analyse ou revue", "Modèle", "Descriptif"];
+
+function drawMethodes() {
+  const box = document.getElementById("ch-methodes");
+  const lg = document.getElementById("lg-methodes");
+  const d = dash.data("elast_comptes");
+  lg.textContent = "";
+  METHODES.forEach((mt, i) => { const s = document.createElement("span"); const sw = document.createElement("i"); sw.style.background = dash.colors[i]; s.appendChild(sw); s.appendChild(document.createTextNode(mt)); lg.appendChild(s); });
+  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
+  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
+  const doms = [...new Set(d.data.map(r => r.domaine))];
+  const tot = new Map(doms.map(dm => [dm, d3.sum(d.data.filter(r => r.domaine === dm), r => r.n)]));
+  const W = Math.max(280, box.clientWidth), rowH = 46, H = doms.length * rowH + 4;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Estimations par domaine et méthode");
+  const x = d3.scaleLinear([0, d3.max([...tot.values()])], [0, W - 30]);
+  const tp = tip(box);
+  doms.forEach((dm, i) => {
+    const g = svg.append("g").attr("transform", `translate(0,${i * rowH})`);
+    g.append("text").attr("x", 0).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").text(dm);
+    let x0 = 0;
+    METHODES.forEach((mt, j) => {
+      const r = d.data.find(q => q.domaine === dm && q.methode === mt);
+      if (!r) return;
+      const w = x(r.n);
+      g.append("rect").attr("x", x0).attr("y", 20).attr("width", Math.max(1, w - 1)).attr("height", 16).attr("fill", dash.colors[j])
+        .on("mousemove", ev => tp.show(ev, dm, mt + " : " + r.n)).on("mouseleave", () => tp.hide());
+      x0 += w;
+    });
+    g.append("text").attr("x", x0 + 6).attr("y", 33).attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(tot.get(dm));
+  });
+}
+
+let fDom = "", fTxt = "";
+(function initFilters() {
+  const sel = document.getElementById("f-domaine"), inp = document.getElementById("f-texte");
+  sel.addEventListener("change", () => { fDom = sel.value; drawElast(); });
+  inp.addEventListener("input", () => { fTxt = inp.value.trim().toLowerCase(); drawElast(); });
+})();
+
+function drawElast() {
+  const tb = document.querySelector("#tb-elast tbody");
+  const sel = document.getElementById("f-domaine");
+  const d = dash.data("elasticites");
+  tb.textContent = "";
+  if (d.status !== "ok") return;
+  const doms = [...new Set(d.data.map(r => r.domaine))];
+  if (sel.options.length === 1) doms.forEach(dm => { const o = document.createElement("option"); o.value = dm; o.textContent = dm; sel.appendChild(o); });
+  d.data.filter(r => (!fDom || r.domaine === fDom) && (!fTxt || Object.values(r).join(" ").toLowerCase().includes(fTxt))).forEach(r => {
+    const tr = document.createElement("tr"); tr.dataset.key = r.id;
+    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
+    td(r.parametre); td(r.valeur_centrale); td(r.fourchette, "hide-narrow"); td(r.pays_periode, "hide-narrow"); td(r.methode, "hide-narrow"); td(r.usage_2027);
+    const c = document.createElement("td"); c.className = "hide-narrow";
+    if (/^https?:\/\//.test(r.url)) { const a = document.createElement("a"); a.href = r.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = r.source; c.appendChild(a); } else c.textContent = r.source;
+    tr.appendChild(c);
+    tb.appendChild(tr);
+  });
+}
+
+dash.calc("app_lignes", {
+  inputs: ["application"],
+  title: "Lignes corrigées",
+  description: "Chiffrage indépendant × facteur de la règle × part hors référence, en Md€/an d'impact sur le solde.",
+  fn: (application) => application.map(r => ({
+    id: r.id, programme: r.programme, ligne: r.ligne, regle: r.regle,
+    independant: Number(r.independant), corrige: Number(r.independant) * Number(r.facteur) * Number(r.facteur_reference || 1) * Number(r.facteur_interaction || 1)
+  }))
+});
+
+dash.calc("app_totaux", {
+  inputs: ["app_lignes", "programmes", "parametres"],
+  title: "Solde et déficit 2027 par programme",
+  description: "Somme des lignes ; déficit 2027 = cible du programme de stabilité + biais à 3 ans − impact corrigé / PIB 2027.",
+  fn: (app_lignes, programmes, parametres) => {
+    const p = id => Number(parametres.find(x => x.id === id).valeur);
+    return programmes.map(pg => {
+      const l = app_lignes.filter(r => r.programme === pg.programme);
+      const indep = l.reduce((s, r) => s + r.independant, 0);
+      const corr = l.reduce((s, r) => s + r.corrige, 0);
+      return {programme: pg.programme, annonce: pg.solde_annonce === "" ? null : Number(pg.solde_annonce),
+        montaigne: Number(pg.solde_montaigne), independant: indep, corrige: corr,
+        deficit_pstab: p("deficit_pstab_2027"), biais: p("biais_t3"), cout_pts: -corr / p("pib_2027") * 100,
+        deficit_2027: p("deficit_pstab_2027") + p("biais_t3") - corr / p("pib_2027") * 100};
+    });
+  }
+});
+
+let fProg = "";
+document.getElementById("f-prog").addEventListener("change", e => { fProg = e.target.value; drawAppTable(); });
+
+function drawAppTable() {
+  const tb = document.querySelector("#tb-app tbody");
+  const sel = document.getElementById("f-prog");
+  const d = dash.data("app_lignes"), raw = dash.data("application");
+  tb.textContent = "";
+  if (d.status !== "ok" || raw.status !== "ok") return;
+  if (sel.options.length === 1) [...new Set(d.data.map(r => r.programme))].forEach(p => { const o = document.createElement("option"); o.value = p; o.textContent = p; sel.appendChild(o); });
+  const rm = new Map(raw.data.map(r => [r.id, r]));
+  let cur = null;
+  d.data.filter(r => !fProg || r.programme === fProg).forEach(r => {
+    if (r.programme !== cur) { cur = r.programme; const h = document.createElement("tr"); const c = document.createElement("td"); c.colSpan = 7; c.textContent = cur; c.style.fontWeight = "600"; c.style.paddingTop = "var(--cds-pad-sm)"; h.appendChild(c); tb.appendChild(h); }
+    const x = rm.get(r.id);
+    const tr = document.createElement("tr"); tr.dataset.key = r.id;
+    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
+    const sg = v => (v > 0 ? "+" : "") + FR.format(".1f")(v);
+    td(r.ligne);
+    td(x.annonce_parti === "" ? "—" : sg(Number(x.annonce_parti)), "num");
+    td(sg(r.independant), "num");
+    td(sg(r.corrige), "num " + (r.corrige - r.independant > 0.05 ? "pos" : r.corrige - r.independant < -0.05 ? "neg" : ""));
+    td(r.regle); td(x.justification, "hide-narrow"); td(x.autres_estimations, "hide-narrow");
+    tb.appendChild(tr);
+  });
+}
+
+function drawApp() {
+  const box = document.getElementById("ch-app"), lg = document.getElementById("lg-app");
+  const d = dash.data("app_totaux");
+  const series = [["annonce", "Annoncé par le parti", "var(--cds-chart-muted)"], ["montaigne", "Institut Montaigne", dash.colors[1]], ["corrige", "Corrigé (cette méthode)", dash.colors[0]]];
+  lg.textContent = "";
+  series.forEach(([, n, c]) => { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s); });
+  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
+  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
+  const W = Math.max(280, box.clientWidth), grpH = 92, H = d.data.length * grpH + 20;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Impact sur le solde par programme");
+  const mn = d3.min(d.data, r => Math.min(r.montaigne, r.corrige, r.annonce ?? 0));
+  const x = d3.scaleLinear([mn * 1.08, 0], [44, W - 8]);
+  const tp = tip(box);
+  x.ticks(4).forEach(v => {
+    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", 0).attr("y2", H - 16).attr("stroke", v === 0 ? "var(--cds-chart-axis)" : "var(--cds-chart-grid)");
+    svg.append("text").attr("x", x(v)).attr("y", H - 3).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
+  });
+  d.data.forEach((r, i) => {
+    const g = svg.append("g").attr("transform", `translate(0,${i * grpH})`);
+    g.append("text").attr("x", 0).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", 600).text(r.programme);
+    series.forEach(([k, n, c], j) => {
+      const v = r[k], y = 20 + j * 22;
+      if (v === null) { g.append("text").attr("x", x(0) - 4).attr("y", y + 12).attr("text-anchor", "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text("non chiffré"); return; }
+      g.append("rect").attr("x", x(Math.min(0, v))).attr("width", Math.max(2, Math.abs(x(v) - x(0)))).attr("y", y).attr("height", 16).attr("rx", 4).attr("fill", c)
+        .on("mousemove", ev => tp.show(ev, r.programme, n + " : " + (v > 0 ? "+" : "") + FR.format(".1f")(v) + " Md€")).on("mouseleave", () => tp.hide());
+      const lx = Math.abs(x(v) - x(0)) > 50 ? x(v) + 4 : x(Math.min(0, v)) - 4;
+      g.append("text").attr("x", lx).attr("y", y + 12).attr("text-anchor", Math.abs(x(v) - x(0)) > 50 ? "start" : "end").attr("fill", Math.abs(x(v) - x(0)) > 50 ? "var(--color-bg)" : "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(FR.format(".0f")(v));
+    });
+  });
+}
+
+function drawDef() {
+  const box = document.getElementById("ch-def"), lg = document.getElementById("lg-def");
+  const d = dash.data("app_totaux"), pr = dash.data("parametres");
+  const parts = [["deficit_pstab", "Cible du programme de stabilité", "var(--cds-chart-muted)"], ["biais", "Biais historique à 3 ans", dash.colors[2]], ["cout_pts", "Coût corrigé du programme", dash.colors[0]]];
+  lg.textContent = "";
+  parts.forEach(([, n, c]) => { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s); });
+  if (d.status !== "ok" || pr.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if ([d.status, pr.status].some(s => s === "error" || s === "connect")) failBox(box); else box.classList.add("dash-skeleton"); return; }
+  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
+  const ref = Number(pr.data.find(x => x.id === "prevision_2027_actuelle").valeur);
+  const W = Math.max(280, box.clientWidth), rowH = 56, H = d.data.length * rowH + 22;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Déficit 2027 par programme");
+  const x = d3.scaleLinear([0, d3.max(d.data, r => r.deficit_2027) * 1.12], [0, W - 8]);
+  const tp = tip(box);
+  x.ticks(5).forEach(v => {
+    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", 0).attr("y2", H - 18).attr("stroke", "var(--cds-chart-grid)");
+    svg.append("text").attr("x", x(v)).attr("y", H - 4).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v) + " %");
+  });
+  d.data.forEach((r, i) => {
+    const g = svg.append("g").attr("transform", `translate(0,${i * rowH})`);
+    g.append("text").attr("x", 0).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", 600).text(r.programme + " : " + FR.format(".1f")(r.deficit_2027) + " % du PIB");
+    let x0 = 0;
+    parts.forEach(([k, n, c]) => {
+      const w = x(r[k]) - x(0);
+      g.append("rect").attr("x", x0).attr("y", 22).attr("width", Math.max(1, w - 1)).attr("height", 18).attr("fill", c)
+        .on("mousemove", ev => tp.show(ev, r.programme, n + " : " + FR.format(".1f")(r[k]) + " pt")).on("mouseleave", () => tp.hide());
+      x0 += w;
+    });
+  });
+  svg.append("line").attr("x1", x(ref)).attr("x2", x(ref)).attr("y1", 18).attr("y2", H - 18).attr("stroke", "var(--cds-chart-reference)").attr("stroke-dasharray", "4 3");
+}
+
+dash.calc("panier_lignes", {
+  inputs: ["paniers"],
+  title: "Lignes des paniers corrigées",
+  description: "Impact statique × facteur de la règle × part hors référence 2027, Md€/an.",
+  fn: (paniers) => paniers.map(r => ({id: r.id, variante: r.variante, role: r.role, ligne: r.ligne, corrige: Number(r.statique) * Number(r.facteur) * Number(r.facteur_reference || 1) * Number(r.facteur_interaction || 1)}))
+});
+
+dash.calc("panier_totaux", {
+  inputs: ["panier_lignes"],
+  title: "Équilibre par variante",
+  description: "Somme des mesures phares, du financement et de l'investissement hors équilibre ; solde = mesures + financement.",
+  fn: (panier_lignes) => [...new Set(panier_lignes.map(r => r.variante))].map(v => {
+    const l = panier_lignes.filter(r => r.variante === v);
+    const sum = role => l.filter(r => r.role.startsWith(role)).reduce((s, r) => s + r.corrige, 0);
+    const m = sum("Mesure"), f = sum("Financement"), inv = sum("Investissement");
+    return {variante: v, mesures: m, financement: f, investissement: inv, solde: m + f};
+  })
+});
+
+let fVar = "";
+document.getElementById("f-var").addEventListener("change", e => { fVar = e.target.value; drawPanTable(); });
+
+function drawPanTable() {
+  const tb = document.querySelector("#tb-pan tbody"), sel = document.getElementById("f-var");
+  const d = dash.data("panier_lignes"), raw = dash.data("paniers");
+  tb.textContent = "";
+  if (d.status !== "ok" || raw.status !== "ok") return;
+  if (sel.options.length === 1) [...new Set(d.data.map(r => r.variante))].forEach(v => { const o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); });
+  const rm = new Map(raw.data.map(r => [r.id, r]));
+  const sg = v => (v > 0 ? "+" : "") + FR.format(".1f")(v);
+  let cur = null;
+  d.data.filter(r => !fVar || r.variante === fVar).forEach(r => {
+    if (r.variante !== cur) { cur = r.variante; const h = document.createElement("tr"); const c = document.createElement("td"); c.colSpan = 8; c.textContent = cur; c.style.fontWeight = "600"; c.style.paddingTop = "var(--cds-pad-sm)"; h.appendChild(c); tb.appendChild(h); }
+    const x = rm.get(r.id);
+    const tr = document.createElement("tr"); tr.dataset.key = r.id;
+    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
+    td(r.ligne); td(r.role);
+    td(sg(Number(x.statique)), "num"); td(sg(r.corrige), "num " + (r.corrige > 0 ? "pos" : "neg"));
+    td(x.regle, "hide-narrow"); td(x.incertitude, "hide-narrow"); td(x.qui_paie, "hide-narrow");
+    const c = td("", "hide-narrow");
+    if (/^https?:\/\//.test(x.url)) { const a = document.createElement("a"); a.href = x.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = x.source; c.appendChild(a); } else c.textContent = x.source;
+    tb.appendChild(tr);
+  });
+}
+
+function drawPan() {
+  const box = document.getElementById("ch-pan"), lg = document.getElementById("lg-pan");
+  const d = dash.data("panier_totaux");
+  const series = [["mesures", "Mesures phares", "var(--cds-chart-status-critical)"], ["financement", "Financement trouvé", "var(--color-ok)"], ["investissement", "Investissement hors équilibre", "var(--cds-chart-muted)"], ["solde", "Solde", dash.colors[0]]];
+  lg.textContent = "";
+  series.forEach(([, n, c]) => { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s); });
+  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
+  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
+  const W = Math.max(280, box.clientWidth), grpH = 112, H = d.data.length * grpH + 20;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Équilibre des paniers");
+  const lo = d3.min(d.data, r => Math.min(r.mesures, r.solde, r.investissement)), hi = d3.max(d.data, r => r.financement);
+  const x = d3.scaleLinear([lo * 1.05, hi * 1.25], [52, W - 8]);
+  const tp = tip(box);
+  x.ticks(5).forEach(v => {
+    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", 0).attr("y2", H - 16).attr("stroke", v === 0 ? "var(--cds-chart-axis)" : "var(--cds-chart-grid)");
+    svg.append("text").attr("x", x(v)).attr("y", H - 3).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
+  });
+  d.data.forEach((r, i) => {
+    const g = svg.append("g").attr("transform", `translate(0,${i * grpH})`);
+    g.append("text").attr("x", 8).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", 600).text(r.variante + " — solde " + (r.solde > 0 ? "+" : "") + FR.format(".1f")(r.solde) + " Md€");
+    series.forEach(([k, n, c], j) => {
+      const v = r[k], y = 20 + j * 21;
+      g.append("rect").attr("x", x(Math.min(0, v))).attr("width", Math.max(2, Math.abs(x(v) - x(0)))).attr("y", y).attr("height", 15).attr("rx", 4).attr("fill", c)
+        .on("mousemove", ev => tp.show(ev, r.variante, n + " : " + (v > 0 ? "+" : "") + FR.format(".1f")(v) + " Md€")).on("mouseleave", () => tp.hide());
+      g.append("text").attr("x", v >= 0 ? x(v) + 4 : x(v) - 4).attr("y", y + 12).attr("text-anchor", v >= 0 ? "start" : "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(FR.format(".1f")(v));
+    });
+  });
+}
+
+dash.onData(() => {
+  drawPan();
+  drawPanTable();
+  drawApp();
+  drawDef();
+  drawAppTable();
+  drawMethodes();
+  drawSimpleTable("tb-hyp", "hypotheses", ["levier", "hypothese", "effet_chiffrage"]);
+  drawElast();
+  fillMarks();
+  drawEcarts();
+  drawCoutTable();
+  drawSimpleTable("tb-effets", "effets", ["mesure", "effet", "annonce", "mesure_ex_post", "verdict"], "source_ex_post");
+  drawPS();
+  drawPairs();
+  drawSimpleTable("tb-regles", "regles", ["categorie", "correction_2027", "base_empirique"]);
+});
+</script>
+
+</body>
+</html>

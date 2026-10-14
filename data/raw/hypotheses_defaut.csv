@@ -1,0 +1,17 @@
+id,levier,hypothese,effet_chiffrage,references
+h_ir,"Impôt sur le revenu, hauts revenus","Élasticité 0,2 (top 0,1 %) ; 0,05 en moyenne",Rendement d'une hausse : −5 à −20 % vs statique,eti_fr eti_top eti_travail
+h_capital,"Revenus du capital, sortie du PFU","Élasticité ≈0,75 au taux net",Rendement très inférieur au statique ; dividendes en forte baisse,capital_fr dividendes_fr
+h_fortune,Impôt sur la fortune,Base −15 % environ par point de taux à moyen terme ; exil faible,Rendement de 2 % sur les très riches : ≈−30 % à 8 ans,wealth_dk wealth_nl isf_departs isf_bunching_fr
+h_is,Impôt sur les sociétés,"Semi-élasticité 0,8 pour les multinationales","+1 pt d'IS : base −0,8 %",is_shifting
+h_charges,Baisses de cotisations patronales,Forte élasticité près du SMIC ; aucun effet détecté pour les allègements hauts de 2019,Emplois promis crédibles seulement près du SMIC,charges_smic charges_haut charges_jeunes
+h_cir,Crédit d'impôt recherche,"≈1 € de R&D par € pour les PME ; ≈0,4 grandes entreprises",Raboter le CIR des grands groupes coûte peu en R&D,cir rd_ocde
+h_tva,TVA,"Transmission aux prix : baisse sectorielle 0,1–0,5 ; hausse 0,5–0,8",Une baisse de TVA profite peu aux consommateurs,tva_resto tva_asym tva_de
+h_accises,"Carburants, tabac, DMTO","Carburants −0,3 (CT) / −0,65 (LT) ; tabac −0,4 ; DMTO ≈0 à moyen terme","Base réduite de 0,3 % (1 an) à 0,65 % (5 ans) par +1 % de prix ; DMTO : perte limitée aux premiers mois",carbu_ct carbu_lt tabac dmto
+h_recours,Minima sociaux et prime d'activité,"Recours : RSA 0,65 ; prime d'activité 0,55 ; ASPA 0,5","Coût d'une revalorisation ≈ statique × taux de recours, sauf versement automatique",nr_rsa nr_pa nr_aspa
+h_apl,Aides au logement,Jusqu'à ≈78 % captés par les loyers (moins si l'offre s'ajuste),Coût budgétaire entier ; gain de pouvoir d'achat bien inférieur,apl
+h_retraite,Âge de départ à la retraite,≈20 % des économies compensées par chômage et invalidité,"Abrogation ≈0,8 × gain brut de la réforme",retraite_report retraite_emploi retraite_at
+h_emploi,Dispositifs emploi et accompagnement,"Effets nets proches de 0 (RSA rénové, CEJ, emplois francs, revenu de base)",Ne pas inscrire d'économie de second tour,rsa_15h cej emplois_francs ubi_fi
+h_smic,SMIC et assurance chômage,"Emploi −0,17 par % de SMIC ; durée indemnisée 0,2–0,3","Effets modérés, à chiffrer explicitement",smic ac_duree ac_sjr
+h_macro,Bouclage macro,"Multiplicateur dépense 0,8 (an 1), impôts 0,3–0,4 ; semi-élasticité du solde 0,6",≈40 % du gain d'une coupe de dépense perdu la 1re année,mult_dep mult_imp semi_elast
+h_taux,Taux d'intérêt,"+100 pb = +3,2 Md€ à 1 an, +33 Md€ à 9 ans ; ≈3 pb de spread par point de dette",Scénario de stress +25 pb obligatoire,taux_100pb spread_dette
+h_credibilite,Crédibilité de la trajectoire,"Sans certification indépendante : 0,5 à 1 pt d'optimisme","Ajouter 0,5 à 1 pt de déficit aux soldes non certifiés (≈2 pts à 3 ans selon le backtest)",ifi_biais frein_ch

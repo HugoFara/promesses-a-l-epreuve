@@ -1,0 +1,120 @@
+"""Valide les CSV sources de data/raw/ et écrit les CSV publiés dans data/.
+
+Les fichiers de data/raw/ sont la seule source de vérité. Ceux de data/ sont régénérés à chaque exécution :
+ne pas les éditer à la main.
+"""
+import csv
+import sys
+from pathlib import Path
+
+from pydantic import ValidationError
+
+from schemas import SCHEMAS
+
+RAW = Path("raw")
+VARIANTE_SUFFIXE = {"LFI intégral": "i", "LFI ajusté": "a", "Ensemble": "e"}
+
+
+def lire(nom):
+    with open(RAW / f"{nom}.csv", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def ecrire(nom, rows, cols):
+    with open(f"{nom}.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, cols, extrasaction="ignore", lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows)
+
+
+erreurs = []
+donnees = {}
+for nom, schema in SCHEMAS.items():
+    rows = lire(nom)
+    cle = next(iter(schema.model_fields))
+    vus = set()
+    for i, r in enumerate(rows, start=2):
+        try:
+            schema.model_validate(r)
+        except ValidationError as e:
+            for err in e.errors():
+                erreurs.append(f"{nom}.csv l.{i} ({r.get(cle)}) {'.'.join(map(str, err['loc']))} : {err['msg']}")
+        if nom not in ("historique", "chiffrages_instituts", "totaux_instituts", "statut_reference_2027", "ifrap_nfp_2024", "calibration_instituts", "variantes_sensibilite", "validation_attribution"):
+            if r[cle] in vus:
+                erreurs.append(f"{nom}.csv : clé en double {r[cle]}")
+            vus.add(r[cle])
+    donnees[nom] = rows
+
+# Références croisées
+ids_elast = {r["id"] for r in donnees["elasticites"]}
+ids_backtest = {r["id"] for r in donnees["mesures_cout"]} | {r["id"] for r in donnees["mesures_effets"]} | {"calibration_instituts", "mesures_cout"}
+for r in donnees["hypotheses_defaut"]:
+    for x in r["references"].split():
+        if x not in ids_elast:
+            erreurs.append(f"hypotheses_defaut {r['id']} : référence inconnue {x}")
+regles = {r["regle"]: r for r in donnees["regles"]}
+for r in donnees["regles"]:
+    for x in (r["references"] or "").split():
+        if x not in ids_elast | ids_backtest:
+            erreurs.append(f"regles « {r['regle']} » : référence inconnue {x}")
+for nom in ("application_lignes", "paniers"):
+    for r in donnees[nom]:
+        if r["regle"] not in regles:
+            erreurs.append(f"{nom} {r['id']} : règle absente de regles.csv « {r['regle']} »")
+ids_app = {r["id"] for r in donnees["application_lignes"]}
+for r in donnees["chiffrages_instituts"]:
+    if r["usage"] != "hors_lignes" and r["id_ligne"] not in ids_app:
+        erreurs.append(f"chiffrages_instituts : ligne inconnue {r['id_ligne']} ({r['chiffreur']})")
+for r in donnees["validation_attribution"]:
+    if r["regle"] not in regles:
+        erreurs.append(f"validation_attribution {r['id']} : règle inconnue « {r['regle']} »")
+mregles = {r["regle"] for r in donnees["moteur_regles"]}
+for x in set(regles) ^ mregles:
+    erreurs.append(f"règle « {x} » présente dans un seul des fichiers regles.csv / moteur_regles.csv")
+ids_bareme = {r["id"] for r in donnees["parametres_bareme"]}
+for r in donnees["moteur_parametres"]:
+    if r["source_type"] in ("elasticite", "backtest", "bareme", "calcul"):
+        for x in (r["source_ref"] or "").split():
+            if x not in ids_elast | ids_backtest | ids_bareme:
+                erreurs.append(f"moteur_parametres {r['id']} : référence inconnue {x}")
+    elif r["source_type"] == "url" and not (r["source_ref"] or "").startswith("http"):
+        erreurs.append(f"moteur_parametres {r['id']} : URL manquante")
+for r in donnees["paniers"]:
+    for v in r["variantes"].split(";"):
+        if v not in VARIANTE_SUFFIXE:
+            erreurs.append(f"paniers {r['id']} : variante inconnue « {v} »")
+
+if erreurs:
+    print("\n".join(erreurs), file=sys.stderr)
+    sys.exit(f"{len(erreurs)} erreur(s) de validation dans data/raw/")
+
+# Publication : copie à l'identique, sauf paniers (une ligne par variante)
+for nom, rows in donnees.items():
+    if nom in ("paniers", "historique"):
+        continue
+    ecrire(nom, rows, list(rows[0]))
+paniers = []
+ids_app = {r["id"] for r in donnees["application_lignes"]}
+for r in donnees["chiffrages_instituts"]:
+    if r["usage"] != "hors_lignes" and r["id_ligne"] not in ids_app:
+        erreurs.append(f"chiffrages_instituts : ligne inconnue {r['id_ligne']} ({r['chiffreur']})")
+for r in donnees["validation_attribution"]:
+    if r["regle"] not in regles:
+        erreurs.append(f"validation_attribution {r['id']} : règle inconnue « {r['regle']} »")
+mregles = {r["regle"] for r in donnees["moteur_regles"]}
+for x in set(regles) ^ mregles:
+    erreurs.append(f"règle « {x} » présente dans un seul des fichiers regles.csv / moteur_regles.csv")
+ids_bareme = {r["id"] for r in donnees["parametres_bareme"]}
+for r in donnees["moteur_parametres"]:
+    if r["source_type"] in ("elasticite", "backtest", "bareme", "calcul"):
+        for x in (r["source_ref"] or "").split():
+            if x not in ids_elast | ids_backtest | ids_bareme:
+                erreurs.append(f"moteur_parametres {r['id']} : référence inconnue {x}")
+    elif r["source_type"] == "url" and not (r["source_ref"] or "").startswith("http"):
+        erreurs.append(f"moteur_parametres {r['id']} : URL manquante")
+for r in donnees["paniers"]:
+    for v in r["variantes"].split(";"):
+        paniers.append({**r, "id": f"{r['id']}_{VARIANTE_SUFFIXE[v]}", "variante": v})
+cols = ["id", "variante"] + [c for c in donnees["paniers"][0] if c not in ("id", "variantes")]
+ecrire("paniers", paniers, cols)
+print(f"build : {len(SCHEMAS)} fichiers validés, {sum(map(len, donnees.values()))} lignes")

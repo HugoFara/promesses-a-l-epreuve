@@ -1,0 +1,9 @@
+annee,croissance_reelle,deflateur,pib,solde_pct,dette_pct,sfa_pct,extrapole,source,note
+2025,,,2991.1,-5.1,115.7,,0,https://www.insee.fr/fr/statistiques/fichier/version-html/8997691/ip2106.pdf,Réalisé (Insee) : point de départ
+2026,0.5,1.5,3051,-5.4,119.3,0.5,0,https://www.hcfp.fr/sites/default/files/2026-10/Avis%20HCFP%202026-5%20-%20PLF-PLFSS%202027.pdf,"PLF 2027 ; PIB en valeur publié (dossier de presse p. 53) ; ajustement stock-flux +0,5 pt (HCFP §114)"
+2027,1.0,1.7,3135,-5.0,121.7,0.5,0,https://www.hcfp.fr/sites/default/files/2026-10/Avis%20HCFP%202026-5%20-%20PLF-PLFSS%202027.pdf,"PLF 2027 ; PIB en valeur publié (dossier de presse p. 53) ; ajustement stock-flux +0,5 pt (HCFP §114)"
+2028,1.1,1.6,,-3.9,,0,0,https://www.hcfp.fr/sites/default/files/2026-10/Avis%20HCFP%202026-5%20-%20PLF-PLFSS%202027.pdf,"Trajectoire communiquée au HCFP, non publiée par le gouvernement (§122-126) ; dette non publiée ; stock-flux supposé nul"
+2029,1.1,1.6,,-2.8,,0,0,https://www.hcfp.fr/sites/default/files/2026-10/Avis%20HCFP%202026-5%20-%20PLF-PLFSS%202027.pdf,Idem
+2030,1.2,1.6,,-2.8,,0,1,https://www.hcfp.fr/sites/default/files/2026-10/Avis%20HCFP%202026-5%20-%20PLF-PLFSS%202027.pdf,Croissance et déflateur : HCFP §122-123 ; solde 2030 non publié : maintenu au niveau 2029 (extrapolation)
+2031,1.2,1.6,,-2.8,,0,1,,"Extrapolation : croissance, déflateur et solde de 2030 reconduits"
+2032,1.2,1.6,,-2.8,,0,1,,Idem

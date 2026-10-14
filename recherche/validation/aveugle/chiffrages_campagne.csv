@@ -1,0 +1,44 @@
+id,campagne,mesure,chiffreur,chiffrage_campagne_md,horizon
+inst_00,présidentielle 2017,Taxe d'habitation : exonération de 80 % des ménages,Candidat (En Marche),-10.0,régime 2020
+inst_01,présidentielle 2017,Taxe d'habitation : exonération de 80 % des ménages,Institut Montaigne,-8.0,régime 2020
+inst_02,présidentielle 2017,Taxe d'habitation : exonération de 80 % des ménages,OFCE,-9.2,régime 2020
+inst_03,présidentielle 2017,Taxe d'habitation : exonération de 80 % des ménages,Fondation Concorde,-10.0,2022
+inst_04,présidentielle 2017,ISF remplacé par un impôt sur la fortune immobilière (IFI),Candidat (En Marche),-3.0,2022
+inst_05,présidentielle 2017,ISF remplacé par un impôt sur la fortune immobilière (IFI),Institut Montaigne,-1.9,2018-2022
+inst_06,présidentielle 2017,ISF remplacé par un impôt sur la fortune immobilière (IFI),OFCE,-2.5,2022
+inst_07,présidentielle 2017,ISF remplacé par un impôt sur la fortune immobilière (IFI),Fondation Concorde,-3.0,2022
+inst_08,présidentielle 2017,"Baisse du taux normal d'IS de 33,3 % à 25 %",Institut Montaigne,-11.0,2022
+inst_09,présidentielle 2017,"Baisse du taux normal d'IS de 33,3 % à 25 %",OFCE,-10.8,2022
+inst_10,présidentielle 2017,"Baisse du taux normal d'IS de 33,3 % à 25 %",Fondation Concorde,-8.0,2022
+inst_11,présidentielle 2017,Prélèvement forfaitaire unique (PFU) de 30 %,OFCE,-4.0,2019-2022
+inst_12,présidentielle 2017,Prélèvement forfaitaire unique (PFU) de 30 %,Fondation Concorde,0.0,2022
+inst_13,présidentielle 2017,Heures supplémentaires : exonération de cotisations,Institut Montaigne,-3.7,2022
+inst_14,présidentielle 2017,Heures supplémentaires : exonération de cotisations (volet salarié),OFCE,-2.5,2022
+inst_15,présidentielle 2017,Heures supplémentaires : exonération de cotisations (volet salarié),Fondation Concorde,-2.5,2022
+inst_16,présidentielle 2017,AAH portée à 900 € (+100 €),Institut Montaigne,-1.0,2018-2022
+inst_17,présidentielle 2017,AAH portée à 900 € (+100 €),OFCE,-0.9,2022
+inst_18,présidentielle 2017,AAH portée à 900 € (+100 €),Fondation Concorde,-1.2,2022
+inst_19,présidentielle 2017,Minimum vieillesse (ASPA) +100 €/mois,Institut Montaigne,-0.5,2018-2022
+inst_20,présidentielle 2017,Minimum vieillesse (ASPA) +100 €/mois,OFCE,-0.6,2022
+inst_21,présidentielle 2017,Emplois francs (prime de 15 000 € sur 3 ans par CDI en QPV),Institut Montaigne,-0.95,régime de croisière
+inst_22,présidentielle 2017,Suppression de 50 000 postes dans la fonction publique d'État (volet État des 120 000),Institut Montaigne,1.55,2022
+inst_23,présidentielle 2017,Prime d'activité +50 %,Institut Montaigne,-2.0,2022
+inst_24,présidentielle 2017,Prime d'activité +50 %,OFCE,-2.0,2022
+inst_25,présidentielle 2017,Prime d'activité +50 %,Fondation Concorde,-2.3,2022
+inst_26,présidentielle 2017,Bascule cotisations salariales maladie/chômage vers CSG,Institut Montaigne,0.0,2018-2022
+inst_27,présidentielle 2017,Économies de 60 Md€ par rapport au tendanciel,Candidat (En Marche),60.0,2022
+inst_28,présidentielle 2017,Économies de 60 Md€ par rapport au tendanciel,Institut Montaigne,35.5,2022
+inst_29,présidentielle 2017,Économies de 60 Md€ par rapport au tendanciel,OFCE,41.0,2022
+inst_30,présidentielle 2022,Suppression de la redevance (contribution à l'audiovisuel public),Institut Montaigne,-3.2,2022
+inst_31,présidentielle 2022,Suppression de la redevance (contribution à l'audiovisuel public),Fondation iFRAP,-3.2,2027
+inst_32,présidentielle 2022,Baisse des cotisations des indépendants (+550 €/an au SMIC),Institut Montaigne,-0.3,2027
+inst_33,présidentielle 2022,Baisse des cotisations des indépendants (+550 €/an au SMIC),Fondation iFRAP,-1.0,2027
+inst_34,présidentielle 2022,Suppression de la CVAE,Institut Montaigne,-7.44,2027
+inst_35,présidentielle 2022,Suppression de la CVAE,Fondation iFRAP,-5.3,2027
+inst_36,présidentielle 2022,Suppression de la CVAE,Candidat (LREM),-7.0,2027
+inst_37,présidentielle 2022,"Retraite à 65 ans (réalisé : 64 ans, réforme 2023)",Institut Montaigne,7.7,2027
+inst_38,présidentielle 2022,"Retraite à 65 ans (réalisé : 64 ans, réforme 2023)",Fondation iFRAP,15.0,2027
+inst_39,présidentielle 2022,"Retraite à 65 ans (réalisé : 64 ans, réforme 2023)",Candidat (LREM),9.0,2027
+inst_40,présidentielle 2022,Abattement sur les droits de succession relevé à 150 000 €,Institut Montaigne,-1.8,2027
+inst_41,présidentielle 2022,Prime de partage de la valeur (plafond triplé),Institut Montaigne,-6.0,2027
+inst_42,présidentielle 2022,Allocation de soutien familial +50 %,Institut Montaigne,-0.9,2027

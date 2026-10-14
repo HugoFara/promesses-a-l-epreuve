@@ -1,0 +1,58 @@
+source,id,mesure,regle,facteur,echantillon,issue_connue,depart,prevision,realise,erreur_depart_pct,erreur_nous_pct,verdict
+officiel,isf_ifi,ISF remplacé par IFI,Élasticité patrimoine,0.87,test,oui,3.2,2.784,3.1,-3.1,9.9,dégradé
+officiel,pfu,Prélèvement forfaitaire unique (flat tax),Élasticité capital,0.437,test,oui,1.9,0.83,0.85,-55.3,1.0,amélioré
+officiel,cice,CICE,Aucune,1.0,test,oui,20.0,20.0,18.5,-7.5,-7.5,inchangé
+officiel,th_80,Taxe d'habitation (phase 80 % des ménages),Aucune,1.0,test,oui,10.0,10.0,10.2,2.0,2.0,inchangé
+officiel,tepa_hs,Heures sup. TEPA,Aucune,1.0,test,oui,6.0,6.0,4.8,-20.0,-20.0,inchangé
+officiel,hs_2019,Heures sup. 2019 (volet social),Aucune,1.0,test,non,1.94,1.94,1.7,-12.4,-12.4,inchangé
+officiel,pa_2016,Prime d'activité (création),Taux de recours,0.65,test,oui,3.95,2.568,4.1,3.8,38.8,dégradé
+officiel,pa_2019,Prime d'activité (revalorisation),Taux de recours,0.65,test,oui,8.8,5.72,9.6,9.1,44.1,dégradé
+officiel (hors statistique principale),bouclier_elec,Bouclier tarifaire électricité 2023,Aucune,1.0,test,oui,21.8,21.8,19.2,-11.9,-11.9,inchangé
+officiel,woerth_2010,Retraites 2010 (60 → 62 ans),Substitution retraites,0.8,test,oui,21.816,17.453,18.8,-13.8,6.2,amélioré
+officiel,retraites_2023,Retraites 2023 (62 → 64 ans),Substitution retraites,0.8,test,oui,12.1635,9.731,10.0,-17.8,2.2,amélioré
+officiel,tva_resto_2009,"TVA restauration 19,6 → 5,5 % (juillet 2009)",Aucune,1.0,test,oui,3.0,3.0,3.3,10.0,10.0,inchangé
+officiel,cir_2008,"Crédit d'impôt recherche, réforme 2008 (30 % jusqu'à 100 M€)",Taux de recours,0.65,test,oui,2.7,1.755,5.05,87.0,122.0,dégradé
+officiel,cite_2015,"Crédit d'impôt transition énergétique (CITE, LFI 2015)",Taux de recours,0.65,test,oui,1.4,0.91,1.7,21.4,56.4,dégradé
+officiel,hs_ir_2019,"Exonération d'IR des heures supplémentaires (LMUES déc. 2018, plafond 5 000 €)",Aucune,1.0,test,non,1.9,1.9,1.879,-1.1,-1.1,inchangé
+officiel,ir_baisse_2020,Baisse de l'impôt sur le revenu 2020 (LF 2020 art. 2 : 1re tranche 14 % → 11 %),Aucune,1.0,test,non,5.0,5.0,5.39,7.8,7.8,inchangé
+officiel,ip_2021,"Baisse des impôts de production (CVAE régionale, valeurs locatives industrielles TFPB/CFE, plafonnement CET)",Aucune,1.0,test,non,10.0,10.0,10.3,3.0,3.0,inchangé
+officiel,is_25,Baisse du taux normal de l'IS de 33⅓ % à 25 % (trajectoires LFI 2017 + LFI 2018),Élasticité IS,0.732,test,oui,11.2,8.193,11.7,4.5,31.3,dégradé
+officiel,th_20,"Taxe d'habitation (phase des 20 % restants, étapes 2022-2023)",Aucune,1.0,test,non,5.5,5.5,5.6,1.8,1.8,inchangé
+officiel,pacte_2015,Pacte de responsabilité : allègements de cotisations patronales 2015 (LFRSS 2014 art. 2),Aucune,1.0,test,non,5.4,5.4,5.3,-1.9,-1.9,inchangé
+officiel,apl_contemp_2021,Contemporanéisation des aides personnelles au logement (APL « en temps réel »),Réforme structurelle,0.842,test,oui,0.75,0.631,1.11,48.0,63.8,dégradé
+officiel,cheque_energie_exc_2021,"Chèque énergie exceptionnel de 100 € (déc. 2021, 5,8 M ménages)",Aucune,1.0,test,non,0.6,0.6,0.493,-17.8,-17.8,inchangé
+officiel,cheque_energie_exc_2022,"Chèque énergie exceptionnel 100/200 € (déc. 2022-fév. 2023, 12 M ménages)",Aucune,1.0,test,non,1.8,1.8,1.53,-15.0,-15.0,inchangé
+officiel (hors statistique principale),cheque_fioul_2022,Chèque énergie exceptionnel « fioul » (2022-2023),Taux de recours,0.65,test,oui,0.23,0.15,0.048,-79.1,-44.1,amélioré
+officiel (hors statistique principale),bouclier_gaz_2023,Bouclier tarifaire gaz 2023 (contrats individuels),Aucune,1.0,test,oui,6.8,6.8,1.35,-80.1,-80.1,inchangé
+effet annoncé,cice_emploi,CICE — Emplois créés,Effet promis,0.0,calibration (leave-one-out),oui,1.0,0.0,0.29,-71.0,29.0,amélioré
+effet annoncé,cice_emploi_ofce,CICE — Emplois nets du financement (OFCE),Effet promis,0.29,calibration (leave-one-out),oui,1.0,0.29,1.1,10.0,81.0,dégradé
+effet annoncé,tepa_heures,Heures sup. TEPA — Heures travaillées,Effet promis,0.29,calibration (leave-one-out),oui,1.0,0.29,0.0,-100.0,-29.0,amélioré
+effet annoncé,isf_invest,ISF → IFI — Investissement dans les entreprises,Effet promis,0.29,calibration (leave-one-out),oui,1.0,0.29,0.0,-100.0,-29.0,amélioré
+effet annoncé,pfu_invest,PFU — Investissement / salaires,Effet promis,0.29,calibration (leave-one-out),oui,1.0,0.29,0.0,-100.0,-29.0,amélioré
+effet annoncé,pa_recours,Prime d'activité 2016 — Taux de recours,Taux de recours,0.65,test,oui,1.0,0.65,1.4,40.0,75.0,dégradé
+effet annoncé,tva_resto_emploi,TVA restauration 2009 — Emplois supplémentaires,Effet promis,0.29,test,oui,1.0,0.29,0.49,-51.0,20.0,amélioré
+effet annoncé,tva_resto_prix,TVA restauration 2009 — Baisse de l'indice des prix de la restauration,Effet promis,0.29,test,oui,1.0,0.29,0.78,-22.0,49.0,dégradé
+effet annoncé,tva_resto_prix_montant,TVA restauration 2009 — Montant restitué aux consommateurs (baisse des prix),Effet promis,0.29,test,oui,1.0,0.29,0.59,-41.0,30.0,amélioré
+effet annoncé,cheque_fioul_benef,Chèque énergie exceptionnel « fioul » (2022-2023) — Ménages bénéficiaires,Taux de recours,0.65,test,oui,1.0,0.65,0.19,-81.0,-46.0,amélioré
+institut : Candidat (En Marche),inst_00,présidentielle 2017 — Taxe d'habitation : exonération de 80 % des ménages,Aucune,1.0,test,oui,-10.0,-10.0,-10.2,-2.0,-2.0,inchangé
+institut : Institut Montaigne,inst_01,présidentielle 2017 — Taxe d'habitation : exonération de 80 % des ménages,Aucune,1.0,test,oui,-8.0,-8.0,-10.2,-27.5,-27.5,inchangé
+institut : OFCE,inst_02,présidentielle 2017 — Taxe d'habitation : exonération de 80 % des ménages,Aucune,1.0,test,oui,-9.2,-9.2,-10.2,-10.9,-10.9,inchangé
+institut : Fondation Concorde,inst_03,présidentielle 2017 — Taxe d'habitation : exonération de 80 % des ménages,Aucune,1.0,test,oui,-10.0,-10.0,-10.2,-2.0,-2.0,inchangé
+institut : Candidat (En Marche),inst_04,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-3.0,-2.61,-2.9,3.3,-9.7,dégradé
+institut : Institut Montaigne,inst_05,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-1.9,-1.653,-2.9,-52.6,-65.6,dégradé
+institut : OFCE,inst_06,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-2.5,-2.175,-2.9,-16.0,-29.0,dégradé
+institut : Fondation Concorde,inst_07,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-3.0,-2.61,-2.9,3.3,-9.7,dégradé
+institut : Institut Montaigne,inst_08,"présidentielle 2017 — Baisse du taux normal d'IS de 33,3 % à 25 %",Élasticité IS,0.732,test,oui,-11.0,-8.047,-11.0,0.0,-26.8,dégradé
+institut : OFCE,inst_09,"présidentielle 2017 — Baisse du taux normal d'IS de 33,3 % à 25 %",Élasticité IS,0.732,test,oui,-10.8,-7.9,-11.0,-1.9,-28.7,dégradé
+institut : Fondation Concorde,inst_10,"présidentielle 2017 — Baisse du taux normal d'IS de 33,3 % à 25 %",Élasticité IS,0.732,test,oui,-8.0,-5.852,-11.0,-37.5,-64.3,dégradé
+institut : OFCE,inst_14,présidentielle 2017 — Heures supplémentaires : exonération de cotisations (volet salarié),Aucune,1.0,test,non,-2.5,-2.5,-1.9,24.0,24.0,inchangé
+institut : Fondation Concorde,inst_15,présidentielle 2017 — Heures supplémentaires : exonération de cotisations (volet salarié),Aucune,1.0,test,non,-2.5,-2.5,-1.9,24.0,24.0,inchangé
+institut : Institut Montaigne,inst_16,présidentielle 2017 — AAH portée à 900 € (+100 €),Aucune,1.0,test,non,-1.0,-1.0,-0.775,22.5,22.5,inchangé
+institut : OFCE,inst_17,présidentielle 2017 — AAH portée à 900 € (+100 €),Aucune,1.0,test,non,-0.9,-0.9,-0.775,13.9,13.9,inchangé
+institut : Fondation Concorde,inst_18,présidentielle 2017 — AAH portée à 900 € (+100 €),Aucune,1.0,test,non,-1.2,-1.2,-0.775,35.4,35.4,inchangé
+institut : Institut Montaigne,inst_21,présidentielle 2017 — Emplois francs (prime de 15 000 € sur 3 ans par CDI en QPV),Taux de recours,0.65,test,oui,-0.95,-0.617,-0.112,88.2,53.2,amélioré
+institut : Institut Montaigne,inst_22,présidentielle 2017 — Suppression de 50 000 postes dans la fonction publique d'État (volet État des 120 000),Réforme structurelle,0.842,test,oui,1.55,1.305,-0.119,-107.7,-91.9,amélioré
+institut : Institut Montaigne,inst_30,présidentielle 2022 — Suppression de la redevance (contribution à l'audiovisuel public),Aucune,1.0,test,oui,-3.2,-3.2,-3.11,2.8,2.8,inchangé
+institut : Fondation iFRAP,inst_31,présidentielle 2022 — Suppression de la redevance (contribution à l'audiovisuel public),Aucune,1.0,test,oui,-3.2,-3.2,-3.11,2.8,2.8,inchangé
+institut : Institut Montaigne,inst_32,présidentielle 2022 — Baisse des cotisations des indépendants (+550 €/an au SMIC),Aucune,1.0,test,non,-0.3,-0.3,-0.9,-200.0,-200.0,inchangé
+institut : Fondation iFRAP,inst_33,présidentielle 2022 — Baisse des cotisations des indépendants (+550 €/an au SMIC),Aucune,1.0,test,non,-1.0,-1.0,-0.9,10.0,10.0,inchangé

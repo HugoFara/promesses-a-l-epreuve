@@ -1,0 +1,6 @@
+fichier,groupe,correction_confirmée,correction_mitigée,correction_contredite,correction_non_concluante,correction_non_testée,part_confirmee_pct
+application_lignes,NFP 2024 (LFI),2.7,4.3,-0.5,0.0,-1.4,31
+application_lignes,Ensemble 2024,-3.4,0.0,0.0,0.0,0.3,92
+paniers,LFI intégral,4.7,4.3,-0.6,-0.5,-3.4,35
+paniers,LFI ajusté,-5.2,4.3,-0.6,-0.5,-3.4,37
+paniers,Ensemble,0.0,-0.9,0.0,0.0,0.3,0

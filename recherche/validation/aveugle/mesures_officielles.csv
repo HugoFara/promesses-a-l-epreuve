@@ -1,0 +1,26 @@
+id,mesure,annee,sens,indicateur,chiffrage_avant_adoption_md,auteur_du_chiffrage
+isf_ifi,ISF remplacé par IFI,2018,cout,Coût net Md€/an (vs 2017),3.2,Gouvernement PLF 2018
+pfu,Prélèvement forfaitaire unique (flat tax),2018,cout,Coût Md€/an régime de croisière,1.9,Gouvernement (évaluation préalable)
+cice,CICE,2013,cout,Coût Md€/an au taux plein,20,Gouvernement (Pacte de compétitivité 2012)
+th_80,Taxe d'habitation (phase 80 % des ménages),2018,cout,Coût Md€/an (périmètre initial),10,"Gouvernement PLF 2018 (OFCE : 9,2)"
+tepa_hs,Heures sup. TEPA,2007,cout,Coût Md€/an,6,Gouvernement 2007
+hs_2019,Heures sup. 2019 (volet social),2019,cout,Coût Md€/an exonération cotisations,1.94,Gouvernement PLFSS 2019
+pa_2016,Prime d'activité (création),2016,cout,Dépense Md€ 2016,3.95,Gouvernement PLF 2016
+pa_2019,Prime d'activité (revalorisation),2019,cout,Dépense Md€ 2019,8.8,Gouvernement après revalorisation
+bouclier_elec,Bouclier tarifaire électricité 2023,2023,cout,Coût Md€ 2023,21.8,CRE (juillet 2023)
+woerth_2010,Retraites 2010 (60 → 62 ans),2010,economie,Économie Md€/an horizon 2020,20.2,Gouvernement (étude d'impact)
+retraites_2023,Retraites 2023 (62 → 64 ans),2023,economie,Économie nette Md€/an en 2030,13.5,Gouvernement (dossier de presse)
+tva_resto_2009,"TVA restauration 19,6 → 5,5 % (juillet 2009)",2009,cout,Perte brute de recettes de TVA Md€/an (année pleine 2010),3.0,"Gouvernement (H. Novelli, audition commission des finances AN, 10/06/2009)"
+cir_2008,"Crédit d'impôt recherche, réforme 2008 (30 % jusqu'à 100 M€)",2008,cout,"Coût total du CIR (créance) Md€/an, régime de croisière",2.7,"Gouvernement, dossier de presse PLF 2008 (p. 2), cité par la Cour des comptes"
+cite_2015,"Crédit d'impôt transition énergétique (CITE, LFI 2015)",2015,cout,Dépense fiscale totale CIDD/CITE Md€ 2016 (dépenses 2015),1.4,"Évaluation préalable de l'art. 3 PLF 2015, citée par le rapporteur général AN (PLF 2018)"
+hs_ir_2019,"Exonération d'IR des heures supplémentaires (LMUES déc. 2018, plafond 5 000 €)",2019,cout,"Coût exonération IR heures sup, Md€ 2020 (1re année pleine)",1.9,"Gouvernement, étude d'impact PJL mesures d'urgence économiques et sociales (19/12/2018), art. 2"
+ir_baisse_2020,Baisse de l'impôt sur le revenu 2020 (LF 2020 art. 2 : 1re tranche 14 % → 11 %),2020,cout,"Baisse d'IR en régime de croisière, Md€/an",5.0,"Gouvernement, exposé des motifs art. 2 PLF 2020"
+ip_2021,"Baisse des impôts de production (CVAE régionale, valeurs locatives industrielles TFPB/CFE, plafonnement CET)",2021,cout,"Coût brut pour l'État Md€/an, 1re année (2021), avant effet retour d'IS",10,"Gouvernement, évaluations préalables art. 3 et 4 PLF 2021 (via rapport général AN) : CVAE 7,2 + CFE/TFPB 3,29 − gain croisé 0,4"
+is_25,Baisse du taux normal de l'IS de 33⅓ % à 25 % (trajectoires LFI 2017 + LFI 2018),2018,cout,"Coût Md€/an en régime de croisière (2023), trajectoire complète 33⅓ → 25 %",11.2,Commission des finances AN (consolidation des évaluations préalables PLF 2017 et PLF 2018)
+th_20,"Taxe d'habitation (phase des 20 % restants, étapes 2022-2023)",2021,cout,Coût incrémental Md€/an des étapes 2022 (30→65 %) et 2023 (65→100 %) d'exonération des 20 % restants,5.5,"Gouvernement, évaluation préalable art. 5 PLF 2020 (via rapport général AN) : 7,8 − 2,3"
+pacte_2015,Pacte de responsabilité : allègements de cotisations patronales 2015 (LFRSS 2014 art. 2),2015,cout,"Coût Md€ en 2015 : baisse famille ≤1,6 Smic + renforcement allègements généraux + famille indépendants",5.4,"Gouvernement, étude d'impact PLFRSS 2014 (n° 2044), art. 2"
+apl_contemp_2021,Contemporanéisation des aides personnelles au logement (APL « en temps réel »),2021,economie,Économie Md€ 2021,0.75,"Gouvernement PLF 2021 (rapporté par AN rapport spécial et Cour des comptes : 0,746)"
+cheque_energie_exc_2021,"Chèque énergie exceptionnel de 100 € (déc. 2021, 5,8 M ménages)",2021,cout,Coût Md€ (dispositif),0.6,"Gouvernement (O. Dussopt, AN, 5 oct. 2021)"
+cheque_energie_exc_2022,"Chèque énergie exceptionnel 100/200 € (déc. 2022-fév. 2023, 12 M ménages)",2022,cout,Coût Md€ (dispositif),1.8,"Gouvernement, évaluation préalable PLFR 2 2022 (art. 9)"
+cheque_fioul_2022,Chèque énergie exceptionnel « fioul » (2022-2023),2022,cout,Coût Md€ (dispositif),0.23,"LFR 1 2022 (budget voté), rappelé dans l'évaluation préalable PLFR 2 2022"
+bouclier_gaz_2023,Bouclier tarifaire gaz 2023 (contrats individuels),2023,cout,Coût Md€ au titre de 2023,6.8,Gouvernement PLF 2023 (rapporté par la Cour des comptes)

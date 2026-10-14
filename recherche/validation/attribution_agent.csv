@@ -1,0 +1,84 @@
+fichier,id,regle,justification,issue_connue
+mesures_officielles,isf_ifi,Élasticité patrimoine,Suppression/modification d'un impôt sur la fortune.,oui
+mesures_officielles,pfu,Élasticité capital,Changement de la fiscalité des revenus du capital (flat tax).,oui
+mesures_officielles,cice,Aucune,"Crédit d'impôt proportionnel à une masse salariale connue, coût mécanique au taux plein.",oui
+mesures_officielles,th_80,Aucune,Exonération d'un impôt local sur une assiette et une population connues.,oui
+mesures_officielles,tepa_hs,Aucune,"Exonération sur l'assiette existante des heures supplémentaires, coût calculé mécaniquement (l'effet heures est traité dans les effets annoncés).",oui
+mesures_officielles,hs_2019,Aucune,Exonération de cotisations sur l'assiette existante des heures supplémentaires.,non
+mesures_officielles,pa_2016,Taux de recours,"Nouvelle prestation versée à la demande, non automatique.",oui
+mesures_officielles,pa_2019,Taux de recours,Extension d'une prestation à la demande élargissant la population éligible.,oui
+mesures_officielles,bouclier_elec,Aucune,"Gel tarifaire dont le coût est calculé sur une consommation et un barème donnés, sans comportement visé.",oui
+mesures_officielles,woerth_2010,Substitution retraites,Report de l'âge légal de départ en retraite.,oui
+mesures_officielles,retraites_2023,Substitution retraites,Report de l'âge légal de départ en retraite.,oui
+mesures_officielles,tva_resto_2009,Aucune,"Baisse de taux de TVA, perte brute de recettes calculée sur une assiette connue.",oui
+mesures_officielles,cir_2008,Taux de recours,"Extension d'un crédit d'impôt déclaratif réclamé par les entreprises, non automatique.",oui
+mesures_officielles,cite_2015,Taux de recours,"Crédit d'impôt demandé par les ménages selon leurs travaux, non automatique.",oui
+mesures_officielles,hs_ir_2019,Aucune,Exonération d'IR sur l'assiette existante des heures supplémentaires.,non
+mesures_officielles,ir_baisse_2020,Aucune,Baisse du taux d'une tranche basse du barème de l'IR.,non
+mesures_officielles,ip_2021,Aucune,Baisse d'impôts de production sur des assiettes connues.,non
+mesures_officielles,is_25,Élasticité IS,Baisse du taux normal de l'impôt sur les sociétés.,oui
+mesures_officielles,th_20,Aucune,Exonération d'un impôt local sur une assiette et une population connues.,non
+mesures_officielles,pacte_2015,Aucune,Allègements de cotisations par barème sur une masse salariale connue.,non
+mesures_officielles,apl_contemp_2021,Réforme structurelle,"Économie issue d'une réforme du mode de calcul des aides au logement, avec risque de mise en œuvre.",oui
+mesures_officielles,cheque_energie_exc_2021,Aucune,Chèque d'un montant fixé envoyé automatiquement à une population connue.,non
+mesures_officielles,cheque_energie_exc_2022,Aucune,Chèque d'un montant fixé envoyé automatiquement à une population connue.,non
+mesures_officielles,cheque_fioul_2022,Taux de recours,"Aide à des ménages chauffés au fioul, à identifier, en partie versée sur demande.",oui
+mesures_officielles,bouclier_gaz_2023,Aucune,"Gel tarifaire dont le coût est calculé sur une consommation et un barème donnés, sans comportement visé.",oui
+effets_annonces,cice_emploi,Effet promis,Emplois promis grâce au crédit d'impôt.,oui
+effets_annonces,cice_emploi_ofce,Effet promis,Emplois attendus estimés par un institut.,oui
+effets_annonces,tepa_heures,Effet promis,Hausse promise des heures travaillées.,oui
+effets_annonces,isf_invest,Effet promis,Hausse promise de l'investissement dans les entreprises.,oui
+effets_annonces,pfu_invest,Effet promis,Hausse promise de l'investissement et des salaires.,oui
+effets_annonces,woerth_emploi,Effet promis,Effet attendu sur l'emploi des seniors (non chiffré).,oui
+effets_annonces,r2023_emploi,Effet promis,Hausse promise du taux d'emploi des 60-64 ans.,non
+effets_annonces,is_pib,Effet promis,Effet promis sur l'activité (PIB).,non
+effets_annonces,tva_resto_emploi,Effet promis,Créations d'emplois promises en contrepartie de la baisse de TVA.,oui
+effets_annonces,tva_resto_prix,Effet promis,Baisse des prix promise par les restaurateurs.,oui
+effets_annonces,tva_resto_prix_montant,Effet promis,Part de la baisse de TVA promise en baisse de prix.,oui
+effets_annonces,pepa_2019_aubaine,Effet promis,Comportement attendu des employeurs (absence d'effet d'aubaine) supposé.,oui
+effets_annonces,ppv_2022_aubaine,Effet promis,Comportement attendu des employeurs (absence de substitution aux salaires) supposé.,oui
+effets_annonces,pa_recours,Taux de recours,Taux de recours annoncé d'une prestation à la demande.,oui
+effets_annonces,cheque_fioul_benef,Taux de recours,"Nombre de ménages éligibles à une aide en partie à la demande, dépend du recours.",oui
+chiffrages_campagne,inst_00,Aucune,Exonération d'un impôt local sur une assiette et une population connues.,oui
+chiffrages_campagne,inst_01,Aucune,Exonération d'un impôt local sur une assiette et une population connues.,oui
+chiffrages_campagne,inst_02,Aucune,Exonération d'un impôt local sur une assiette et une population connues.,oui
+chiffrages_campagne,inst_03,Aucune,Exonération d'un impôt local sur une assiette et une population connues.,oui
+chiffrages_campagne,inst_04,Élasticité patrimoine,Remplacement d'un impôt sur la fortune.,oui
+chiffrages_campagne,inst_05,Élasticité patrimoine,Remplacement d'un impôt sur la fortune.,oui
+chiffrages_campagne,inst_06,Élasticité patrimoine,Remplacement d'un impôt sur la fortune.,oui
+chiffrages_campagne,inst_07,Élasticité patrimoine,Remplacement d'un impôt sur la fortune.,oui
+chiffrages_campagne,inst_08,Élasticité IS,Baisse du taux normal de l'impôt sur les sociétés.,oui
+chiffrages_campagne,inst_09,Élasticité IS,Baisse du taux normal de l'impôt sur les sociétés.,oui
+chiffrages_campagne,inst_10,Élasticité IS,Baisse du taux normal de l'impôt sur les sociétés.,oui
+chiffrages_campagne,inst_11,Élasticité capital,Changement de la fiscalité des revenus du capital (flat tax).,oui
+chiffrages_campagne,inst_12,Élasticité capital,Changement de la fiscalité des revenus du capital (flat tax).,oui
+chiffrages_campagne,inst_13,Aucune,Exonération de cotisations sur l'assiette existante des heures supplémentaires.,non
+chiffrages_campagne,inst_14,Aucune,Exonération de cotisations sur l'assiette existante des heures supplémentaires.,non
+chiffrages_campagne,inst_15,Aucune,Exonération de cotisations sur l'assiette existante des heures supplémentaires.,non
+chiffrages_campagne,inst_16,Aucune,Revalorisation d'un montant de prestation existante.,non
+chiffrages_campagne,inst_17,Aucune,Revalorisation d'un montant de prestation existante.,non
+chiffrages_campagne,inst_18,Aucune,Revalorisation d'un montant de prestation existante.,non
+chiffrages_campagne,inst_19,Aucune,Revalorisation d'un montant de prestation existante.,non
+chiffrages_campagne,inst_20,Aucune,Revalorisation d'un montant de prestation existante.,non
+chiffrages_campagne,inst_21,Taux de recours,Prime à l'embauche versée sur demande des employeurs.,oui
+chiffrages_campagne,inst_22,Réforme structurelle,Économie attendue d'une réorganisation de l'État (suppressions de postes).,oui
+chiffrages_campagne,inst_23,Taux de recours,Extension d'une prestation à la demande élargissant la population éligible.,oui
+chiffrages_campagne,inst_24,Taux de recours,Extension d'une prestation à la demande élargissant la population éligible.,oui
+chiffrages_campagne,inst_25,Taux de recours,Extension d'une prestation à la demande élargissant la population éligible.,oui
+chiffrages_campagne,inst_26,Aucune,Bascule de barème entre cotisations et CSG sur des assiettes connues.,non
+chiffrages_campagne,inst_27,Réforme structurelle,"Économies globales sur la dépense publique, dépendant de réformes à mettre en œuvre.",oui
+chiffrages_campagne,inst_28,Réforme structurelle,"Économies globales sur la dépense publique, dépendant de réformes à mettre en œuvre.",oui
+chiffrages_campagne,inst_29,Réforme structurelle,"Économies globales sur la dépense publique, dépendant de réformes à mettre en œuvre.",oui
+chiffrages_campagne,inst_30,Aucune,Suppression d'une taxe forfaitaire au rendement connu.,oui
+chiffrages_campagne,inst_31,Aucune,Suppression d'une taxe forfaitaire au rendement connu.,oui
+chiffrages_campagne,inst_32,Aucune,Baisse de cotisations par barème sur une population connue.,non
+chiffrages_campagne,inst_33,Aucune,Baisse de cotisations par barème sur une population connue.,non
+chiffrages_campagne,inst_34,Aucune,Suppression d'un impôt de production au rendement connu.,oui
+chiffrages_campagne,inst_35,Aucune,Suppression d'un impôt de production au rendement connu.,oui
+chiffrages_campagne,inst_36,Aucune,Suppression d'un impôt de production au rendement connu.,oui
+chiffrages_campagne,inst_37,Substitution retraites,Report de l'âge légal de départ en retraite.,oui
+chiffrages_campagne,inst_38,Substitution retraites,Report de l'âge légal de départ en retraite.,oui
+chiffrages_campagne,inst_39,Substitution retraites,Report de l'âge légal de départ en retraite.,oui
+chiffrages_campagne,inst_40,Élasticité succession,Modification des droits de succession.,non
+chiffrages_campagne,inst_41,Effet promis,Coût d'une prime facultative exonérée qui dépend du comportement de versement et de substitution des employeurs.,oui
+chiffrages_campagne,inst_42,Aucune,Revalorisation d'un montant de prestation existante.,non

@@ -1,0 +1,2 @@
+id,programme,ligne,type,annonce_parti,independant,source_independant,autres_estimations,regle,facteur,justification,url,confiance,statut_reference,source_reference,facteur_reference,note_reference,confiance_reference
+lfi27_exemple,LFI 2027,(exemple à remplacer) Libellé de la mesure tel que publié,Dépense,,,"Chiffreur de départ (Montaigne, iFRAP…) ou « Médiane des estimations »",—,Aucune,1,Pourquoi cette règle (une phrase),https://…,high,absente,Statut par rapport à la référence 2027 : voir data/raw/statut_reference_2027.csv,1,,

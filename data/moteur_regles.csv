@@ -1,0 +1,21 @@
+regle,formule,parametres,justification_ecart
+Aucune,fixe,un,
+Médiane des estimations,fixe,un,
+Taux d'intérêt,fixe,un,
+Règle d'or,fixe,un,
+Recette ponctuelle,fixe,zero,
+Déjà dans la référence,fixe,zero,
+Déjà en partie dans la référence,ligne,,Facteur propre à chaque ligne (statut de référence T1)
+Effet promis,fixe,ratio_effet_promis,"Mode = CICE (0,29), seul effet promis non nul observé ; l'ancien 0,333 était l'arrondi « diviser par 3 »"
+Réforme structurelle,fixe,facteur_reforme,
+Nouvelle assiette : risque juridique,fixe,facteur_reforme,
+Substitution retraites,complement,part_substitution,
+Taux de recours,fixe,taux_recours,
+Élasticité capital,taxe_elasticite,eps=eps_capital;t0=t0_capital;t1=t1_capital,
+Élasticité patrimoine,complement,perte_patrimoine,
+Élasticité revenus,taxe_elasticite,eps=eps_top;t0=t0_revenus;t1=t1_revenus,Au forfait : barème proposé (t1) non publié par le parti (T4p)
+Élasticité succession,taxe_elasticite,eps=eps_succession;t0=t0_succession;t1=t1_succession,Au forfait : barème proposé (t1) non publié par le parti (T4p)
+Élasticité IS,semi_elasticite_taux,s=s_is;t0=t0_is;delta=delta_is;h=un,
+Élasticité carburants,accise,eps=eps_carbu;dp=dp_niches;a=a_sur_da_niches,
+Élasticité SMIC (hypothèse : emplois perdus),smic,eps=eps_smic;hausse=hausse_smic;n=n_smic;c=cout_emploi_perdu;statique=statique_smic,Règle remplacée par « Effet emploi du SMIC » (ligne séparée) ; conservée pour l'historique
+Effet emploi du SMIC,montant,emplois=emplois_perdus_smic;c=cout_emploi_perdu,
