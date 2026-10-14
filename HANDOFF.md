@@ -270,9 +270,9 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 
 **Calibration par institut (T10b)** : Montaigne n = 8, biais moyen −34 % (IC 95 % [−108 ; +39]) ; OFCE n = 5, +2 % [−19 ; +23] ; Fondation Concorde n = 5, +5 % [−30 ; +39]. Aucun facteur par institut n'est appliqué ; l'erreur absolue médiane (14,9 % tous instituts, 40 % pour Montaigne seul) sert d'incertitude par ligne.
 
-## 8. Tableau de bord publié
+## 8. Site publié
 
-L'artifact privé (claude.ai) n'a **pas** été mis à jour le 14 octobre (règle de l'utilisateur : pas de publication en ligne sans demande explicite). Il montre encore les données du 12 octobre. Les versions locales (`web/index.html`, `web/complet.html`) lisent les CSV à jour. Pour republier `dashboard_page.html`, il faudrait joindre à l'artifact les nouveaux CSV, y compris ceux du moteur, de la projection, de la validation et du distributif (liste `SOURCES` de `scripts/build_web.py`).
+Le site est publié par GitHub Pages : https://hugofara.github.io/promesses-a-l-epreuve/web/ (dépôt public https://github.com/HugoFara/promesses-a-l-epreuve). Le job `deploiement` de `.github/workflows/ci.yml` publie `web/` et les CSV de `data/` (sans `data/raw/`) après la réussite du job `controles` sur `main` ; la racine redirige vers `web/`. L'ancien artifact claude.ai (données du 12 octobre) n'est plus tenu à jour.
 
 ## 9. Règles à respecter
 

@@ -6,7 +6,9 @@ Projet d'étude indépendant, sans lien avec l'État, une administration ou un p
 
 ## Le site
 
-Depuis la racine du dépôt :
+En ligne : **https://hugofara.github.io/promesses-a-l-epreuve/web/**, publié par GitHub Pages après chaque passage réussi des contrôles sur `main` (`.github/workflows/ci.yml`).
+
+En local, depuis la racine du dépôt :
 
 ```bash
 python3 -m http.server 8000
