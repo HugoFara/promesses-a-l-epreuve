@@ -208,7 +208,8 @@ class CalibrationInstitut(Ligne):
 
 
 class ReformeDistributive(Ligne):
-    id: str; libelle: str; type: Literal["parametre", "option_bareme_capital", "smic_net_cible", "gel_pensions"]
+    id: str; libelle: str; libelle_simple: str; porteur: str
+    type: Literal["parametre", "option_bareme_capital", "smic_net_cible", "gel_pensions"]
     cible: OptStr = None; valeur: OptStr = None; ligne_liee: str; url: Url; confiance: Confiance; note: OptStr = None
 
 

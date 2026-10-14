@@ -664,15 +664,73 @@ function vueEquilibre() {
   ], D.totaux, {group: r => r.groupe, rowCls: r => r.composante === "solde" ? "strong" : null});
 }
 
+/* Simulateurs « Mon foyer » et accueil : la grille précalculée (distributif_grille.csv) contient toutes les
+   combinaisons des formulaires ; on filtre la situation choisie, sans aucun calcul dans le navigateur. */
+const uniqNum = (rs, c) => [...new Set(rs.map(r => r[c]))].sort((x, y) => num(x) - num(y));
+function origineReforme(id) {
+  const ref = D.reformes.find(r => r.id === id);
+  const [f, lid] = (ref?.ligne_liee || "").split(" ");
+  // ligne_liee nomme une ligne (« nfp_flat ») ou un préfixe commun aux variantes d'une ligne (« l_smic » → l_smic_i, l_smic_a)
+  const ok = r => r.id === lid || r.id.startsWith(lid + "_");
+  const src = !lid ? "" : f === "paniers" ? D.paniers.find(ok)?.variante : D.application.find(ok)?.programme;
+  return src ? src.replace(/ (intégral|ajusté)$/, "") : "";
+}
+// Formulaire → situations de la grille ; reconstruit la liste des revenus (libellés en euros nets, recalculés
+// pour la situation, car la CSG des pensions dépend du foyer). Retourne les lignes du niveau choisi.
+function situation(f, sel, capital, libelle) {
+  const val = n => $(`input[name=${n}]:checked`, f)?.value;
+  const st = val("statut");
+  $("input[name=enfants]", f).closest(".choices").hidden = st === "retraite";
+  if (st === "retraite") $("input[name=enfants][value='0']", f).checked = true;
+  const cle = {statut: st, composition: val("composition"), enfants: val("enfants"), capital};
+  const rs = D.grille.filter(r => Object.entries(cle).every(([k, v]) => r[k] === v));
+  const rang = Math.max(0, sel.selectedIndex), avant = sel.dataset.statut === st ? rang : (st === "actif" ? 1 : 2);
+  sel.dataset.statut = st; sel.textContent = "";
+  uniqNum(rs, "niveau").forEach(v => {
+    const r = rs.find(x => x.niveau === v);
+    sel.append(h("option", {value: v}, libelle(st, num(v), num(r.net_mensuel_reference))));
+  });
+  sel.selectedIndex = Math.min(avant, sel.options.length - 1);
+  return {st, choix: rs.filter(r => r.niveau === sel.value)};
+}
+
+function vueAccueil() {
+  const f = $("#sim-accueil"), sel = $("#acc-niveau"), ref = new Map(D.reformes.map(r => [r.id, r]));
+  const sansCapital = uniqNum(D.grille, "capital").find(c => num(c) === 0);
+  const show = () => {
+    const {st, choix} = situation(f, sel, sansCapital, (st, v, net) => "environ " + eur(net));
+    const deux = $("input[name=composition]:checked", f).value === "couple_2";
+    $("#acc-niveau-l").textContent = (st === "actif" ? "Votre salaire net par mois" : "Votre retraite nette par mois") + (deux ? ", chacun" : "");
+    const out = $("#acc-result"); out.textContent = "";
+    const touche = choix.filter(r => num(r.gain_annuel) !== 0), neutre = choix.filter(r => num(r.gain_annuel) === 0);
+    touche.sort((a, b) => num(b.gain_annuel) - num(a.gain_annuel)).forEach(r => {
+      const g = num(r.gain_annuel), m = ref.get(r.reforme);
+      out.append(h("li", {class: "foyer-row " + (g > 0 ? "gain" : "perte")},
+        h("div", {}, h("strong", {}, m?.libelle_simple || r.reforme), h("div", {class: "small muted"}, "Proposé par : " + (m?.porteur || "—"))),
+        h("div", {class: "amt " + (g > 0 ? "pos" : "neg")}, `${sg(g / 12, n0)} € par mois`),
+        h("div", {class: "per"}, `soit ${sg(g, n0)} € par an (${g > 0 ? "gain" : "perte"} de revenu après impôts et aides)`)));
+    });
+    out.hidden = !touche.length;
+    $("#acc-neutre").hidden = !neutre.length;
+    if (neutre.length) $("#acc-neutre").textContent = (touche.length ? "Sans effet pour vous : " : "Aucune des mesures calculées ne change votre revenu : ") +
+      liste(neutre.map(r => (ref.get(r.reforme)?.libelle_simple || r.reforme).split(" : ")[0]).map(t => t[0].toLowerCase() + t.slice(1))) + ".";
+    const p = new URLSearchParams();
+    ["statut", "composition", "enfants"].forEach(n => p.set(n, $(`input[name=${n}]:checked`, f).value));
+    p.set("niveau", sel.value);
+    $("#acc-affiner").href = "#/foyer?" + p;
+  };
+  f.onchange = show; f.onsubmit = e => e.preventDefault(); show();
+
+  // Les mesures calculées et leurs porteurs, lus dans les données
+  const porteurs = [...new Set(D.reformes.map(r => r.porteur))];
+  $("#acc-limites").textContent = `Seules ${D.reformes.length} mesures sont calculées pour l'instant. Elles viennent de : ${liste(porteurs)}. ` +
+    `Celles des autres partis ne le sont pas encore. Calcul simplifié avec le logiciel public OpenFisca, sur les règles de 2026, ` +
+    `pour un foyer sans revenus du capital ni aide au logement. Chaque mesure est calculée seule : les effets ne s'additionnent pas.`;
+}
+
 function vueFoyer() {
   const ref = new Map(D.reformes.map(r => [r.id, r]));
-  const origine = id => {
-    const [f, lid] = (ref.get(id)?.ligne_liee || "").split(" ");
-    // ligne_liee nomme une ligne (« nfp_flat ») ou un préfixe commun aux variantes d'une ligne (« l_smic » → l_smic_i, l_smic_a)
-    const ok = r => r.id === lid || r.id.startsWith(lid + "_");
-    const src = !lid ? "" : f === "paniers" ? D.paniers.find(ok)?.variante : D.application.find(ok)?.programme;
-    return src ? src.replace(/ (intégral|ajusté)$/, "") : "";
-  };
+  const origine = origineReforme;
   const lignes = rs => {
     const out = $("#foyer-result"); out.textContent = "";
     rs.forEach(r => {
@@ -684,29 +742,14 @@ function vueFoyer() {
     });
   };
 
-  // Simulateur : la grille précalculée (distributif_grille.csv) contient toutes les combinaisons du formulaire
   const G = D.grille, f = $("#sim-foyer");
-  const val = n => $(`input[name=${n}]:checked`, f)?.value;
-  const uniq = (rs, c) => [...new Set(rs.map(r => r[c]))].sort((x, y) => num(x) - num(y));
   const smic = v => v === 1 ? "SMIC à temps plein" : v < 1 ? `SMIC à temps partiel, ${n0(v * 100)} %` : `${FR.format(",.2~f")(v)} SMIC`;
   $("#sim-capital").textContent = "";
-  uniq(G, "capital").forEach(c => $("#sim-capital").append(h("option", {value: c}, num(c) === 0 ? "Aucun" : eur(num(c)))));
+  uniqNum(G, "capital").forEach(c => $("#sim-capital").append(h("option", {value: c}, num(c) === 0 ? "Aucun" : eur(num(c)))));
   const show = () => {
-    const st = val("statut");
-    $("#sim-enfants").hidden = st === "retraite";
-    if (st === "retraite") $("input[name=enfants][value='0']", f).checked = true;
-    const cle = {statut: st, composition: val("composition"), enfants: val("enfants"), capital: $("#sim-capital").value};
-    const rs = G.filter(r => Object.entries(cle).every(([k, v]) => r[k] === v));
-    // Libellés des revenus en euros nets, recalculés pour la situation (la CSG des pensions dépend du foyer)
-    const sel = $("#sim-niveau"), rang = Math.max(0, sel.selectedIndex), avant = sel.dataset.statut === st ? rang : (st === "actif" ? 1 : 2);
-    sel.dataset.statut = st; sel.textContent = "";
+    const {st, choix} = situation(f, $("#sim-niveau"), $("#sim-capital").value,
+      (st, v, net) => `environ ${eur(net)} (${st === "actif" ? smic(v) : eur(v) + " bruts"})`);
     $("#sim-niveau-l").textContent = st === "actif" ? "Salaire net par mois, par personne qui travaille" : "Pension nette par mois, par personne retraitée";
-    uniq(rs, "niveau").forEach(v => {
-      const r = rs.find(x => x.niveau === v), nv = num(v);
-      sel.append(h("option", {value: v}, `environ ${eur(num(r.net_mensuel_reference))} (${st === "actif" ? smic(nv) : eur(nv) + " bruts"})`));
-    });
-    sel.selectedIndex = Math.min(avant, sel.options.length - 1);
-    const choix = rs.filter(r => r.niveau === sel.value);
     if (!choix.length) return;
     const rev = num(choix[0].revenu_disponible_avant);
     $("#foyer-intro").textContent = `Revenu disponible actuel du foyer (après impôts et prestations) : ${eur(rev)} par an, soit environ ${eur(rev / 12)} par mois.`;
@@ -1064,7 +1107,8 @@ function initPartage() {
     imprimer.onclick = () => print();
     const barre = h("div", {class: "outils-page"}, copier, imprimer, etat);
     const crumb = $(".crumb", sec);
-    crumb ? crumb.after(barre) : sec.prepend(barre);
+    // Accueil : les outils en bas, pour que la page commence par le simulateur
+    crumb ? crumb.after(barre) : sec.id === "v-accueil" ? sec.append(barre) : sec.prepend(barre);
   });
 
   // Impression : accordéons ouverts, couleurs claires, mention de l'adresse et de la date
@@ -1111,7 +1155,7 @@ async function init() {
   }
   calculer();
   remplirK();
-  [vueHier, vueProgrammes, vueEquilibre, vueFoyer, vueDemain, vueMethode].forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
+  [vueAccueil, vueHier, vueProgrammes, vueEquilibre, vueFoyer, vueDemain, vueMethode].forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
   $("#chargement").remove();
   // Choix par défaut de chaque vue, avant d'appliquer ceux de l'adresse
   $$(".view").forEach(sec => { DEFAUTS[sec.id.slice(2)] = lireEtat(sec); });

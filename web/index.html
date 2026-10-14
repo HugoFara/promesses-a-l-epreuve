@@ -94,32 +94,57 @@
 
   <!-- ==================================================================== ACCUEIL -->
   <section class="view" id="v-accueil" data-titre="Accueil" hidden>
-    <h1 style="margin-top:2rem">Les promesses budgétaires sont-elles crédibles ?</h1>
-    <p class="lede">Avant une élection, chaque parti annonce ce que coûteront ses mesures. Ce site vérifie, sur des mesures passées, si ces annonces étaient justes. Il applique ensuite les leçons du passé aux programmes, <strong>de la même façon pour tous les partis</strong>.</p>
+    <h1 style="margin-top:2rem">Qu'est-ce que les mesures en débat changent pour vous ?</h1>
+    <p class="lede">Répondez à quelques questions : le résultat s'affiche tout de suite.</p>
 
-    <div class="callout">
-      <h2>Ce qu'il faut retenir</h2>
+    <form class="sim" id="sim-accueil" aria-describedby="acc-aide">
+      <fieldset class="choices"><legend>Vous êtes</legend>
+        <label class="choice"><input type="radio" name="statut" value="actif" checked><span>En activité (salarié)</span></label>
+        <label class="choice"><input type="radio" name="statut" value="retraite"><span>À la retraite</span></label>
+      </fieldset>
+      <fieldset class="choices"><legend>Vous vivez</legend>
+        <label class="choice"><input type="radio" name="composition" value="seul" checked><span>Seul ou seule</span></label>
+        <label class="choice"><input type="radio" name="composition" value="couple_2"><span>En couple, deux revenus</span></label>
+        <label class="choice"><input type="radio" name="composition" value="couple_1"><span>En couple, un seul revenu</span></label>
+      </fieldset>
+      <fieldset class="choices" id="acc-enfants"><legend>Enfants à charge</legend>
+        <label class="choice"><input type="radio" name="enfants" value="0" checked><span>Aucun</span></label>
+        <label class="choice"><input type="radio" name="enfants" value="1"><span>1</span></label>
+        <label class="choice"><input type="radio" name="enfants" value="2"><span>2</span></label>
+        <label class="choice"><input type="radio" name="enfants" value="3"><span>3</span></label>
+      </fieldset>
+      <div class="field"><label for="acc-niveau" id="acc-niveau-l">Votre salaire net par mois</label><select id="acc-niveau"></select></div>
+      <p class="small muted" id="acc-aide">Rien n'est envoyé : tout est calculé à l'avance, dans votre navigateur.</p>
+    </form>
+
+    <div aria-live="polite" id="acc-resultat">
+      <h2>Votre résultat</h2>
+      <ul class="foyer-result" id="acc-result" aria-label="Mesures qui changent votre revenu"></ul>
+      <p id="acc-neutre"></p>
+    </div>
+    <p class="small" id="acc-limites"></p>
+    <p><a class="cta" id="acc-affiner" href="#/foyer">Affiner mon calcul et voir le détail →</a></p>
+
+    <h2>Pour aller plus loin</h2>
+    <ul class="tiles">
+      <li class="tile"><h3><a href="#/programmes">Combien coûtent vraiment les programmes ?</a></h3><p>Les programmes des partis, recalculés avec la même méthode pour tous.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/equilibre">Peut-on financer les mesures phares ?</a></h3><p>Les principales promesses de chaque camp, et les recettes qui pourraient les payer.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/hier">Les promesses d'hier ont-elles été tenues ?</a></h3><p>Le coût annoncé de mesures connues (CICE, flat tax, retraites…) comparé à leur coût réel.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/demain">Où vont la dette et le déficit ?</a></h3><p>Les trajectoires possibles jusqu'en 2032, selon les choix faits.</p><span class="arrow" aria-hidden="true">→</span></li>
+    </ul>
+
+    <details class="acc"><summary>Ce que montre le reste du site, en trois phrases</summary><div class="acc-body">
       <ul class="big">
         <li><strong>Le coût d'une mesure est souvent bien estimé.</strong> Sur <span data-k="mes_n"></span> mesures passées, l'erreur habituelle est d'environ <span data-k="mes_mediane"></span>.</li>
         <li><strong>Les bénéfices promis le sont beaucoup moins.</strong> Les emplois ou investissements annoncés arrivent rarement : <span data-k="eff_rates"></span> effets promis sur <span data-k="eff_n"></span> n'ont pas été atteints.</li>
         <li><strong>Les objectifs de déficit sont presque toujours manqués.</strong> Trois ans après, le <a class="term" href="#/lexique/deficit">déficit</a> réel dépasse l'objectif d'environ <span data-k="ps_biais"></span> de la richesse nationale, soit près de <span data-k="ps_md"></span> par an aujourd'hui.</li>
       </ul>
-    </div>
-
-    <h2>Que voulez-vous savoir ?</h2>
-    <ul class="tiles">
-      <li class="tile"><h3><a href="#/hier">Les promesses d'hier ont-elles été tenues ?</a></h3><p>Le coût annoncé de mesures connues (CICE, flat tax, retraites…) comparé à leur coût réel.</p><span class="arrow" aria-hidden="true">→</span></li>
-      <li class="tile"><h3><a href="#/programmes">Combien coûtent vraiment les programmes ?</a></h3><p>Les programmes des partis, recalculés avec la même méthode pour tous.</p><span class="arrow" aria-hidden="true">→</span></li>
-      <li class="tile"><h3><a href="#/equilibre">Peut-on financer les mesures phares ?</a></h3><p>Les principales promesses de chaque camp, et les recettes qui pourraient les payer.</p><span class="arrow" aria-hidden="true">→</span></li>
-      <li class="tile"><h3><a href="#/foyer">Qu'est-ce que cela change pour mon foyer ?</a></h3><p>L'effet de quelques mesures sur le revenu de foyers types : salarié, retraités, cadre, parent seul.</p><span class="arrow" aria-hidden="true">→</span></li>
-      <li class="tile"><h3><a href="#/demain">Où vont la dette et le déficit ?</a></h3><p>Les trajectoires possibles jusqu'en 2032, selon les choix faits.</p><span class="arrow" aria-hidden="true">→</span></li>
-      <li class="tile"><h3><a href="#/methode">Comment c'est calculé ?</a></h3><p>La méthode pas à pas, son degré de fiabilité, ses limites et toutes les données.</p><span class="arrow" aria-hidden="true">→</span></li>
-    </ul>
+      <p><a href="#/methode">Comment c'est calculé ?</a> · <a href="#/lexique">Lexique</a></p>
+    </div></details>
 
     <div class="callout warn">
-      <h2>À savoir avant de lire</h2>
-      <p>Ce site ne donne <strong>aucune consigne de vote</strong>. Il ne juge pas si une mesure est souhaitable, seulement si son coût annoncé est réaliste. Une mesure coûteuse peut être un choix assumé. <span id="note-scrutin"></span></p>
-      <p>Un mot vous semble obscur ? Le <a href="#/lexique">lexique</a> l'explique simplement.</p>
+      <h2>À savoir</h2>
+      <p>Ce site ne donne <strong>aucune consigne de vote</strong> et ne dit pas si une mesure est souhaitable. Un gain ou une perte pour votre foyer n'est qu'un critère parmi d'autres. <span id="note-scrutin"></span></p>
     </div>
   </section>
 

@@ -355,3 +355,12 @@ a.term:hover { color: var(--primary); }
 .sim .field { min-width: 0; max-width: 100%; }
 .sim .field select { width: 100%; max-width: 100%; text-overflow: ellipsis; }
 .choices[hidden] { display: none; }
+/* Accueil : simulateur rapide */
+.cta { display: inline-block; padding: .7rem 1.1rem; border-radius: var(--radius); background: var(--primary); color: var(--on-primary); font-weight: 700; text-decoration: none; min-height: 44px; }
+.cta:hover { text-decoration: underline; }
+#v-accueil .sim .field { max-width: 24rem; }
+#acc-result .amt { font-size: 1.6rem; }
+@media (max-width: 30rem) {
+  #acc-result .foyer-row { grid-template-columns: 1fr; }
+  #acc-result .amt { text-align: left; }
+}

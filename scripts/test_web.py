@@ -144,6 +144,23 @@ def main():
                     echecs.append("pourquoi : la fenêtre du total ne s'ouvre pas")
                 echecs += accessibilite(page, "fenêtre « Pourquoi ce chiffre ? »")
                 page.keyboard.press("Escape")
+                # Simulateur de l'accueil (même situation, en euros par mois) et son lien vers « Mon foyer »
+                serre = lambda t: re.sub(r"\s", "", t)  # sans espaces (le site sépare les milliers par une espace fine)
+                page.evaluate("location.hash = '#/accueil'")
+                for v in ("retraite", "couple_2"):
+                    page.locator(f"#sim-accueil input[value={v}]").check(force=True)
+                page.select_option("#acc-niveau", "2000")
+                res = serre(page.locator("#acc-resultat").inner_text())
+                for r in att["foyer"]:
+                    v = round(int(r["gain_annuel"]) / 12)
+                    if v and ("+" if v > 0 else "") + fr(v) + "€parmois" not in res:
+                        echecs.append(f"accueil : effet mensuel de {r['reforme']} absent ou faux (attendu {v} € par mois)")
+                if page.locator("#acc-enfants").is_visible():
+                    echecs.append("accueil : le choix des enfants reste affiché pour un retraité")
+                page.locator("#acc-affiner").click()
+                page.wait_for_selector("#v-foyer:not([hidden])")
+                if not page.locator("#sim-foyer input[value=couple_2]").is_checked() or page.locator("#sim-niveau").input_value() != "2000":
+                    echecs.append("accueil : « Affiner mon calcul » ne reprend pas la situation choisie")
                 # Simulateur « Mon foyer » : couple de retraités, deux pensions de 2 000 € bruts, sans dividendes
                 page.evaluate("location.hash = '#/foyer'")
                 for v in ("retraite", "couple_2"):
