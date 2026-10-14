@@ -16,7 +16,7 @@ Pas de verdict sur l'opportunité de l'idée. Pas d'étiquette de parti sur la c
 
 La sélection ne vient pas de nous. Une idée entre si elle remplit **(A ou B) et C** :
 
-- **A. Elle revient souvent dans les cahiers citoyens de 2019** : le sous-thème est présent dans au moins 20 % des cahiers. C'est le repérage `themes` du projet « Les cahiers pour décider et agir », en comptes seulement. Quand l'annotation par proposition (#94) sera disponible, on ne gardera que le sens majoritaire (par exemple « rétablir », et non « parler de » l'ISF).
+- **A. Elle revient souvent dans les cahiers citoyens de 2019** : la synthèse officielle des contributions libres (Roland Berger, Bluenove, Cognito, rapport final du 14/6/2019, sur granddebat.fr) compte la proposition au moins 5 000 fois dans les contributions individuelles (cahiers citoyens et courriers ; les cahiers en font environ 93 %). *Révisé le 15/10/2026* : la première version s'appuyait sur les comptes provisoires et non publiés de l'association (seuil de 20 % des cahiers) ; la source publique les remplace (`D_rapport.md`). Effet : la taxe sur les transactions financières (1 052 mentions, que le repérage provisoire par mots-clés surestimait nettement) et la taxe Zucman (aucune proposition comptée ; présentée comme variante dans la carte de l'ISF) sortent ; la fraude sociale (3 594) reste exclue.
 - **B. Elle a été testée dans un sondage national publié en 2026**, avec la question et les résultats en ligne. Point de départ : les 12 mesures d'Elabe pour Les Echos du 3 septembre 2026.
 - **C. Elle a un effet sur le solde public** qu'une source publique permet de chiffrer, ou d'expliquer quand le chiffrage est impossible.
 
@@ -25,6 +25,8 @@ Une idée qui remplit A ou B mais pas C (par exemple la règle d'or, le RIC, le 
 *À décider par l'utilisateur* : le seuil de 20 %, et l'ajout d'autres sondages 2026 (Ifop, Ipsos, Odoxa) si leurs listes de mesures sont publiées.
 
 ## 2. Idées candidates et ce que les données couvrent déjà
+
+> **Comptes des cahiers ci-dessous : provisoires et non publiés.** Ils viennent du travail en cours de l'association « Des cahiers pour décider et agir » et de Data For Good, et ne sont ni affichés ni recopiés dans `data/`. Depuis le 15/10/2026, la règle A s'appuie sur la synthèse officielle de 2019 (section 1) ; cette colonne n'est gardée que pour l'historique de la conception.
 
 « Cahiers » : sujet repéré dans les cahiers citoyens de 2019 (comptes provisoires de l'association, non publiés : retirés du dépôt). « Elabe » : mesure testée le 3/9/2026.
 

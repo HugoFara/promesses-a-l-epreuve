@@ -235,10 +235,20 @@ class Historique(Ligne):
 class Idee(Ligne):
     """Idée qui revient (T16) : une carte de la page « idées ». Les montants sont dans idees_chiffres.csv."""
     id: str; groupe: Literal["recettes", "economies", "baisses"]; ordre: int; idee: str
-    sous_theme_cahiers: OptStr = None; part_cahiers: OptFloat = None; source_cahiers: OptStr = None
+    # Entre par les cahiers citoyens de 2019 : proposition comptée au moins 5 000 fois dans la synthèse officielle
+    cahiers: Literal["oui", "non"]; cahiers_proposition: OptStr = None; cahiers_mentions: OptInt = None
+    cahiers_page: OptStr = None; cahiers_url: OptStr = None
     sondage: OptStr = None; source_sondage: OptStr = None
     statut: Literal["deja_en_vigueur", "proposee_budget_2027", "en_partie", "non_prevue", "contraire_traites"]
     resume: str; fiable: str; qui_paie: str
+
+    @field_validator("cahiers_url")
+    @classmethod
+    def _cahiers(cls, v, info):
+        d = info.data
+        if d.get("cahiers") == "oui" and (not v or (d.get("cahiers_mentions") or 0) < 5000 or not d.get("cahiers_page")):
+            raise ValueError("idée des cahiers sans attestation publique d'au moins 5 000 mentions")
+        return v
 
 
 class IdeeChiffre(Ligne):

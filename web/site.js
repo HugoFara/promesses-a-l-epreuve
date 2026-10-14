@@ -845,8 +845,9 @@ function vueIdees() {
             repere(v, c) ? h("span", {class: "rep"}, repere(v, c)) : null));
         }
       });
-      const origine = [i.part_cahiers ? `Abordée dans ${n0(num(i.part_cahiers))} % des cahiers citoyens de 2019 (sujet « ${i.sous_theme_cahiers} »).` : "",
-        i.sondage ? "Testée dans un sondage national (Elabe pour Les Echos, septembre 2026)." : ""].filter(Boolean).join(" ");
+      const origine = [i.cahiers === "oui" ? h("span", {}, `Proposition « ${i.cahiers_proposition} » relevée ${n0(num(i.cahiers_mentions))} fois dans les cahiers citoyens et courriers du Grand débat de 2019 (`,
+          lien(i.cahiers_url, "synthèse officielle"), `, ${i.cahiers_page}).`) : "",
+        i.sondage ? "Testée dans un sondage national (Elabe pour Les Echos, septembre 2026)." : ""].filter(Boolean);
       const tous = h("ul", {class: "prose small"});
       cs.forEach(c => {
         if (c.ligne_moteur) {
@@ -865,7 +866,7 @@ function vueIdees() {
         h("details", {class: "acc"}, h("summary", {}, "Peut-on s'y fier ? Qui paierait ?"), h("div", {class: "acc-body"},
           h("h4", {}, "Peut-on s'y fier ?"), h("p", {}, i.fiable),
           h("h4", {}, "Qui paierait ?"), h("p", {}, i.qui_paie),
-          origine ? h("p", {class: "small muted"}, origine) : null,
+          origine.length ? h("p", {class: "small muted"}, origine.flatMap((x, k) => k ? [" ", x] : [x])) : null,
           h("h4", {}, "Tous les chiffres et leurs sources"), tous))));
       // Vue d'ensemble : le premier chiffre principal de chaque idée
       const c0 = cs.find(c => c.principal === "oui"), r0 = c0?.ligne_moteur ? moteur(c0) : null;
