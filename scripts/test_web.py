@@ -5,7 +5,8 @@ Ouvre chaque vue, sur écran large puis sur téléphone, et échoue si :
   - une vue à graphiques n'en trace aucun ;
   - la page déborde horizontalement ;
   - un chiffre clé affiché ne correspond pas aux CSV de data/ (statistique principale, solde corrigé de chaque
-    programme, date des données).
+    programme, date des données) ;
+  - une explication « Pourquoi ce chiffre ? » est vide ou ne s'ouvre pas.
 
 Nécessite Playwright (`pip install playwright && playwright install chromium`). Sans lui, le contrôle est sauté,
 sauf si TEST_WEB_STRICT=1 (cas de la CI), où son absence est une erreur.
@@ -105,6 +106,15 @@ def main():
                     lu = ("+" if v and v > 0 else "") + fr(v) + " Md€" if v is not None else None
                     if lu is None or lu not in txt:
                         echecs.append(f"programmes : solde corrigé de « {nom} » absent ou faux (attendu {lu})")
+                # « Pourquoi ce chiffre ? » : chaque ligne corrigée s'explique sans erreur, et la fenêtre s'ouvre au clic
+                vides = page.evaluate("""() => D.moteur.filter(m => { pourquoi(m.fichier, m.id);
+                    const ok = $("#pq-corps").innerText.includes("Après correction"); $("#pq").close(); return !ok; }).map(m => m.id)""")
+                if vides:
+                    echecs.append(f"pourquoi : explication vide pour {', '.join(vides)}")
+                page.locator("#cards-programmes .btn-pq").first.click()
+                if not page.locator("#pq[open]").count() or "Après correction" not in page.locator("#pq-corps").inner_text():
+                    echecs.append("pourquoi : la fenêtre du total ne s'ouvre pas")
+                page.keyboard.press("Escape")
                 annee, mois, jour = att["date"].split("-")
                 if annee not in k("maj") or str(int(jour)) not in k("maj"):
                     echecs.append(f"pied de page : date « {k('maj')} », attendu {att['date']}")

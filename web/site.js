@@ -13,7 +13,7 @@ const SOURCES = {
   variantes: "moteur_variantes", sensibilite: "sensibilite_chiffreurs", confiance: "confiance_programmes",
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
   validation_regles: "validation_regles", distributif: "distributif_menages", reformes: "distributif_reformes",
-  meta: "meta",
+  meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
 };
 
 // Fichiers proposés au téléchargement (vue Méthode), avec une description lisible.
@@ -40,7 +40,8 @@ const FR = d3.formatLocale({decimal: ",", thousands: " ", grouping: [3], curre
 const n0 = FR.format(",.0f"), n1 = FR.format(",.1f");
 const sg = (v, f = n1) => isNaN(v) || v === null ? "—" : (v > 0 ? "+" : "") + f(v);
 const pc = (v, f = n0) => f(v) + " %";
-const md = v => n0(Math.abs(v)) + " milliard" + (Math.abs(v) >= 1.5 ? "s" : "") + " d'euros";
+// Moins de 10 milliards : une décimale (5,5 et non 6) ; au-delà, l'arrondi à l'unité suffit
+const md = v => (Math.abs(v) < 10 ? n1 : n0)(Math.abs(v)) + "\u00a0milliard" + (Math.abs(v) >= 2 ? "s" : "") + " d'euros";
 const pts = v => n1(v) + " point" + (Math.abs(v) >= 2 ? "s" : "");
 const eur = v => n0(v) + " €";
 const num = x => (x === "" || x == null) ? NaN : Number(x);
@@ -555,6 +556,7 @@ function majProgrammes() {
       h("dt", {class: "total"}, "Après correction"), h("dd", {class: "total " + signCls(p.corrige)}, sg(p.corrige, n0) + " Md€"),
       h("dt", {}, "Fourchette (8 chances sur 10)"), h("dd", {}, `${sg(p.p10, n0)} à ${sg(p.p90, n0)}`),
       h("dt", {}, "Déficit 2027 qui en résulte"), h("dd", {}, n1(p.deficit) + " % du PIB")),
+    h("p", {style: "margin:.9rem 0 0"}, btnTotal("application_lignes", p.nom, "Pourquoi ce chiffre ?")),
     h("p", {class: "small muted", style: "margin:.9rem 0 0"}, "Point de départ : " + p.sources + "."))));
 
   const sel = $("#f-prog");
@@ -586,7 +588,7 @@ function tableProgrammes() {
     {t: "Annoncé par le parti", num: true, f: r => r.annonce_parti === "" ? "—" : sg(num(r.annonce_parti))},
     {t: "Indépendant", num: true, f: r => sg(num(r.independant))},
     {t: "Source", f: r => r.source_independant},
-    {t: "Après correction", num: true, f: r => sg(r.corrige), cls: r => signCls(r.corrige - num(r.independant))},
+    {t: "Après correction", num: true, f: r => [sg(r.corrige), " ", btnPourquoi("application_lignes", r.id, r.ligne)], cls: r => signCls(r.corrige - num(r.independant))},
     {t: "Règle", f: r => r.regle},
     {t: "Justification", f: r => r.justification},
     {t: "Autres chiffrages", f: r => r.autres_estimations},
@@ -622,7 +624,7 @@ function vueEquilibre() {
         h("dt", {}, "Recettes et économies"), h("dd", {class: "pos"}, sg(s.financement, n0) + " Md€"),
         s.investissement ? [h("dt", {}, "Investissement emprunté (hors équilibre)"), h("dd", {}, sg(s.investissement, n0) + " Md€")] : null,
         h("dt", {class: "total"}, "Solde"), h("dd", {class: "total " + signCls(s.solde)}, sg(s.solde, n0) + " Md€")),
-      h("p", {class: "verdict"}, s.solde >= 0 ? badge("Financé", "ok") : badge("Non financé", "bad")),
+      h("p", {class: "verdict"}, s.solde >= 0 ? badge("Financé", "ok") : badge("Non financé", "bad"), " ", btnTotal("paniers", s.nom, "Pourquoi ce chiffre ?")),
       h("details", {class: "data-toggle"}, h("summary", {}, "Qui paierait ?"),
         h("ul", {class: "small", style: "padding-left:1.1rem"}, fin.map(r => h("li", {}, `${r.qui_paie} : ${sg(r.corrige)} Md€ (${r.ligne})`))))));
   });
@@ -632,7 +634,7 @@ function vueEquilibre() {
   const drawTb = () => table($("#tb-pan"), [
     {t: "Ligne", f: r => r.ligne}, {t: "Rôle", f: r => r.role},
     {t: "Statique", num: true, f: r => sg(num(r.statique))},
-    {t: "Après correction", num: true, f: r => sg(r.corrige), cls: r => signCls(r.corrige)},
+    {t: "Après correction", num: true, f: r => [sg(r.corrige), " ", btnPourquoi("paniers", r.id, r.ligne)], cls: r => signCls(r.corrige)},
     {t: "Règle", f: r => r.regle}, {t: "Incertitude", f: r => r.incertitude}, {t: "Qui paie", f: r => r.qui_paie},
     {t: "Source", f: r => lien(r.url, r.source) || r.source},
   ], D.pan.filter(r => !sel.value || r.variante === sel.value), {group: r => r.variante});
@@ -739,6 +741,135 @@ function vueMethode() {
   table($("#tb-fichiers"), [{t: "Contenu", f: r => r[1]}, {t: "Fichier", f: r => h("a", {href: `../data/${r[0]}.csv`, download: ""}, r[0] + ".csv")}], FICHIERS);
 }
 
+/* ------------------------------------------------------------------ « Pourquoi ce chiffre ? »
+   Pour chaque montant corrigé : chiffrage de départ et sa source, règle appliquée et ce qui la fonde, part déjà
+   dans la référence, recoupements, résultat et fourchette, et ce que le test sur le passé dit de la règle.
+   corrige_central = montant × facteur_moteur × facteur_reference × facteur_interaction (moteur.py). */
+const n2 = FR.format(",.2f");
+const impact = v => v < 0 ? `un coût de ${md(v)} par an` : v > 0 ? `un gain de ${md(v)} par an` : "aucun effet";
+let pqOrigine = null;
+
+function btnPourquoi(fichier, id, libelle) {
+  const b = h("button", {type: "button", class: "btn-pq", "aria-label": `Pourquoi ce chiffre : ${libelle}`}, "Pourquoi ?");
+  b.onclick = () => pourquoi(fichier, id);
+  return b;
+}
+function btnTotal(fichier, groupe, txt) {
+  const b = h("button", {type: "button", class: "btn-pq big"}, txt);
+  b.onclick = () => pourquoiTotal(fichier, groupe);
+  return b;
+}
+function ouvrir(titre, ...corps) {
+  const dlg = $("#pq");
+  pqOrigine = document.activeElement;
+  $("#pq-titre").textContent = titre;
+  const c = $("#pq-corps"); c.textContent = ""; c.append(...corps.flat().filter(Boolean));
+  if (!dlg.open) dlg.showModal();
+  c.scrollTop = 0; dlg.scrollTop = 0;
+  $("#pq-fermer").focus();
+}
+
+/** Sources d'une règle : ids de regles.csv (élasticités ou mesures du backtest) rendus en liens lisibles. */
+function sourcesRegle(refs) {
+  return (refs || "").split(/\s+/).filter(Boolean).map(id => {
+    const e = D.elasticites.find(r => r.id === id);
+    if (e) return h("li", {}, `${e.parametre} : ${e.valeur_centrale} (${e.pays_periode}). `, lien(e.url, e.source) || e.source);
+    const m = D.mesures.find(r => r.id === id);
+    if (m) return h("li", {}, `${m.mesure} (${m.annee}) : annoncé ${n1(num(m.ex_ante))}, réel ${n1(num(m.ex_post_central))} Md€. `, lien(m.source_ex_post, "évaluation"));
+    const f = D.effets.find(r => r.id === id);
+    if (f) return h("li", {}, `${f.mesure}, ${f.effet.toLowerCase()} : annoncé ${f.annonce}, mesuré ${f.mesure_ex_post}. `, lien(f.source_ex_post, "évaluation"));
+    return h("li", {}, id);
+  });
+}
+function statutRegle(regle) {
+  if (regle === "Aucune") return null;
+  const v = D.validation_regles.find(r => r.regle === regle);
+  if (!v) return null;
+  const k = {"confirmée": "ok", "contredite": "bad", "mitigée": "warn"}[v.statut] || "";
+  const phrase = v.statut === "confirmée" ? `Testée sur ${v.n} mesure${v.n > 1 ? "s" : ""} passée${v.n > 1 ? "s" : ""}, elle a amélioré les chiffrages.`
+    : v.statut === "contredite" ? "Testée sur le passé, elle n'a pas amélioré les chiffrages : ce montant est à prendre avec prudence."
+    : v.statut === "mitigée" ? "Testée sur le passé, elle a donné des résultats partagés."
+    : "Elle n'a pas encore pu être vérifiée sur des mesures passées (pas de précédent comparable).";
+  return [h("h3", {}, "Cette règle est-elle fiable ?"), h("p", {}, badge("Règle " + v.statut, k), " ", phrase), h("p", {class: "small muted"}, v.note)];
+}
+
+function pourquoi(fichier, id) {
+  const m = D.moteur.find(r => r.fichier === fichier && r.id === id);
+  const l = (fichier === "paniers" ? D.paniers : D.application).find(r => r.id === id);
+  if (!m || !l) return;
+  const dep = num(m.montant), f = num(m.facteur_moteur), fr = num(m.facteur_reference || 1), fi = num(m.facteur_interaction || 1), c = num(m.corrige_central);
+  const R = D.regles_def.find(r => r.regle === m.regle) || {};
+  const src = fichier === "paniers" ? l.source : l.source_independant;
+  const etapes = [
+    ["Chiffrage de départ", sg(dep)],
+    f !== 1 ? ["Règle « " + m.regle + " »", "× " + n2(f)] : null,
+    fr !== 1 ? ["Part pas encore votée", "× " + n2(fr)] : null,
+    fi !== 1 ? ["Recoupements", "× " + n2(fi)] : null,
+    ["Après correction", sg(c)],
+  ].filter(Boolean);
+  const CF = {high: ["source lue directement", "ok"], medium: ["source secondaire", "warn"], low: ["estimation fragile", "bad"]};
+  ouvrir(l.ligne,
+    h("p", {class: "small muted"}, `${m.groupe} · montants en milliards d'euros par an, effet sur le solde public (négatif = coût)`),
+    h("ol", {class: "pq-etapes", "aria-label": "Calcul"}, etapes.map(([t, v], i) => h("li", {class: i === etapes.length - 1 ? "fin" : null}, h("span", {}, t), h("strong", {class: "num"}, v)))),
+    h("h3", {}, "1. Le point de départ"),
+    h("p", {}, `Chiffrage retenu au départ : ${impact(dep)}.`),
+    h("p", {class: "small"}, "Source : " + src + ". ", lien(l.url, "Consulter la source"), " ", l.confiance ? badge(...(CF[l.confiance] || [l.confiance])) : null),
+    h("h3", {}, "2. La correction"),
+    m.regle === "Aucune" ? h("p", {}, "Aucune correction : " + (R.base || "").replace(/^./, x => x.toLowerCase()) + ".")
+      : h("p", {}, `On applique la règle « ${m.regle} », qui multiplie le montant par ${n2(f)}. `, h("span", {class: "muted"}, "Ce sur quoi elle repose : " + (R.base || "") + ".")),
+    l.justification && l.justification !== R.base ? h("p", {}, "Pour cette mesure : " + l.justification + ".") : null,
+    m.mode === "forfait" ? h("p", {class: "small muted"}, `Facteur forfaitaire : la formule détaillée attend encore des paramètres (${m.parametres_manquants.split(/\s+/).join(", ")}).`) : null,
+    fr !== 1 ? h("p", {}, `Une partie de la mesure est déjà prévue par la loi ou les budgets 2027 : seuls ${pc(fr * 100)} sont comptés, pour ne pas les compter deux fois.`, l.note_reference ? h("span", {class: "small muted"}, " " + l.note_reference) : null) : null,
+    fi !== 1 ? h("p", {}, `Cette mesure recoupe d'autres mesures du même programme (même impôt ou même assiette) : son montant est multiplié par ${n2(fi)}.`) : null,
+    h("h3", {}, "3. Le résultat"),
+    h("p", {}, `Après correction : ${impact(c)}. Compte tenu des incertitudes, le résultat se situe entre ${sg(num(m.p10))} et ${sg(num(m.p90))} milliards dans 8 cas sur 10.`),
+    statutRegle(m.regle),
+    R.references ? h("details", {class: "data-toggle"}, h("summary", {}, "Les études et mesures passées sur lesquelles repose la règle"), h("ul", {class: "small"}, sourcesRegle(R.references))) : null,
+    h("details", {class: "data-toggle"}, h("summary", {}, "Le détail du calcul (spécialistes)"),
+      h("p", {class: "small num"}, `${n1(dep)} × ${n2(f)} × ${n2(fr)} × ${n2(fi)} = ${n1(c)}`),
+      h("dl", {class: "pq-dl small"},
+        [["Mode", m.mode === "moteur" ? "formule du moteur" : "facteur forfaitaire"], ["Facteur forfaitaire de la ligne", n2(num(m.facteur_forfait))],
+         ["Facteur du moteur", n2(f) + (num(m.ecart_facteur_pct) ? ` (écart ${sg(num(m.ecart_facteur_pct))} %)` : "")],
+         ["Loi votée seule", sg(num(m.corrige_loi_votee))], ["En 2028", sg(num(m.corrige_2028))],
+         ["Statut de référence", l.statut_reference || "—"], ["Fiabilité de la référence", l.confiance_reference || "—"],
+         ["Autres chiffrages", l.autres_estimations || "—"], ["Qui paie", l.qui_paie || "—"], ["Incertitude", l.incertitude || "—"]]
+          .filter(([, v]) => v && v !== "—").map(([k, v]) => [h("dt", {}, k), h("dd", {}, v)])),
+      paramsRegle(m.regle)));
+}
+
+/** Paramètres de la formule d'une règle (moteur_regles → moteur_parametres), avec leur provenance. */
+function paramsRegle(regle) {
+  const mr = D.moteur_regles.find(r => r.regle === regle);
+  if (!mr || !mr.parametres) return null;
+  const ids = mr.parametres.split(";").map(x => x.split("=").pop().trim()).filter(x => x && x !== "un" && x !== "zero");
+  const P = ids.map(id => D.moteur_parametres.find(r => r.id === id)).filter(Boolean);
+  if (!P.length) return null;
+  return [h("p", {class: "small", style: "margin:.75rem 0 .25rem"}, h("strong", {}, `Formule « ${mr.formule} », paramètres :`)),
+    h("ul", {class: "small"}, P.map(q => h("li", {}, `${q.id} = ${q.val_central}` + (q.val_bas ? ` (de ${q.val_bas} à ${q.val_haut})` : "") + (q.unite ? ` ${q.unite}` : "") + (q.note ? ` — ${q.note}` : ""))))];
+}
+
+/** Total d'un programme ou d'un scénario : somme des lignes, en commençant par les corrections qui pèsent le plus. */
+function pourquoiTotal(fichier, groupe) {
+  const L = D.moteur.filter(r => r.fichier === fichier && r.groupe === groupe);
+  const lignes = (fichier === "paniers" ? D.paniers : D.application);
+  const nom = id => lignes.find(r => r.id === id)?.ligne || id;
+  const dep = sum(L, r => num(r.montant)), c = sum(L, r => num(r.corrige_central));
+  const parCorr = [...L].sort((a, b) => Math.abs(num(b.corrige_central) - num(b.montant)) - Math.abs(num(a.corrige_central) - num(a.montant)));
+  const corrigees = parCorr.filter(r => Math.abs(num(r.corrige_central) - num(r.montant)) >= 0.05);
+  const item = r => h("li", {}, h("button", {type: "button", class: "btn-lien"}, nom(r.id)), ` : ${sg(num(r.montant))} → ${sg(num(r.corrige_central))} `,
+    h("span", {class: "muted"}, `(${sg(num(r.corrige_central) - num(r.montant))})`));
+  const listeMesures = rs => { const ul = h("ul", {class: "pq-liste"}, rs.map(item)); $$("button", ul).forEach((b, i) => b.onclick = () => pourquoi(fichier, rs[i].id)); return ul; };
+  ouvrir(groupe,
+    h("p", {class: "small muted"}, "Montants en milliards d'euros par an, effet sur le solde public (négatif = coût)"),
+    h("ol", {class: "pq-etapes"}, h("li", {}, h("span", {}, "Somme des chiffrages de départ"), h("strong", {class: "num"}, sg(dep))),
+      h("li", {}, h("span", {}, `Corrections (${corrigees.length} mesure${corrigees.length > 1 ? "s" : ""})`), h("strong", {class: "num"}, sg(c - dep))),
+      h("li", {class: "fin"}, h("span", {}, "Après correction"), h("strong", {class: "num"}, sg(c)))),
+    h("p", {}, `Ce total additionne ${L.length} mesures. Chacune part d'un chiffrage indépendant, puis reçoit, si besoin, une correction tirée des erreurs passées. Les corrections qui changent le plus le résultat :`),
+    corrigees.length ? listeMesures(corrigees.slice(0, 8)) : h("p", {class: "muted"}, "Aucune mesure n'est corrigée."),
+    h("details", {class: "data-toggle"}, h("summary", {}, `Toutes les mesures (${L.length})`), listeMesures(parCorr)),
+    h("p", {class: "small muted"}, "Cliquez sur une mesure pour voir le détail de son calcul."));
+}
+
 /* ------------------------------------------------------------------ vues et navigation */
 const DESSINS = {
   hier: [drawWaffle, drawEcarts, drawPS, drawPairs],
@@ -797,6 +928,10 @@ function initAffichage() {
 
 async function init() {
   initAffichage();
+  const dlg = $("#pq");
+  $("#pq-fermer").onclick = () => dlg.close();
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });  // clic sur le fond
+  dlg.addEventListener("close", () => { if (pqOrigine && document.contains(pqOrigine)) pqOrigine.focus(); });
   addEventListener("hashchange", route);
   route();
   try {

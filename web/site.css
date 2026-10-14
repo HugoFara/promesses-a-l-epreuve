@@ -251,6 +251,31 @@ td.sub { padding-left: 1.75rem; }
 a.term { color: inherit; text-decoration: underline dotted; text-decoration-color: var(--primary); text-underline-offset: .2em; }
 a.term:hover { color: var(--primary); }
 
+/* « Pourquoi ce chiffre ? » */
+.btn-pq { font: inherit; font-size: .8rem; font-weight: 700; color: var(--primary); background: var(--primary-soft); border: 1px solid transparent; border-radius: var(--radius); padding: .2rem .5rem; cursor: pointer; white-space: nowrap; min-height: 32px; }
+.btn-pq.big { font-size: .9rem; padding: .45rem .8rem; min-height: 44px; }
+.btn-pq:hover { border-color: var(--primary); }
+.btn-lien { font: inherit; color: var(--primary); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: .18em; cursor: pointer; text-align: left; }
+.pq { width: min(46rem, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--bg); color: var(--text); }
+.pq::backdrop { background: rgb(0 0 0 / .55); }
+.pq-tete { position: sticky; top: 0; background: var(--bg); border-bottom: 3px solid var(--primary); padding: 1rem 1.25rem .75rem; display: grid; grid-template-columns: 1fr auto; gap: 0 1rem; align-items: start; z-index: 1; }
+.pq-tete h2 { margin: 0; font-size: 1.3rem; grid-column: 1; }
+.pq-tete .btn-tool { grid-column: 2; grid-row: 1 / span 2; }
+.pq-sur { margin: 0 0 .2rem; font-size: .85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .03em; }
+.pq-corps { padding: 1rem 1.25rem 1.5rem; }
+.pq-corps h3 { font-size: 1.05rem; margin: 1.25rem 0 .4rem; }
+.pq-etapes { list-style: none; margin: .75rem 0 1rem; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: stretch; }
+.pq-etapes li { border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-alt); padding: .5rem .75rem; display: flex; flex-direction: column; min-width: 7.5rem; }
+.pq-etapes li span { font-size: .8rem; color: var(--text-muted); }
+.pq-etapes li strong { font-size: 1.25rem; }
+.pq-etapes li.fin { background: var(--primary); border-color: var(--primary); }
+.pq-etapes li.fin span, .pq-etapes li.fin strong { color: var(--on-primary); }
+.pq-liste { padding-left: 1.1rem; }
+.pq-liste li { margin-bottom: .4rem; }
+.pq-dl { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; margin: .5rem 0; }
+.pq-dl dt { color: var(--text-muted); }
+.pq-dl dd { margin: 0; }
+
 /* Pied de page */
 .footer { border-top: 3px solid var(--primary); background: var(--bg-alt); padding: 2rem 0; font-size: .925rem; }
 .footer .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1.5rem; }
