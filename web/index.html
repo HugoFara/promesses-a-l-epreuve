@@ -289,9 +289,36 @@
   <section class="view" id="v-foyer" data-titre="Mon foyer" hidden>
     <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Mon foyer</li></ol></nav>
     <h1>Qu'est-ce que cela change pour mon foyer ?</h1>
-    <p class="lede">Quelques mesures débattues, appliquées à des foyers types. Choisissez celui qui vous ressemble le plus.</p>
+    <p class="lede">Des mesures débattues, calculées pour de nombreuses situations. Décrivez la vôtre : le site affiche le cas calculé le plus proche.</p>
 
-    <fieldset class="choices" id="choix-menage"><legend>Votre situation</legend></fieldset>
+    <div class="callout">
+      <h2>En bref</h2>
+      <ul id="bref-foyer"></ul>
+    </div>
+
+    <form class="sim" id="sim-foyer" aria-describedby="sim-aide">
+      <p class="small muted" id="sim-aide">Rien n'est envoyé : tout est calculé à l'avance et le choix se fait dans votre navigateur.</p>
+      <fieldset class="choices"><legend>Vous êtes</legend>
+        <label class="choice"><input type="radio" name="statut" value="actif" checked><span>En activité (salarié)</span></label>
+        <label class="choice"><input type="radio" name="statut" value="retraite"><span>À la retraite</span></label>
+      </fieldset>
+      <fieldset class="choices"><legend>Vous vivez</legend>
+        <label class="choice"><input type="radio" name="composition" value="seul" checked><span>Seul ou seule</span></label>
+        <label class="choice"><input type="radio" name="composition" value="couple_2"><span>En couple, deux revenus</span></label>
+        <label class="choice"><input type="radio" name="composition" value="couple_1"><span>En couple, un seul revenu</span></label>
+      </fieldset>
+      <fieldset class="choices" id="sim-enfants"><legend>Enfants à charge</legend>
+        <label class="choice"><input type="radio" name="enfants" value="0" checked><span>Aucun</span></label>
+        <label class="choice"><input type="radio" name="enfants" value="1"><span>1</span></label>
+        <label class="choice"><input type="radio" name="enfants" value="2"><span>2</span></label>
+        <label class="choice"><input type="radio" name="enfants" value="3"><span>3</span></label>
+      </fieldset>
+      <div class="filters">
+        <div class="field"><label for="sim-niveau" id="sim-niveau-l">Salaire net par mois, par personne qui travaille</label><select id="sim-niveau"></select></div>
+        <div class="field"><label for="sim-capital">Dividendes reçus par le foyer, par an</label><select id="sim-capital"></select></div>
+      </div>
+    </form>
+
     <div aria-live="polite">
       <p class="big" id="foyer-intro"></p>
       <div class="foyer-result" id="foyer-result"></div>
@@ -299,12 +326,15 @@
 
     <div class="callout warn">
       <h2>Limites de ce calcul</h2>
-      <p>Ces foyers sont des exemples simplifiés, calculés avec le logiciel public <a class="term" href="#/lexique/openfisca">OpenFisca</a> sur les règles de 2026. Votre situation réelle peut être différente. L'effet sur l'ensemble de la population, par niveau de revenu, n'est pas encore calculé.</p>
+      <p>Ces situations sont des exemples simplifiés, calculés avec le logiciel public <a class="term" href="#/lexique/openfisca">OpenFisca</a> sur les règles de 2026 : revenus ronds, pas de loyer ni d'aide au logement, enfants de 4, 7 et 10 ans. Votre situation réelle peut être différente. Les mesures viennent de programmes différents : leurs effets ne s'additionnent pas. Les seuils de la loi créent parfois des effets inattendus : une pension un peu plus basse peut faire passer le foyer sous le seuil d'exonération de la CSG et augmenter son revenu disponible. Les mesures sont appliquées comme si elles étaient en place depuis plusieurs années (régime permanent). L'effet sur l'ensemble de la population, par niveau de revenu, n'est pas encore calculé : il faudrait des données d'enquête dont l'accès est réservé aux chercheurs habilités.</p>
     </div>
 
     <div class="accs">
-      <details class="acc"><summary>Pour aller plus loin : tous les foyers et toutes les mesures</summary><div class="acc-body">
-        <p class="prose small muted">Gain ou perte annuels de revenu disponible, en euros (entre parenthèses : en % du revenu disponible).</p>
+      <details class="acc"><summary>Comment chaque mesure est calculée</summary><div class="acc-body">
+        <ul class="prose small" id="foyer-regles"></ul>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : les foyers types du rapport</summary><div class="acc-body">
+        <p class="prose small muted">Gain ou perte annuels de revenu disponible, en euros (entre parenthèses : en % du revenu disponible). Toutes les situations du simulateur sont dans le fichier <a href="../data/distributif_grille.csv" download>distributif_grille.csv</a>.</p>
         <div class="tbl-wrap" id="tb-dist"></div>
       </div></details>
     </div>

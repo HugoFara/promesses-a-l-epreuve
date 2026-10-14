@@ -6,7 +6,7 @@ Destinataire : agent d'implémentation. État au 14 octobre 2026. La version du 
 
 Construire une méthode reproductible pour évaluer la crédibilité budgétaire des programmes de la présidentielle 2027. On calibre des corrections sur l'histoire : on compare les chiffrages annoncés de mesures passées à leur coût réel, puis on applique les écarts observés aux programmes actuels. Le traitement est identique pour tous les partis.
 
-Le 14 octobre, les tâches T1, T2, T4, T5, T6, T8, T9 et T10 ont été traitées (section 7), puis un audit indépendant (`recherche/audit/rapport.md`) a relu l'ensemble : les 2 problèmes bloquants et 8 des 10 importants ont été corrigés le jour même (section 3, « Corrections de l'audit »). T3 attend la publication des programmes (LFI le 6 novembre 2026). T7 est partiel : ménages types oui, déciles non.
+Le 14 octobre, les tâches T1, T2, T4, T5, T6, T8, T9 et T10 ont été traitées (section 7), puis un audit indépendant (`recherche/audit/rapport.md`) a relu l'ensemble : les 2 problèmes bloquants et 8 des 10 importants ont été corrigés le jour même (section 3, « Corrections de l'audit »). T3 attend la publication des programmes (LFI le 6 novembre 2026). T7 est partiel : ménages types et grille de 468 situations (simulateur « Mon foyer ») oui, déciles non.
 
 ## 2. Contenu du paquet
 
@@ -28,7 +28,7 @@ backtest-chiffrages/
 │   ├── sensibilite.py          T6 : solde par chiffreur de départ
 │   ├── validation.py           indicateur de confiance : notre méthode vs chiffrages de départ, sur le passé
 │   ├── projection.py           T5 : trajectoires 2026-2032 (déficit, dette, intérêts, stress +25 pb)
-│   ├── distributif.py / .sh    T7 : ménages types sous OpenFisca-France
+│   ├── distributif.py / .sh    T7 : ménages types et grille du simulateur sous OpenFisca-France
 │   ├── build_web.py            génère web/complet.html (tableau de bord complet, autonome)
 │   ├── test_web.py             ouvre chaque vue du site dans Chromium (2 écrans) : erreurs JS, débordement, chiffres clés vs CSV
 │   ├── check_regression.py     17 valeurs de référence
@@ -50,7 +50,7 @@ Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 er
 
 **Historique (règle 5).** Toute modification d'une valeur existante est inscrite dans `data/raw/historique.csv` (date, fichier, id, colonne, ancienne valeur, nouvelle, raison, source). Ce journal tient lieu de la colonne `valeur_precedente` demandée en T2. `appliquer_corrections.py` refuse une correction si la valeur actuelle ne correspond pas à l'ancienne valeur annoncée.
 
-**Site local.** Depuis la racine : `python3 -m http.server 8000`, puis ouvrir http://localhost:8000/web/. Le site public répartit le contenu en vues adressables (`#/hier`, `#/programmes`, `#/equilibre`, `#/foyer`, `#/demain`, `#/methode`, `#/lexique`) : encadré « En bref » en langage courant, graphiques avec tableau de données équivalent, détail expert dans des accordéons, paramètres d'affichage (thème, taille du texte). Apparence inspirée des sites publics, sans en reprendre les signes distinctifs (ni Marianne, ni bloc-marque) ; un bandeau rappelle que le site est indépendant. Tous les chiffres viennent des CSV (`SOURCES` dans `web/site.js`). Chaque montant corrigé (lignes des programmes et des paniers, totaux des cartes) a un bouton « Pourquoi ce chiffre ? » : chiffrage de départ et sa source, règle et ses références (`regles.csv`, élasticités, mesures du backtest), part déjà dans la référence, recoupements, fourchette P10-P90, statut de la règle (`validation_regles.csv`), et le détail du moteur (`moteur_lignes`, `moteur_regles`, `moteur_parametres`). Le tableau de bord complet (http://localhost:8000/web/complet.html) couvre 13 sections : les 8 d'origine (les sections 7 et 8 lisent désormais les montants corrigés du moteur, `moteur_lignes.csv`), puis incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
+**Site local.** Depuis la racine : `python3 -m http.server 8000`, puis ouvrir http://localhost:8000/web/. Le site public répartit le contenu en vues adressables (`#/hier`, `#/programmes`, `#/equilibre`, `#/foyer`, `#/demain`, `#/methode`, `#/lexique`) : encadré « En bref » en langage courant, graphiques avec tableau de données équivalent, détail expert dans des accordéons, paramètres d'affichage (thème, taille du texte). Apparence inspirée des sites publics, sans en reprendre les signes distinctifs (ni Marianne, ni bloc-marque) ; un bandeau rappelle que le site est indépendant. Tous les chiffres viennent des CSV (`SOURCES` dans `web/site.js`). La vue « Mon foyer » est un simulateur : statut, composition, enfants, revenu net, dividendes ; il affiche la situation la plus proche de `distributif_grille.csv` (précalculée, rien n'est envoyé). Chaque montant corrigé (lignes des programmes et des paniers, totaux des cartes) a un bouton « Pourquoi ce chiffre ? » : chiffrage de départ et sa source, règle et ses références (`regles.csv`, élasticités, mesures du backtest), part déjà dans la référence, recoupements, fourchette P10-P90, statut de la règle (`validation_regles.csv`), et le détail du moteur (`moteur_lignes`, `moteur_regles`, `moteur_parametres`). Le tableau de bord complet (http://localhost:8000/web/complet.html) couvre 13 sections : les 8 d'origine (les sections 7 et 8 lisent désormais les montants corrigés du moteur, `moteur_lignes.csv`), puis incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
 
 **OpenFisca.** `distributif.sh` utilise le clone local `../openfisca-france` (à côté du projet, version 176.1.4 rebasée sur l'upstream du 14/10/2026) et son `.venv`, recréé le 14 octobre. Si OpenFisca est absent, l'étape est sautée.
 
@@ -186,16 +186,22 @@ Sur la statistique principale des chiffrages officiels (26 mesures), l'erreur m�
 
 **Décisions appliquées le 14/10** : « Taux de recours » restreinte aux chiffrages à recours complet (vérifié pour Montaigne : tous les éligibles au montant plein) ; « Élasticité patrimoine » affaiblie à 0,97. **Décision appliquée** : décote faible pour l'IS (0,94, fourchette 0,73-1). **À surveiller** : les soldes 2025 de la surtaxe et de la CDHR (déclarations de 2026), qui confirmeront ou non les acomptes.
 
-### Effets distributifs (T7, `distributif_menages.csv`)
+### Effets distributifs (T7, `distributif_menages.csv`, `distributif_grille.csv`)
 
 | Ménage type (législation 2026) | SMIC 1 600 € net | Gel des pensions > 1 281 € | Abattement retraités plafonné à 3 000 € | Fin du PFU |
 |---|---|---|---|---|
-| Salarié au SMIC, célibataire | +1 366 €/an | 0 | 0 | 0 |
-| Couple de retraités (2 000 + 1 300 € bruts) | 0 | −550 €/an | −154 €/an | 0 |
+| Salarié au SMIC, célibataire | +1 293 €/an | 0 | 0 | 0 |
+| Couple de retraités (2 000 + 1 300 € bruts) | 0 | −521 €/an | −126 €/an | 0 |
 | Cadre (4 SMIC, 5 000 € de dividendes) | 0 | 0 | 0 | −260 €/an |
-| Famille monoparentale, 1 enfant, SMIC | +1 476 €/an | 0 | 0 | 0 |
+| Famille monoparentale, 1 enfant, SMIC | +1 403 €/an | 0 | 0 | 0 |
 
-Ménages types = conventions (multiples du SMIC, montants ronds). Le critère T7 (reproduire un résultat par décile) n'est pas atteint : il faut une microsimulation sur données d'enquête (ERFS via le CASD).
+**Correction du 14/10 (soir)** : les revenus n'étaient renseignés que pour 2026. Or OpenFisca lit ceux de l'année N-2 (taux de CSG des pensions selon le RFR 2024) et du trimestre précédent (prime d'activité, ASPA) : tous les retraités étaient exonérés de CSG, le couple de retraités touchait 2 140 € d'ASPA fictifs et la prime d'activité du salarié au SMIC était surestimée (3 338 € au lieu de 2 847 €). Hypothèse désormais : situation stable (mêmes revenus en 2024, 2025, 2026) et réformes appliquées sur les trois années (régime permanent). Anciens chiffres : SMIC +1 366 / +1 476, gel −550, abattement −154.
+
+**Choix PFU / barème** : la situation de départ donne à chaque foyer le plus avantageux des deux (case 2OP, déjà permise) ; sans cela la suppression du PFU « faisait gagner » 225 situations de la grille. Le choix reste figé pour les autres réformes.
+
+**Grille du simulateur** (`distributif_grille.csv`, 468 situations × 4 réformes, une simulation OpenFisca par réforme) : actifs (seul, couple à deux revenus, couple à un revenu ; 0 à 3 enfants ; 0,5 à 6 SMIC) et retraités (mêmes compositions, sans enfants ; pensions de 900 à 5 000 € bruts), dividendes 0, 2 000, 10 000 ou 50 000 €/an. Hausse du SMIC : salariés au SMIC horaire, y compris à temps partiel, sans effet de diffusion. Un effet de seuil réel apparaît : le gel fait *gagner* 631 € au couple à une pension de 2 000 € bruts, dont le RFR passe sous le seuil d'exonération de CSG.
+
+Ménages types et grille = conventions (multiples du SMIC, montants ronds, pas de loyer ni d'aide au logement). Le critère T7 (reproduire un résultat par décile) n'est pas atteint : il faut une microsimulation sur données d'enquête (ERFS via le CASD). Un serveur OpenFisca (`openfisca serve`) permettrait un simulateur libre, mais imposerait un hébergement : la grille précalculée garde un site statique.
 
 ## 4. Schéma des données (data/raw/)
 

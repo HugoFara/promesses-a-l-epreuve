@@ -1,17 +1,17 @@
 menage,reforme,libelle,annee_legislation,revenu_disponible_avant,revenu_disponible_apres,gain_annuel,gain_pct
-"Salarié au SMIC, célibataire",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,20655,20655,0,0.0
-"Salarié au SMIC, célibataire",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,20655,20655,0,0.0
-"Salarié au SMIC, célibataire",smic_1600,SMIC à 1 600 € net par mois,2026,20655,22021,1366,6.61
-"Salarié au SMIC, célibataire",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,20655,20655,0,0.0
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,41236,41082,-154,-0.37
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),fin_pfu,Suppression du PFU (revenus du capital au barème),2026,41236,41236,0,0.0
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),smic_1600,SMIC à 1 600 € net par mois,2026,41236,41236,0,0.0
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,41236,40687,-550,-1.33
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,61275,61275,0,0.0
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,61275,61015,-260,-0.42
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",smic_1600,SMIC à 1 600 € net par mois,2026,61275,61275,0,0.0
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,61275,61275,0,0.0
-"Famille monoparentale, 1 enfant, SMIC",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,26096,26096,0,0.0
-"Famille monoparentale, 1 enfant, SMIC",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,26096,26096,0,0.0
-"Famille monoparentale, 1 enfant, SMIC",smic_1600,SMIC à 1 600 € net par mois,2026,26096,27572,1476,5.66
-"Famille monoparentale, 1 enfant, SMIC",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,26096,26096,0,0.0
+"Salarié au SMIC, célibataire",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,20165,20165,0,0.0
+"Salarié au SMIC, célibataire",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,20165,20165,0,0.0
+"Salarié au SMIC, célibataire",smic_1600,SMIC à 1 600 € net par mois,2026,20165,21457,1293,6.41
+"Salarié au SMIC, célibataire",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,20165,20165,0,0.0
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,36404,36278,-126,-0.35
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),fin_pfu,Suppression du PFU (revenus du capital au barème),2026,36404,36404,0,0.0
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),smic_1600,SMIC à 1 600 € net par mois,2026,36404,36404,0,0.0
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,36404,35883,-521,-1.43
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,60476,60476,0,0.0
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,60476,60216,-260,-0.43
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",smic_1600,SMIC à 1 600 € net par mois,2026,60476,60476,0,0.0
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,60476,60476,0,0.0
+"Famille monoparentale, 1 enfant, SMIC",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,25513,25513,0,0.0
+"Famille monoparentale, 1 enfant, SMIC",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,25513,25513,0,0.0
+"Famille monoparentale, 1 enfant, SMIC",smic_1600,SMIC à 1 600 € net par mois,2026,25513,26916,1403,5.5
+"Famille monoparentale, 1 enfant, SMIC",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,25513,25513,0,0.0

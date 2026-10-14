@@ -6,7 +6,9 @@ Ouvre chaque vue, sur écran large puis sur téléphone, et échoue si :
   - la page déborde horizontalement ;
   - un chiffre clé affiché ne correspond pas aux CSV de data/ (statistique principale, solde corrigé de chaque
     programme, date des données) ;
-  - une explication « Pourquoi ce chiffre ? » est vide ou ne s'ouvre pas.
+  - une explication « Pourquoi ce chiffre ? » est vide ou ne s'ouvre pas ;
+  - le simulateur « Mon foyer » n'affiche pas le revenu et les effets de la situation choisie
+    (distributif_grille.csv).
 
 Nécessite Playwright (`pip install playwright && playwright install chromium`). Sans lui, le contrôle est sauté,
 sauf si TEST_WEB_STRICT=1 (cas de la CI), où son absence est une erreur.
@@ -14,6 +16,7 @@ sauf si TEST_WEB_STRICT=1 (cas de la CI), où son absence est une erreur.
 import csv
 import functools
 import os
+import re
 import sys
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -51,7 +54,8 @@ def attendus():
               if r["fichier"] == "application_lignes" and r["composante"] == "solde"}
     soldes = {p["programme"]: totaux[p["programme"]] for p in progs if p["scrutin"] == dernier}
     date = next(r["valeur"] for r in lire("meta") if r["cle"] == "date_donnees")
-    return {"mes_n": st["n"], "mes_mediane": fr(float(st["erreur_abs_mediane_pct"])) + " %", "soldes": soldes, "date": date}
+    return {"mes_n": st["n"], "mes_mediane": fr(float(st["erreur_abs_mediane_pct"])) + " %", "soldes": soldes, "date": date,
+            "foyer": [r for r in lire("distributif_grille") if r["id"] == "retraite_couple_2_0_2000_0"]}
 
 
 def main():
@@ -115,6 +119,23 @@ def main():
                 if not page.locator("#pq[open]").count() or "Après correction" not in page.locator("#pq-corps").inner_text():
                     echecs.append("pourquoi : la fenêtre du total ne s'ouvre pas")
                 page.keyboard.press("Escape")
+                # Simulateur « Mon foyer » : couple de retraités, deux pensions de 2 000 € bruts, sans dividendes
+                page.evaluate("location.hash = '#/foyer'")
+                for v in ("retraite", "couple_2"):
+                    page.locator(f"#sim-foyer input[value={v}]").check(force=True)
+                page.select_option("#sim-niveau", "2000")
+                page.select_option("#sim-capital", "0")
+                intro, res = page.locator("#foyer-intro").inner_text(), page.locator("#foyer-result").inner_text()
+                serre = lambda t: re.sub(r"\s", "", t)  # sans espaces (le site sépare les milliers par une espace fine)
+                g = att["foyer"]
+                if not g or str(int(g[0]["revenu_disponible_avant"])) + "€" not in serre(intro):
+                    echecs.append(f"foyer : revenu disponible absent ou faux (lu « {intro} »)")
+                for r in g:
+                    v = int(r["gain_annuel"])
+                    if v and ("+" if v > 0 else "") + fr(v) + "€" not in serre(res):
+                        echecs.append(f"foyer : effet de {r['reforme']} absent ou faux (attendu {v} €)")
+                if page.locator("#sim-enfants").is_visible():
+                    echecs.append("foyer : le choix des enfants reste affiché pour un retraité")
                 annee, mois, jour = att["date"].split("-")
                 if annee not in k("maj") or str(int(jour)) not in k("maj"):
                     echecs.append(f"pied de page : date « {k('maj')} », attendu {att['date']}")

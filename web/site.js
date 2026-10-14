@@ -12,7 +12,7 @@ const SOURCES = {
   parametres: "application_parametres", paniers: "paniers", moteur: "moteur_lignes", totaux: "moteur_totaux",
   variantes: "moteur_variantes", sensibilite: "sensibilite_chiffreurs", confiance: "confiance_programmes",
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
-  validation_regles: "validation_regles", distributif: "distributif_menages", reformes: "distributif_reformes",
+  validation_regles: "validation_regles", distributif: "distributif_menages", grille: "distributif_grille", reformes: "distributif_reformes",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
 };
 
@@ -31,6 +31,7 @@ const FICHIERS = [
   ["projection", "Trajectoires de dette et de déficit 2026-2032"],
   ["validation_resume", "Test de la méthode sur le passé"],
   ["distributif_menages", "Effet sur les foyers types"],
+  ["distributif_grille", "Effet sur toutes les situations du simulateur « Mon foyer »"],
 ];
 
 const CRISES_T3 = [2009, 2010, 2020, 2021];
@@ -650,7 +651,6 @@ function vueEquilibre() {
 }
 
 function vueFoyer() {
-  const menages = [...new Set(D.distributif.map(r => r.menage))];
   const ref = new Map(D.reformes.map(r => [r.id, r]));
   const origine = id => {
     const [f, lid] = (ref.get(id)?.ligne_liee || "").split(" ");
@@ -659,24 +659,66 @@ function vueFoyer() {
     const src = !lid ? "" : f === "paniers" ? D.paniers.find(ok)?.variante : D.application.find(ok)?.programme;
     return src ? src.replace(/ (intégral|ajusté)$/, "") : "";
   };
-  const fs = $("#choix-menage");
-  $$(".choice", fs).forEach(e => e.remove());
-  menages.forEach((m, i) => fs.append(h("label", {class: "choice"}, h("input", {type: "radio", name: "menage", value: m, checked: i === 0 ? "" : null}), h("span", {}, m))));
-  const show = () => {
-    const m = $("input[name=menage]:checked", fs).value, rs = D.distributif.filter(r => r.menage === m);
-    const rev = num(rs[0].revenu_disponible_avant);
-    $("#foyer-intro").textContent = `Revenu disponible actuel (après impôts et prestations) : ${eur(rev)} par an, soit environ ${eur(rev / 12)} par mois.`;
+  const lignes = rs => {
     const out = $("#foyer-result"); out.textContent = "";
     rs.forEach(r => {
       const g = num(r.gain_annuel), cls = g > 0 ? "gain" : g < 0 ? "perte" : "neutre", o = origine(r.reforme);
       out.append(h("div", {class: "foyer-row " + cls},
-        h("div", {}, h("strong", {}, r.libelle), o ? h("div", {class: "small muted"}, "Mesure étudiée dans : " + o) : null),
+        h("div", {}, h("strong", {}, ref.get(r.reforme)?.libelle || r.reforme), o ? h("div", {class: "small muted"}, "Mesure étudiée dans : " + o) : null),
         h("div", {class: "amt " + (g > 0 ? "pos" : g < 0 ? "neg" : "muted")}, g === 0 ? "Aucun effet" : sg(g, n0) + " €"),
         g !== 0 ? h("div", {class: "per"}, `par an, soit ${sg(g / 12, n0)} € par mois (${sg(num(r.gain_pct))} % du revenu)`) : null));
     });
   };
-  fs.onchange = show; show();
 
+  // Simulateur : la grille précalculée (distributif_grille.csv) contient toutes les combinaisons du formulaire
+  const G = D.grille, f = $("#sim-foyer");
+  const val = n => $(`input[name=${n}]:checked`, f)?.value;
+  const uniq = (rs, c) => [...new Set(rs.map(r => r[c]))].sort((x, y) => num(x) - num(y));
+  const smic = v => v === 1 ? "SMIC à temps plein" : v < 1 ? `SMIC à temps partiel, ${n0(v * 100)} %` : `${FR.format(",.2~f")(v)} SMIC`;
+  $("#sim-capital").textContent = "";
+  uniq(G, "capital").forEach(c => $("#sim-capital").append(h("option", {value: c}, num(c) === 0 ? "Aucun" : eur(num(c)))));
+  const show = () => {
+    const st = val("statut");
+    $("#sim-enfants").hidden = st === "retraite";
+    if (st === "retraite") $("input[name=enfants][value='0']", f).checked = true;
+    const cle = {statut: st, composition: val("composition"), enfants: val("enfants"), capital: $("#sim-capital").value};
+    const rs = G.filter(r => Object.entries(cle).every(([k, v]) => r[k] === v));
+    // Libellés des revenus en euros nets, recalculés pour la situation (la CSG des pensions dépend du foyer)
+    const sel = $("#sim-niveau"), rang = Math.max(0, sel.selectedIndex), avant = sel.dataset.statut === st ? rang : (st === "actif" ? 1 : 2);
+    sel.dataset.statut = st; sel.textContent = "";
+    $("#sim-niveau-l").textContent = st === "actif" ? "Salaire net par mois, par personne qui travaille" : "Pension nette par mois, par personne retraitée";
+    uniq(rs, "niveau").forEach(v => {
+      const r = rs.find(x => x.niveau === v), nv = num(v);
+      sel.append(h("option", {value: v}, `environ ${eur(num(r.net_mensuel_reference))} (${st === "actif" ? smic(nv) : eur(nv) + " bruts"})`));
+    });
+    sel.selectedIndex = Math.min(avant, sel.options.length - 1);
+    const choix = rs.filter(r => r.niveau === sel.value);
+    if (!choix.length) return;
+    const rev = num(choix[0].revenu_disponible_avant);
+    $("#foyer-intro").textContent = `Revenu disponible actuel du foyer (après impôts et prestations) : ${eur(rev)} par an, soit environ ${eur(rev / 12)} par mois.`;
+    lignes(choix);
+  };
+  f.onchange = show; f.onsubmit = e => e.preventDefault(); show();
+
+  // En bref : qui est touché, dans toute la grille
+  const ids = [...new Set(G.map(r => r.id))].length, bref = $("#bref-foyer"); bref.textContent = "";
+  [...new Set(G.map(r => r.reforme))].forEach(id => {
+    const gs = G.filter(r => r.reforme === id).map(r => num(r.gain_annuel)), pos = gs.filter(g => g > 0), neg = gs.filter(g => g < 0);
+    const part = (a, verbe) => {
+      if (!a.length) return "";
+      const lo = d3.min(a, Math.abs), hi = d3.max(a, Math.abs);
+      return `${a.length} situation${a.length > 1 ? "s" : ""} sur ${ids} y ${verbe[a.length > 1 ? 1 : 0]} (${lo === hi ? eur(lo) : `de ${eur(lo)} à ${eur(hi)}`} par an)`;
+    };
+    const txt = [part(pos, ["gagne", "gagnent"]), part(neg, ["perd", "perdent"])].filter(Boolean).join(", ");
+    bref.append(h("li", {}, h("strong", {}, ref.get(id)?.libelle || id), " : ", txt || "aucun effet sur les situations calculées", "."));
+  });
+  bref.append(h("li", {}, "Les autres situations ne sont pas touchées : chaque mesure vise un public précis."));
+
+  const rg = $("#foyer-regles"); rg.textContent = "";
+  D.reformes.forEach(r => rg.append(h("li", {}, h("strong", {}, r.libelle), " : ", r.note || "", ". ",
+    origine(r.id) ? `Mesure étudiée dans : ${origine(r.id)}. ` : "", lien(r.url, "Source"))));
+
+  const menages = [...new Set(D.distributif.map(r => r.menage))];
   const reformes = [...new Map(D.distributif.map(r => [r.reforme, r.libelle]))];
   table($("#tb-dist"), [{t: "Foyer", f: m => m}, {t: "Revenu disponible", num: true, f: m => eur(num(D.distributif.find(r => r.menage === m).revenu_disponible_avant))},
     ...reformes.map(([id, l]) => ({t: l, num: true, f: m => {
