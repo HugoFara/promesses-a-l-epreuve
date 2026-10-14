@@ -89,13 +89,17 @@ function table(el, cols, rows, opt = {}) {
 /** Tableaux plus larges (ou plus hauts) que leur cadre : atteignables au clavier pour les faire défiler, et nommés
     pour les lecteurs d'écran. Les autres ne prennent pas de place dans l'ordre de tabulation. */
 function majDefilement() {
+  const vus = new Map();  // deux zones de repère ne peuvent pas porter le même nom (axe : landmark-unique)
   $$(".tbl-wrap").forEach(w => {
     if (!w.offsetParent) return;  // masqué (vue inactive, accordéon fermé) : réglé quand il s'affiche
     if (w.scrollWidth > w.clientWidth + 1 || w.scrollHeight > w.clientHeight + 1) {
       const titre = w.querySelector("caption")?.textContent || w.closest("details")?.querySelector("summary")?.textContent
         || w.closest(".chart-block, section")?.querySelector("h3, h2, h1")?.textContent || "Tableau";
       w.setAttribute("tabindex", "0"); w.setAttribute("role", "region");
-      w.setAttribute("aria-label", "Tableau défilant : " + titre.replace(/^Pour aller plus loin : /, "").trim());
+      let nom = "Tableau défilant : " + titre.replace(/^Pour aller plus loin : /, "").trim();
+      const n = (vus.get(nom) || 0) + 1; vus.set(nom, n);
+      if (n > 1) nom += ` (${n})`;
+      w.setAttribute("aria-label", nom);
     } else ["tabindex", "role", "aria-label"].forEach(a => w.removeAttribute(a));
   });
 }

@@ -374,3 +374,6 @@ a.term:hover { color: var(--primary); }
 .idee-chiffre .lib { color: var(--text); }
 .idee-chiffre .rep { color: var(--text-muted); font-size: .9rem; }
 .cards.idees { list-style: none; padding: 0; }
+/* Un badge long (« Impossible sans changer les règles européennes ») passe à la ligne dans une carte étroite */
+.card.idee .badge, #tb-idees .badge { white-space: normal; }
+.card.idee { min-width: 0; overflow-wrap: anywhere; }
