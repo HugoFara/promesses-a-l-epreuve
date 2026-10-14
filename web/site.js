@@ -533,7 +533,7 @@ function majProgrammes() {
   const fsP = $("#choix-progs");
   fsP.hidden = tous.length < 3;
   $$(".check", fsP).forEach(e => e.remove());
-  tous.forEach(p => fsP.append(h("label", {class: "check"}, h("input", {type: "checkbox", value: p.nom, checked: SEL.caches.has(p.nom) ? null : ""}), p.nom)));
+  tous.forEach(p => fsP.append(h("label", {class: "check"}, h("input", {type: "checkbox", name: "prog", value: p.nom, checked: SEL.caches.has(p.nom) ? null : ""}), p.nom)));
 
   $("#lede-programmes").textContent = `${SEL.scrutin} : ${tous.length === 1 ? "le programme" : "les programmes"} ${liste(tous.map(p => p.nom))}. ` +
     "On part d'un chiffrage indépendant, mesure par mesure, puis on le corrige avec les leçons du passé.";
@@ -921,9 +921,64 @@ const DESSINS = {
 };
 let vueCourante = null, pret = false, premier = true;
 
+/* ------------------------------------------------------------------ état dans l'adresse (liens partageables)
+   Les choix faits dans une vue (boutons, cases, listes, recherche) s'écrivent dans l'adresse après « ? » :
+   #/foyer?statut=retraite&composition=couple_2. Seuls les choix différents de ceux par défaut y figurent.
+   Ouvrir un tel lien rétablit les choix, en déclenchant les mêmes événements qu'un clic. */
+const DEFAUTS = {};
+const partie = () => {
+  const [chemin, qs = ""] = location.hash.replace(/^#\/?/, "").split("?");
+  const [v, sub] = chemin.split("/");
+  return {v: v || "accueil", sub, params: new URLSearchParams(qs)};
+};
+const controles = sec => $$("input, select", sec).filter(el => !el.closest("dialog") && (el.name || el.id));
+const cle = el => el.type === "radio" || (el.type === "checkbox" && el.name) ? el.name : el.id.replace(/^(f|sim)-/, "");
+function lireEtat(sec) {
+  const etat = new Map();
+  controles(sec).forEach(el => {
+    const k = cle(el);
+    if (el.type === "radio") { if (el.checked) etat.set(k, el.value); else if (!etat.has(k)) etat.set(k, ""); }
+    else if (el.type === "checkbox" && el.name) etat.set(k, [etat.get(k), el.checked ? el.value : null].filter(Boolean).join("|"));
+    else if (el.type === "checkbox") etat.set(k, el.checked ? "1" : "0");
+    else etat.set(k, el.value);
+  });
+  return etat;
+}
+function lienEtat(v) {
+  const sec = $("#v-" + v), def = DEFAUTS[v] || new Map(), qs = new URLSearchParams();
+  if (sec) lireEtat(sec).forEach((val, k) => { if (def.has(k) && def.get(k) !== val) qs.set(k, val); });
+  return "#/" + v + (qs.size ? "?" + qs : "");
+}
+function appliquerEtat(sec, params) {
+  // Dans l'ordre de l'adresse : un choix peut reconstruire les suivants (élection → programmes, statut → revenus)
+  params.forEach((val, k) => {
+    const els = controles(sec).filter(el => cle(el) === k);
+    if (!els.length) return;
+    const el = els[0], evt = el.type === "search" ? "input" : "change";
+    if (el.type === "radio") {
+      const r = els.find(x => x.value === val);
+      if (r && !r.checked) { r.checked = true; r.dispatchEvent(new Event("change", {bubbles: true})); }
+    } else if (el.type === "checkbox" && el.name) {
+      const vus = new Set(val.split("|"));
+      if (!els.some(x => vus.has(x.value))) return;  // valeur inconnue (programme retiré) : on garde le choix par défaut
+      els.forEach(x => { if (x.checked !== vus.has(x.value)) { x.checked = vus.has(x.value); x.dispatchEvent(new Event("change", {bubbles: true})); } });
+    } else if (el.type === "checkbox") {
+      if (el.checked !== (val === "1")) { el.checked = val === "1"; el.dispatchEvent(new Event("change", {bubbles: true})); }
+    } else if (el.value !== val && (el.tagName !== "SELECT" || [...el.options].some(o => o.value === val))) {
+      el.value = val; el.dispatchEvent(new Event(evt, {bubbles: true}));
+    }
+  });
+}
+function ecrireEtat() {
+  const {v, sub} = partie();
+  if (!pret || sub) return;  // une adresse vers une sous-partie (#/hier/ecarts) reste telle quelle
+  const cible = lienEtat(v);
+  if (location.hash !== cible) history.replaceState(null, "", cible);
+}
+
 function route() {
-  const [v0, sub] = location.hash.replace(/^#\/?/, "").split("/");
-  const v = v0 || "accueil";
+  const {v: v0, sub, params} = partie();
+  const v = v0;
   const sec = $("#v-" + v) || $("#v-introuvable");
   $$(".view").forEach(s => { s.hidden = s !== sec || !pret; });
   $$("#menu a").forEach(a => a.getAttribute("href") === "#/" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
@@ -931,6 +986,9 @@ function route() {
   $("#nav").classList.remove("open"); $("#btn-menu").setAttribute("aria-expanded", "false");
   vueCourante = v;
   if (!pret) return;
+  const vue = $("#v-" + v);
+  if (vue && params.size) appliquerEtat(vue, params);
+  ecrireEtat();
   dessiner();
   if (sub) {
     const t = $("#g-" + sub);
@@ -968,8 +1026,59 @@ function initAffichage() {
   menu.onclick = () => { const o = !$("#nav").classList.contains("open"); $("#nav").classList.toggle("open", o); menu.setAttribute("aria-expanded", String(o)); };
 }
 
+/* ------------------------------------------------------------------ partager et imprimer */
+function initPartage() {
+  $$(".view").forEach(sec => {
+    if (sec.id === "v-introuvable") return;
+    const etat = h("p", {class: "small muted outils-etat", role: "status"});
+    const copier = h("button", {type: "button", class: "btn-tool"}, "Copier le lien de cette page");
+    const imprimer = h("button", {type: "button", class: "btn-tool"}, "Imprimer");
+    copier.onclick = async () => {
+      const url = location.origin + location.pathname + lienEtat(sec.id.slice(2));
+      etat.textContent = "";
+      try {
+        await navigator.clipboard.writeText(url);
+        etat.textContent = "Lien copié. Il rouvre cette page avec vos choix.";
+      } catch (e) {
+        // Presse-papiers refusé : on affiche le lien, sélectionné, pour une copie à la main
+        const champ = h("input", {type: "text", readonly: "", value: url, "aria-label": "Lien de cette page", class: "outils-lien"});
+        etat.append("Copiez ce lien : ", champ); champ.select();
+      }
+    };
+    imprimer.onclick = () => print();
+    const barre = h("div", {class: "outils-page"}, copier, imprimer, etat);
+    const crumb = $(".crumb", sec);
+    crumb ? crumb.after(barre) : sec.prepend(barre);
+  });
+
+  // Impression : accordéons ouverts, couleurs claires, mention de l'adresse et de la date
+  const root = document.documentElement;
+  let fermes = [], themeAvant, enImpression = false;
+  addEventListener("beforeprint", () => {
+    if (enImpression) return;  // certains navigateurs l'envoient deux fois
+    enImpression = true;
+    fermes = $$("details.acc:not([open])"); fermes.forEach(d => d.open = true);
+    const sombre = root.dataset.theme === "dark" || (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+    themeAvant = root.dataset.theme;
+    if (sombre) { root.dataset.theme = "light"; if (pret) dessiner(); }
+    const {v} = partie();
+    $("#print-info").textContent = `Imprimé le ${new Date().toLocaleDateString("fr-FR", {day: "numeric", month: "long", year: "numeric"})} depuis ` +
+      `${location.origin + location.pathname + lienEtat(v)}. Données mises à jour le ${$("[data-k=maj]")?.textContent || "—"}.`;
+  });
+  addEventListener("afterprint", () => {
+    if (!enImpression) return;
+    enImpression = false;
+    fermes.forEach(d => d.open = false); fermes = [];
+    if (root.dataset.theme !== themeAvant) {
+      if (themeAvant) root.dataset.theme = themeAvant; else delete root.dataset.theme;
+      if (pret) dessiner();
+    }
+  });
+}
+
 async function init() {
   initAffichage();
+  initPartage();
   const dlg = $("#pq");
   $("#pq-fermer").onclick = () => dlg.close();
   dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });  // clic sur le fond
@@ -988,6 +1097,10 @@ async function init() {
   remplirK();
   [vueHier, vueProgrammes, vueEquilibre, vueFoyer, vueDemain, vueMethode].forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
   $("#chargement").remove();
+  // Choix par défaut de chaque vue, avant d'appliquer ceux de l'adresse
+  $$(".view").forEach(sec => { DEFAUTS[sec.id.slice(2)] = lireEtat(sec); });
+  // Chaque choix met l'adresse à jour (sans ajouter d'entrée à l'historique)
+  $$(".view").forEach(sec => { sec.addEventListener("change", ecrireEtat); sec.addEventListener("input", ecrireEtat); });
   pret = true;
   route();
   let t;

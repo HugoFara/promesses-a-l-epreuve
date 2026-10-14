@@ -8,7 +8,8 @@ Ouvre chaque vue, sur écran large puis sur téléphone, et échoue si :
     programme, date des données) ;
   - une explication « Pourquoi ce chiffre ? » est vide ou ne s'ouvre pas ;
   - le simulateur « Mon foyer » n'affiche pas le revenu et les effets de la situation choisie
-    (distributif_grille.csv).
+    (distributif_grille.csv) ;
+  - un lien partageable (#/vue?choix=…) ne rétablit pas les choix, ou l'adresse ne suit pas les choix.
 
 Nécessite Playwright (`pip install playwright && playwright install chromium`). Sans lui, le contrôle est sauté,
 sauf si TEST_WEB_STRICT=1 (cas de la CI), où son absence est une erreur.
@@ -136,6 +137,19 @@ def main():
                         echecs.append(f"foyer : effet de {r['reforme']} absent ou faux (attendu {v} €)")
                 if page.locator("#sim-enfants").is_visible():
                     echecs.append("foyer : le choix des enfants reste affiché pour un retraité")
+                # Liens partageables : l'adresse suit les choix, et un lien ouvert ailleurs les rétablit
+                if "statut=retraite" not in page.evaluate("location.hash"):
+                    echecs.append(f"partage : l'adresse ne reprend pas les choix (« {page.evaluate('location.hash')} »)")
+                autre = nav.new_page(viewport={"width": w, "height": h})
+                autre.goto(base + "#/foyer?statut=retraite&composition=couple_2&niveau=2000")
+                autre.wait_for_selector("#chargement", state="detached", timeout=15000)
+                if g and str(int(g[0]["revenu_disponible_avant"])) + "€" not in serre(autre.locator("#foyer-intro").inner_text()):
+                    echecs.append("partage : le lien ne rétablit pas la situation du simulateur")
+                autre.goto(base + "#/demain?ind=deficit_pct&stress=1")
+                autre.wait_for_timeout(200)
+                if not autre.locator("#f-stress").is_checked() or "Déficit" not in autre.locator("#titre-proj").inner_text():
+                    echecs.append("partage : le lien ne rétablit pas les choix de la vue Dette et déficit")
+                autre.close()
                 annee, mois, jour = att["date"].split("-")
                 if annee not in k("maj") or str(int(jour)) not in k("maj"):
                     echecs.append(f"pied de page : date « {k('maj')} », attendu {att['date']}")
