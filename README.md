@@ -1,4 +1,4 @@
-# Chiffrages à l'épreuve
+# Promesses à l'épreuve
 
 Les promesses budgétaires sont-elles crédibles ? Ce projet compare le coût annoncé de mesures passées à ce qu'elles ont réellement coûté, en tire des règles de correction, puis les applique de la même façon aux programmes des partis. Un site public en langage courant présente les résultats.
 

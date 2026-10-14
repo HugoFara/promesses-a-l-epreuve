@@ -11,7 +11,7 @@ Le 14 octobre, les tâches T1, T2, T4, T5, T6, T8, T9 et T10 ont été traitées
 ## 2. Contenu du paquet
 
 ```
-backtest-chiffrages/
+promesses-a-l-epreuve/
 ├── HANDOFF.md
 ├── requirements.txt            pandas, numpy, pydantic
 ├── requirements-web.txt        playwright (contrôle du site ; facultatif en local, requis en CI)

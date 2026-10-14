@@ -1,4 +1,4 @@
-/* Chiffrages à l'épreuve : script du site public (web/index.html).
+/* Promesses à l'épreuve : script du site public (web/index.html).
 
    Lit les CSV publiés de data/ (aucune valeur en dur : tous les chiffres affichés en viennent), découpe le
    contenu en vues accessibles par l'adresse (#/hier, #/programmes…) et trace les graphiques avec d3.
@@ -1136,7 +1136,7 @@ function route() {
   const sec = $("#v-" + v) || $("#v-introuvable");
   $$(".view").forEach(s => { s.hidden = s !== sec || !pret; });
   $$("#menu a").forEach(a => a.getAttribute("href") === "#/" + v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
-  document.title = (v === "accueil" ? "" : sec.dataset.titre + " – ") + "Chiffrages à l'épreuve";
+  document.title = (v === "accueil" ? "" : sec.dataset.titre + " – ") + "Promesses à l'épreuve";
   $("#nav").classList.remove("open"); $("#btn-menu").setAttribute("aria-expanded", "false");
   vueCourante = v;
   if (!pret) return;
