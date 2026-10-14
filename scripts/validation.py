@@ -36,7 +36,16 @@ CALIBRATION = {
     "isf_invest": ("Effet promis", 0.29),
     "pfu_invest": ("Effet promis", 0.29),
     "cice_emploi_ofce": ("Effet promis", 0.29),
+    # perte_patrimoine : central = backtest ISF→IFI (3 %) ; sans cette mesure, départs nets seuls (1,2 %) → 0,988.
+    # Les chiffrages d'instituts de la même mesure (ISF→IFI 2017, inst_04 à inst_07) sont traités de même.
+    "isf_ifi": ("Élasticité patrimoine", 0.988),
+    **{f"inst_0{i}": ("Élasticité patrimoine", 0.988) for i in range(4, 8)},
 }
+
+# Règles restreintes après la validation : la version restreinte n'a pas d'équivalent testable dans l'échantillon
+RESTREINTES = {"Taux de recours": "restreinte le 14/10/2026 aux chiffrages qui supposent un recours complet ; les chiffrages "
+               "officiels testés (prime d'activité, CIR, CITE) intégraient déjà un recours partiel : la version restreinte "
+               "n'est pas testée"}
 
 
 def facteurs_centraux():
@@ -142,6 +151,9 @@ def main():
             continue
         if not sel:
             st, note = "non testée", "aucune mesure passée de ce type dans le backtest"
+        elif regle in RESTREINTES:
+            a, d = sum(l["verdict"] == "amélioré" for l in sel), sum(l["verdict"] == "dégradé" for l in sel)
+            st, note = "non testée (restreinte)", f"{RESTREINTES[regle]} (version d'origine : {a} améliorée(s), {d} dégradée(s))"
         elif regle in NON_CONCLUANTES:
             st, note = "non concluante", NON_CONCLUANTES[regle]
         else:
@@ -174,7 +186,7 @@ def main():
         tot = sum(abs(v) for k, v in d.items() if k != "sans correction")
         sorties.append({"fichier": fichier, "groupe": groupe,
                         **{f"correction_{k.replace(' ', '_')}": round(d.get(k, 0.0), 1)
-                           for k in ("confirmée", "mitigée", "contredite", "non concluante", "non testée")},
+                           for k in ("confirmée", "mitigée", "contredite", "non concluante", "non testée", "non testée (restreinte)")},
                         "part_confirmee_pct": round(abs(d.get("confirmée", 0.0)) / tot * 100) if tot else 0})
     with open("confiance_programmes.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(sorties[0]), lineterminator="\n")

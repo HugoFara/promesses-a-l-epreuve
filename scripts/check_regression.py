@@ -28,13 +28,13 @@ check("C2 n t+3 hors crises", len(e3), 15)
 check("C3 nb estimations", len(rows("elasticites.csv")), 75)
 # Application 2024
 a = rows("application_lignes.csv")
-for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -150.5, -159.9), ("Ensemble 2024", -18.1, -25.5)]:
+for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -150.5, -159.5), ("Ensemble 2024", -18.1, -25.5)]:
     l = [r for r in a if r["programme"] == prog]
     check(f"App {prog} indépendant", sum(float(r["independant"]) for r in l), exp_i, 0.1)
     check(f"App {prog} corrigé", sum(float(r["independant"]) * float(r["facteur"]) * float(r["facteur_reference"]) for r in l), exp_c, 0.1)
 # Paniers
 k = rows("paniers.csv")
-for v, em, ef in [("LFI intégral", -110.4, 40.6), ("LFI ajusté", -31.2, 40.6), ("Ensemble", -14.9, 7.5)]:
+for v, em, ef in [("LFI intégral", -110.4, 41.1), ("LFI ajusté", -31.2, 41.1), ("Ensemble", -14.9, 7.5)]:
     l = [r for r in k if r["variante"] == v]
     s = lambda role: sum(float(r["statique"]) * float(r["facteur"]) * float(r["facteur_reference"]) * float(r["facteur_interaction"] or 1) for r in l if r["role"].startswith(role))
     check(f"Panier {v} mesures", s("Mesure"), em, 0.1)

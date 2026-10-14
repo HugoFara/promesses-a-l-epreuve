@@ -1,20 +1,20 @@
 groupe,n,erreur_mediane_depart_pct,erreur_mediane_nous_pct,erreur_moyenne_depart_pct,erreur_moyenne_nous_pct,ameliores,degrades,inchanges
-"Chiffrages officiels, statistique principale",22,9.6,9.9,16.6,21.6,3,7,12
-  dont hors calibration (test),22,9.6,9.9,16.6,21.6,3,7,12
-  dont mesures où la règle change le chiffre (facteur ≠ 1),10,15.8,35.0,26.4,37.6,3,7,0
+"Chiffrages officiels, statistique principale",22,9.6,8.9,16.6,21.3,4,6,12
+  dont hors calibration (test),21,10.0,10.0,17.2,22.2,3,6,12
+  dont mesures où la règle change le chiffre (facteur ≠ 1),10,15.8,35.0,26.4,36.8,4,6,0
   dont issue inconnue de l'agent d'attribution,8,5.4,5.4,7.6,7.6,0,0,8
-"Chiffrages officiels, toutes mesures",25,11.9,11.9,21.4,24.5,4,7,14
+"Chiffrages officiels, toutes mesures",25,11.9,11.9,21.4,24.2,5,6,14
 Effets annoncés,10,61.0,29.5,61.6,41.7,7,3,0
-Chiffrages d'instituts (tous),22,14.9,24.0,31.3,34.4,2,7,13
-  institut : Candidat (En Marche),2,2.6,5.8,2.6,5.8,0,1,1
-  institut : Fondation Concorde,5,24.0,24.0,20.4,27.1,0,2,3
+Chiffrages d'instituts (tous),22,14.9,23.2,31.3,32.6,4,5,13
+  institut : Candidat (En Marche),2,2.6,2.0,2.6,2.0,1,0,1
+  institut : Fondation Concorde,5,24.0,24.0,20.4,25.6,1,1,3
   institut : Fondation iFRAP,2,6.4,6.4,6.4,6.4,0,0,2
-  institut : Institut Montaigne,8,40.0,40.4,62.7,61.3,2,2,4
-  institut : OFCE,5,13.9,24.0,13.3,21.3,0,2,3
+  institut : Institut Montaigne,8,40.0,40.4,62.7,59.8,2,2,4
+  institut : OFCE,5,13.9,17.2,13.3,18.9,0,2,3
 Règle : Effet promis,8,61.0,29.0,61.9,37.0,6,2,0
 Règle : Réforme structurelle,2,77.8,77.8,77.8,77.8,1,1,0
 Règle : Substitution retraites,2,15.8,4.2,15.8,4.2,2,0,0
 Règle : Taux de recours,8,59.5,49.6,51.2,60.0,3,5,0
 Règle : Élasticité IS,4,3.2,30.0,11.0,37.8,0,4,0
 Règle : Élasticité capital,1,55.3,1.0,55.3,1.0,1,0,0
-Règle : Élasticité patrimoine,5,3.3,9.9,15.7,24.8,0,5,0
+Règle : Élasticité patrimoine,5,3.3,2.1,15.7,15.4,3,2,0

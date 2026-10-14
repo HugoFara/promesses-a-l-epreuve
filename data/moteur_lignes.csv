@@ -3,7 +3,7 @@ application_lignes,nfp_retraites,NFP 2024 (LFI),total,Substitution retraites,mot
 application_lignes,nfp_autonomie,NFP 2024 (LFI),total,Taux de recours,moteur,-12.3,0.65,0.65,1.0,1.0,0.0,True,-8.0,-8.0,-8.0,-9.61,-5.18,
 application_lignes,nfp_autres_dep,NFP 2024 (LFI),total,Aucune,moteur,-162.7,1.0,1.0,1.0,1.0,0.0,True,-162.7,-162.7,-162.7,-208.9,-116.99,
 application_lignes,nfp_superprofits,NFP 2024 (LFI),total,Recette ponctuelle,moteur,15.0,0.0,0.0,1.0,1.0,0.0,True,0.0,0.0,0.0,0.0,0.0,
-application_lignes,nfp_isf,NFP 2024 (LFI),total,Élasticité patrimoine,moteur,3.5,0.85,0.87,1.0,1.0,2.4,True,3.04,3.04,3.04,2.17,3.91,
+application_lignes,nfp_isf,NFP 2024 (LFI),total,Élasticité patrimoine,moteur,3.5,0.97,0.97,1.0,1.0,0.0,True,3.4,3.4,3.4,2.36,4.24,
 application_lignes,nfp_succession,NFP 2024 (LFI),total,Élasticité succession,forfait,9.0,0.9,0.9,1.0,1.0,0.0,True,8.1,8.1,8.1,5.79,10.41,t0_succession t1_succession
 application_lignes,nfp_ir,NFP 2024 (LFI),total,Élasticité revenus,forfait,4.7,0.9,0.9,1.0,1.0,0.0,True,4.23,4.23,4.23,3.01,5.44,t0_revenus t1_revenus
 application_lignes,nfp_flat,NFP 2024 (LFI),total,Élasticité capital,moteur,3.2,0.45,0.437,1.0,1.0,-2.9,True,1.4,1.4,1.4,1.04,1.86,
@@ -38,8 +38,8 @@ paniers,l_eco_i,LFI intégral,Mesure phare,Aucune,moteur,-30.0,1.0,1.0,1.0,1.0,0
 paniers,l_eco_rg_a,LFI ajusté,investissement,Règle d'or,moteur,-30.0,1.0,1.0,1.0,1.0,0.0,True,-30.0,-30.0,-30.0,-30.0,-30.0,
 paniers,l_zucman_i,LFI intégral,Financement,Nouvelle assiette : risque juridique,moteur,5.5,0.8,0.842,0.98,0.65,5.2,True,2.95,2.95,2.95,1.8,4.2,
 paniers,l_zucman_a,LFI ajusté,Financement,Nouvelle assiette : risque juridique,moteur,5.5,0.8,0.842,0.98,0.65,5.2,True,2.95,2.95,2.95,1.8,4.2,
-paniers,l_isf_i,LFI intégral,Financement,Élasticité patrimoine,moteur,4.5,0.85,0.87,0.978,1.0,2.4,True,3.83,3.83,3.83,2.73,4.92,
-paniers,l_isf_a,LFI ajusté,Financement,Élasticité patrimoine,moteur,4.5,0.85,0.87,0.978,1.0,2.4,True,3.83,3.83,3.83,2.73,4.92,
+paniers,l_isf_i,LFI intégral,Financement,Élasticité patrimoine,moteur,4.5,0.97,0.97,0.978,1.0,0.0,True,4.27,4.27,4.27,2.97,5.33,
+paniers,l_isf_a,LFI ajusté,Financement,Élasticité patrimoine,moteur,4.5,0.97,0.97,0.978,1.0,0.0,True,4.27,4.27,4.27,2.97,5.33,
 paniers,l_pfu_i,LFI intégral,Financement,Élasticité capital,moteur,3.4,0.45,0.437,1.0,1.0,-2.9,True,1.49,1.49,1.49,1.1,1.98,
 paniers,l_pfu_a,LFI ajusté,Financement,Élasticité capital,moteur,3.4,0.45,0.437,1.0,1.0,-2.9,True,1.49,1.49,1.49,1.1,1.98,
 paniers,l_succ_i,LFI intégral,Financement,Élasticité succession,forfait,8.8,0.9,0.9,0.91,1.0,0.0,True,7.21,7.21,7.21,5.18,9.29,t0_succession t1_succession

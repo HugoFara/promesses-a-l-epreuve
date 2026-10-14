@@ -32,6 +32,10 @@ for nom in ("application_lignes", "paniers"):
         if regle["variable"] == "1" and not (r.get("source_reference") or r.get("justification")):
             erreurs.append(f"SYMÉTRIE {lid} : facteur variable sans justification")
 
+        # Taux de recours : seulement si le chiffrage de départ suppose un recours complet (validation du 14/10/2026)
+        if r["regle"] == "Taux de recours" and not (r.get("recours_complet_suppose") == "oui" and r.get("source_recours")):
+            erreurs.append(f"RECOURS {lid} : règle « Taux de recours » sans preuve que le chiffrage suppose un recours complet")
+
         # Traçabilité : toute ligne chiffrée a une URL et une confiance
         if montant != 0 and not (r["url"].startswith("http") and r["confiance"]):
             erreurs.append(f"TRAÇABILITÉ {lid} : URL ou confiance manquante")

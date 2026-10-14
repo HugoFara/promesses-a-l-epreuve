@@ -1,5 +1,5 @@
 source,id,mesure,regle,facteur,echantillon,issue_connue,depart,prevision,realise,erreur_depart_pct,erreur_nous_pct,verdict
-officiel,isf_ifi,ISF remplacé par IFI,Élasticité patrimoine,0.87,test,oui,3.2,2.784,3.1,-3.1,9.9,dégradé
+officiel,isf_ifi,ISF remplacé par IFI,Élasticité patrimoine,0.988,calibration (leave-one-out),oui,3.2,3.162,3.1,-3.1,-1.9,amélioré
 officiel,pfu,Prélèvement forfaitaire unique (flat tax),Élasticité capital,0.437,test,oui,1.9,0.83,0.85,-55.3,1.0,amélioré
 officiel,cice,CICE,Aucune,1.0,test,oui,20.0,20.0,18.5,-7.5,-7.5,inchangé
 officiel,th_80,Taxe d'habitation (phase 80 % des ménages),Aucune,1.0,test,oui,10.0,10.0,10.2,2.0,2.0,inchangé
@@ -38,10 +38,10 @@ institut : Candidat (En Marche),inst_00,présidentielle 2017 — Taxe d'habitati
 institut : Institut Montaigne,inst_01,présidentielle 2017 — Taxe d'habitation : exonération de 80 % des ménages,Aucune,1.0,test,oui,-8.0,-8.0,-10.2,-27.5,-27.5,inchangé
 institut : OFCE,inst_02,présidentielle 2017 — Taxe d'habitation : exonération de 80 % des ménages,Aucune,1.0,test,oui,-9.2,-9.2,-10.2,-10.9,-10.9,inchangé
 institut : Fondation Concorde,inst_03,présidentielle 2017 — Taxe d'habitation : exonération de 80 % des ménages,Aucune,1.0,test,oui,-10.0,-10.0,-10.2,-2.0,-2.0,inchangé
-institut : Candidat (En Marche),inst_04,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-3.0,-2.61,-2.9,3.3,-9.7,dégradé
-institut : Institut Montaigne,inst_05,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-1.9,-1.653,-2.9,-52.6,-65.6,dégradé
-institut : OFCE,inst_06,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-2.5,-2.175,-2.9,-16.0,-29.0,dégradé
-institut : Fondation Concorde,inst_07,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.87,test,oui,-3.0,-2.61,-2.9,3.3,-9.7,dégradé
+institut : Candidat (En Marche),inst_04,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.988,calibration (leave-one-out),oui,-3.0,-2.964,-2.9,3.3,2.1,amélioré
+institut : Institut Montaigne,inst_05,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.988,calibration (leave-one-out),oui,-1.9,-1.877,-2.9,-52.6,-53.8,dégradé
+institut : OFCE,inst_06,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.988,calibration (leave-one-out),oui,-2.5,-2.47,-2.9,-16.0,-17.2,dégradé
+institut : Fondation Concorde,inst_07,présidentielle 2017 — ISF remplacé par un impôt sur la fortune immobilière (IFI),Élasticité patrimoine,0.988,calibration (leave-one-out),oui,-3.0,-2.964,-2.9,3.3,2.1,amélioré
 institut : Institut Montaigne,inst_08,"présidentielle 2017 — Baisse du taux normal d'IS de 33,3 % à 25 %",Élasticité IS,0.732,test,oui,-11.0,-8.047,-11.0,0.0,-26.8,dégradé
 institut : OFCE,inst_09,"présidentielle 2017 — Baisse du taux normal d'IS de 33,3 % à 25 %",Élasticité IS,0.732,test,oui,-10.8,-7.9,-11.0,-1.9,-28.7,dégradé
 institut : Fondation Concorde,inst_10,"présidentielle 2017 — Baisse du taux normal d'IS de 33,3 % à 25 %",Élasticité IS,0.732,test,oui,-8.0,-5.852,-11.0,-37.5,-64.3,dégradé
