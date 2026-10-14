@@ -20,10 +20,10 @@ import statistics
 
 from moteur import FORMULES, lire, noms_parametres, num
 
-# Règles dont le « réalisé » n'est pas une observation : un chiffrage administratif à comportement constant ne peut
-# ni confirmer ni contredire une règle de comportement (IS : mesures_cout.type_ex_post = administratif ; chiffrages
-# d'instituts : réalisé = chiffrage officiel de la mesure votée, recherche/T10b/rapport.md).
-NON_CONCLUANTES = {"Élasticité IS": "réalisés = chiffrages administratifs à comportement constant (is_25 ; T10b)"}
+# Réalisés qui ne sont pas des observations : un chiffrage administratif à comportement constant ne peut ni confirmer
+# ni contredire une règle de comportement. Couche 1 : mesures_cout.type_ex_post = administratif. Chiffrages d'instituts
+# de la baisse de l'IS à 25 % : réalisé = chiffrage officiel de la mesure votée (recherche/T10b/rapport.md).
+INSTITUTS_NON_OBSERVES = {"inst_08", "inst_09", "inst_10"}
 
 # Mesures du backtest qui ont servi à calibrer un paramètre, et valeur du paramètre recalculée sans elles.
 # facteur_reforme = moyenne des ratios à prix constants (retraites 2023 : 0,822 ; Woerth 2010 : 0,862)
@@ -40,6 +40,10 @@ CALIBRATION = {
     # Les chiffrages d'instituts de la même mesure (ISF→IFI 2017, inst_04 à inst_07) sont traités de même.
     "isf_ifi": ("Élasticité patrimoine", 0.988),
     **{f"inst_0{i}": ("Élasticité patrimoine", 0.988) for i in range(4, 8)},
+    # facteur_is : central = surtaxe 2025 (0,9375). Sans elle : seul réalisé observé restant = 2013 (1,5), plafonné à 1.
+    # Sans 2013 : central inchangé (0,9375).
+    "cebge_2025": ("Élasticité IS", 1.0),
+    "ce_is_5pct_2013": ("Élasticité IS", 0.9375),
 }
 
 # Règles restreintes après la validation : la version restreinte n'a pas d'équivalent testable dans l'échantillon
@@ -69,7 +73,7 @@ def main():
     attrib = {(r["fichier"], r["id"]): r for r in lire("validation_attribution.csv")}
     lignes = []
 
-    def ajouter(source, idm, libelle, depart, realise, regle, issue_connue, base=None):
+    def ajouter(source, idm, libelle, depart, realise, regle, issue_connue, base=None, observe=True):
         base = abs(depart) if base is None else base
         fac = f[regle]
         echantillon = "test"
@@ -85,14 +89,15 @@ def main():
                        "echantillon": echantillon, "issue_connue": issue_connue, "depart": depart,
                        "prevision": round(prev, 3), "realise": realise,
                        "erreur_depart_pct": round(e_dep * 100, 1), "erreur_nous_pct": round(e_nous * 100, 1),
-                       "verdict": verdict})
+                       "verdict": verdict, "realise_observe": observe})
 
     # 1. Chiffrages officiels (couche 1), à base de prix comparable
     for r in lire("mesures_cout.csv"):
         a = attrib[("mesures_officielles", r["id"])]
         depart = float(r["ex_ante"]) * float(r["deflateur_ex_ante"])
         source = "officiel" if r["inclus_stats"] == "1" else "officiel (hors statistique principale)"
-        ajouter(source, r["id"], r["mesure"], depart, float(r["ex_post_central"]), a["regle"], a["issue_connue"])
+        ajouter(source, r["id"], r["mesure"], depart, float(r["ex_post_central"]), a["regle"], a["issue_connue"],
+                observe=r["type_ex_post"] != "administratif")
     # 2. Effets promis : départ = 1 (l'annonce), réalisé = ratio réalisé / annoncé
     for r in lire("mesures_effets.csv"):
         if not r["ratio_central"]:
@@ -105,7 +110,8 @@ def main():
             continue
         a = attrib[("chiffrages_campagne", f"inst_{i:02d}")]
         ajouter(f"institut : {r['chiffreur']}", f"inst_{i:02d}", f"{r['campagne']} — {r['mesure']}",
-                float(r["chiffrage_campagne"]), float(r["cout_realise"]), a["regle"], a["issue_connue"])
+                float(r["chiffrage_campagne"]), float(r["cout_realise"]), a["regle"], a["issue_connue"],
+                observe=f"inst_{i:02d}" not in INSTITUTS_NON_OBSERVES)
 
     with open("validation_mesures.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(lignes[0]), lineterminator="\n")
@@ -146,22 +152,25 @@ def main():
     # l'erreur médiane ; contredite dans le cas inverse ; non concluante si les réalisés ne sont pas des observations
     statuts = []
     for regle in sorted(f):
-        sel = [l for l in lignes if l["regle"] == regle and abs(l["facteur"] - 1) > 1e-9]
+        tous = [l for l in lignes if l["regle"] == regle and abs(l["facteur"] - 1) > 1e-9]
+        sel = [l for l in tous if l["realise_observe"]]
         if regle in ("Aucune",):
             continue
-        if not sel:
+        if not tous:
             st, note = "non testée", "aucune mesure passée de ce type dans le backtest"
+        elif not sel:
+            st, note = "non concluante", f"{len(tous)} cas, mais aucun réalisé observé (chiffrages administratifs à comportement constant)"
         elif regle in RESTREINTES:
             a, d = sum(l["verdict"] == "amélioré" for l in sel), sum(l["verdict"] == "dégradé" for l in sel)
             st, note = "non testée (restreinte)", f"{RESTREINTES[regle]} (version d'origine : {a} améliorée(s), {d} dégradée(s))"
-        elif regle in NON_CONCLUANTES:
-            st, note = "non concluante", NON_CONCLUANTES[regle]
         else:
             a, d = sum(l["verdict"] == "amélioré" for l in sel), sum(l["verdict"] == "dégradé" for l in sel)
             m0 = statistics.median(abs(l["erreur_depart_pct"]) for l in sel)
             m1 = statistics.median(abs(l["erreur_nous_pct"]) for l in sel)
             st = "confirmée" if a > d and m1 < m0 else "contredite" if d > a and m1 > m0 else "mitigée"
             note = f"{a} améliorée(s), {d} dégradée(s) ; erreur médiane {m0:.0f} % → {m1:.0f} %"
+            if len(tous) > len(sel):
+                note += f" ({len(tous) - len(sel)} cas à réalisé administratif écarté(s))"
         statuts.append({"regle": regle, "statut": st, "n": len(sel), "note": note})
     with open("validation_regles.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(statuts[0]), lineterminator="\n")

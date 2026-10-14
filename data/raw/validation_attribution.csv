@@ -82,3 +82,6 @@ chiffrages_campagne,inst_39,Substitution retraites,Report de l'âge légal de d�
 chiffrages_campagne,inst_40,Élasticité succession,Modification des droits de succession.,non
 chiffrages_campagne,inst_41,Effet promis,Coût d'une prime facultative exonérée qui dépend du comportement de versement et de substitution des employeurs.,oui
 chiffrages_campagne,inst_42,Aucune,Revalorisation d'un montant de prestation existante.,non
+mesures_officielles,cebge_2025,Élasticité IS,"Hausse temporaire du taux effectif d'IS ciblée sur les grandes entreprises : le risque principal du chiffrage est la réaction de l'assiette (optimisation, calendrier des bénéfices), pas le caractère exceptionnel ; la contribution porte sur une assiette d'IS existante et reste un changement de taux",oui
+mesures_officielles,ce_is_5pct_2013,Élasticité IS,"Surtaxe de 5 % de l'IS des grandes entreprises, reconduite en 2e année : changement de taux d'IS sur grandes entreprises, avec effets de comportement sur l'assiette",non
+mesures_officielles,cdhr_2025,Élasticité revenus,"Imposition minimale de 20 % visant les très hauts revenus : touche les contribuables des tranches supérieures, dont les revenus déclarés réagissent fortement (optimisation, arbitrage de rémunération)",oui

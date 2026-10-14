@@ -59,15 +59,15 @@ Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 er
 - **Confiance** : `high` = lu sur la source primaire ; `medium` = source secondaire, avec la raison dans `note_confiance` ; `low` = estimation ou source fragile.
 - **Référence 2027** = loi votée (LFI et LFSS 2026, lois antérieures) **+ PLF et PLFSS 2027 tels que déposés**. C'est la seule définition cohérente avec la cible de 5,0 % utilisée en T5 : une mesure déjà dans ces budgets est déjà dans les 5,0 %. L'application 2024 reste jugée par rapport à sa propre référence (programme de stabilité d'avril 2024) ; le statut 2027 de ses lignes est conservé dans `note_reference` pour T3.
 
-### Couche 1 : backtest mesure par mesure (25 mesures)
+### Couche 1 : backtest mesure par mesure (28 mesures)
 
-`mesures_cout.csv` : 25 mesures (11 d'origine + 14 ajoutées par T10a ; 4 candidates en confiance low écartées : Pinel, MaPrimeRénov', redevance, assurance chômage 2021). Colonnes ajoutées après l'audit : `deflateur_ex_ante` (ex ante ramené à la base de prix de l'ex post : retraites 2023 × 0,901, Woerth × 1,08), `type_ex_post` (observe / administratif / reestimation), `inclus_stats` (bouclier gaz, chèque fioul et bouclier électricité exclus de la statistique principale : prix de l'énergie exogènes, ex ante déjà en exécution).
+`mesures_cout.csv` : 28 mesures (11 d'origine + 14 ajoutées par T10a + 3 réalisés observés d'IS et d'IR tirés de la Cour des comptes ; 4 candidates en confiance low écartées : Pinel, MaPrimeRénov', redevance, assurance chômage 2021). Colonnes ajoutées après l'audit : `deflateur_ex_ante` (ex ante ramené à la base de prix de l'ex post : retraites 2023 × 0,901, Woerth × 1,08), `type_ex_post` (observe / administratif / reestimation), `inclus_stats` (bouclier gaz, chèque fioul et bouclier électricité exclus de la statistique principale : prix de l'énergie exogènes, ex ante déjà en exécution).
 
 | Échantillon (`couche1_stats.csv`) | n | Erreur absolue médiane | À ±15 % |
 |---|---|---|---|
-| **Principal** (`inclus_stats` = 1) | 22 | **9,5 %** | 15 |
-| Toutes les mesures | 25 | 11,9 % | 16 |
-| Ex post réellement observés (hors administratifs et réestimations) | 16 | 13,1 % | 10 |
+| **Principal** (`inclus_stats` = 1) | 25 | **10,0 %** | 16 |
+| Toutes les mesures | 28 | 12,1 % | 17 |
+| Ex post réellement observés (hors administratifs et réestimations) | 19 | 13,8 % | 11 |
 
 Les cinq ex post « administratifs » (IS, taxe d'habitation 20 %, impôts de production, pacte, heures sup. IR) sont des chiffrages à comportement constant, mécaniquement proches de l'ex ante : ils tirent la médiane vers le bas. Le chiffre honnête pour une mesure réellement évaluée est plutôt **13 %**.
 - **Par cause** (`couche1_par_cause.csv`) : coûts mécaniques à barème ≈2,5 % d'erreur ; comportement (PFU, CIR, CITE) ≈55 % ; énergie et conjoncture 12 à 48 % ; taux de recours dans les deux sens (prime d'activité sous-estimée ; chèques énergie et fioul surestimés).
@@ -88,7 +88,7 @@ Inchangé sur le fond, mais les 21 programmes de stabilité sont désormais tous
 | Règle | Forfait | Moteur | Formule et paramètres |
 |---|---|---|---|
 | Élasticité capital | 0,45 | 0,437 | taxe t0 = 35,4 % (PFU 31,4 % + CEHR) → t1 = 46,27 % (barème), ε = 0,77 |
-| Élasticité IS | 0,73 | 0,732 | 1 − 0,8 %/pt × (IS existant 25,83 + surtaxe 7,73 pts) : la base perdue fait aussi perdre l'IS existant (corrigé après l'audit ; ancien forfait 0,93) |
+| Élasticité IS | 0,94 | 0,94 | paramètre direct `facteur_is` : surtaxe 2025 encaissée à 94 % de son chiffrage (Cour des comptes) ; fourchette de 0,73 (formule de moyen terme : 1 − 0,8 %/pt × (25,83 + 7,73)) à 1 (aucune réaction) |
 | Élasticité patrimoine | 0,97 | 0,97 | 1 − perte de rendement à 3 ans : 3 % (ISF→IFI, backtest), de 1,2 % (départs nets) à 13 % (long terme étranger) ; affaiblie après validation (ancien forfait 0,85) |
 | Élasticité carburants | 0,70 | 0,73 | accise : ε = −0,3, hausse de prix 32-47 % pondérée par niche, accise existante 1,27 × la hausse |
 | Effet emploi du SMIC (ligne propre) | 0,87 Md€ | 0,87 Md€ | emplois perdus (Dube : 53 900 ; jusqu'à 380 000 selon Montaigne) × 16 k€ |
@@ -126,11 +126,11 @@ Seuls Montaigne et l'iFRAP chiffrent les deux programmes ligne à ligne. Asterè
 
 | Variante | Mesures phares | Financement | Solde central (moteur) | P10 / P50 / P90 | Loi votée seule | Variante « dégel » |
 |---|---|---|---|---|---|---|
-| LFI intégral | −110,4 | +41,1 | **−69,1** | −86 / −66 / −47 | −65,5 | −93,7 |
-| LFI ajusté (hors 30 Md€ d'investissement emprunté) | −31,2 | +41,1 | **+10,1** | +3 / +9 / +16 | +13,8 | −14,4 |
+| LFI intégral | −110,4 | +41,6 | **−68,7** | −86 / −66 / −47 | −64,0 | −93,2 |
+| LFI ajusté (hors 30 Md€ d'investissement emprunté) | −31,2 | +41,6 | **+10,5** | +3 / +10 / +16 | +15,2 | −14,0 |
 | Ensemble | −14,9 | +7,5 | **−7,2** | −11 / −7 / −4 | −1,8 | −7,2 |
 
-**Le résultat LFI dépend surtout du SMIC.** La référence 2027 contient le gel du SMIC de référence des allègements (voté pour 2026, proposé pour 2027). Par symétrie avec la décote des bandeaux d'allègements, qui invoque ce même gel, le SMIC à 1 600 € n'augmente plus les allègements : son coût statique (−19 selon Montaigne, dont −21,5 d'allègements) devient +2,3, plus une ligne d'effet emploi (−0,9). Si au contraire la hausse du SMIC s'accompagne d'un dégel (variante « dégel », `variantes_sensibilite.csv` : coût −24,7 et bandeaux à 0,715), LFI ajusté passe de +10,1 à −14,4. **Les deux lectures sont cohérentes ; le programme LFI 2027 devra dire laquelle s'applique.**
+**Le résultat LFI dépend surtout du SMIC.** La référence 2027 contient le gel du SMIC de référence des allègements (voté pour 2026, proposé pour 2027). Par symétrie avec la décote des bandeaux d'allègements, qui invoque ce même gel, le SMIC à 1 600 € n'augmente plus les allègements : son coût statique (−19 selon Montaigne, dont −21,5 d'allègements) devient +2,3, plus une ligne d'effet emploi (−0,9). Si au contraire la hausse du SMIC s'accompagne d'un dégel (variante « dégel », `variantes_sensibilite.csv` : coût −24,7 et bandeaux à 0,715), LFI ajusté passe de +10,5 à −14,0. **Les deux lectures sont cohérentes ; le programme LFI 2027 devra dire laquelle s'applique.**
 
 Autres effets de la référence 2027 : surtaxe d'IS déjà au PLF 2027 (facteur de référence 0,286, puis 1 dès 2028 car la surtaxe de la référence n'est reconduite qu'un an) ; bandeaux d'allègements en partie rabotés (0,5, statique 11,4 après effets emploi) ; sous-indexation des pensions et abattement des retraités déjà au PLF 2027 (0) ; Zucman décoté de 35 % pour son interaction avec l'ISF, l'IR et la fin du PFU du même panier (impôt plancher, PPL 768). La variante « loi votée seule » ne décote pas les mesures seulement proposées (+3,7 pour LFI, +5,4 pour Ensemble). La taxe renforcée sur les rachats d'actions (8,4, confiance low) n'est que le calcul de l'auteur de l'amendement ; la version à 8 % a rapporté 0,5 Md€ en 2025.
 
@@ -166,16 +166,17 @@ Question : notre chiffrage corrigé est-il plus proche du réalisé que le chiff
 | Taux de recours | non testée (restreinte) | la version d'origine dégradait les 4 chiffrages officiels (prime d'activité 2016 et 2019, CIR, CITE), qui intégraient déjà un recours partiel. **Restreinte** aux chiffrages qui supposent un recours complet (colonne `recours_complet_suppose`, contrôlée par les garde-fous) ; c'est le cas de la garantie d'autonomie chiffrée par Montaigne (`recherche/recours/rapport.md`) |
 | Réforme structurelle | mitigée | 1 sur 2 |
 | Élasticité patrimoine | confirmée (faiblement) | avec 0,85 : 5 dégradations sur 5 ; **affaiblie à 0,97** : 3 améliorations, 2 dégradations, erreur 3 % → 2 % (recalculé sans ISF→IFI). La règle ne corrige presque plus rien |
-| Élasticité IS | non concluante | les « réalisés » sont des chiffrages administratifs à comportement constant |
-| Revenus, successions, carburants, nouvelle assiette | non testées | aucune mesure passée comparable |
+| Élasticité IS | contredite (1 cas) | réalisés observés (Cour des comptes, `recherche/IS/rapport.md`) : surtaxe 2025 −6 % (8,0 → 7,5 d'acomptes), surtaxe de 5 % en 2013 +50 % (0,8 → 1,2). L'ancienne règle (0,73) prévoyait −27 %. **Remplacée par une décote faible (0,94)** calibrée sur 2025 ; recalculée sans 2025, il ne reste que 2013, qu'aucune décote ne peut rapprocher : la règle n'est pas confirmable avec deux cas |
+| Élasticité revenus | confirmée (faiblement) | un seul cas : CDHR 2025 attendue à 2,0, 0,4 encaissé (acompte) ; la règle (0,9) ne corrige que 10 points d'un écart de −80 % |
+| Successions, carburants, nouvelle assiette | non testées | aucune mesure passée comparable |
 
 Sur l'ensemble des chiffrages officiels, la méthode ne fait pas mieux que le départ (erreur médiane 9,6 % → 9,9 %) : elle ne change rien aux coûts mécaniques, qui sont la majorité, et ses gains (comportement du capital, effets promis, retraites) sont compensés par les règles mitigées ou contredites.
 
-**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 31 %, Ensemble 2024 92 %, panier LFI intégral 36 %, LFI ajusté 39 %, Ensemble 0 %. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
+**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 31 %, Ensemble 2024 92 %, panier LFI intégral 36 %, LFI ajusté 44 %, Ensemble 0 %. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
 
 **Limites** : l'agent connaissait l'issue de 60 cas sur 83 ; échantillons très petits par règle (1 à 8) ; les règles les plus influentes pour 2027 (revenus, successions, nouvelle assiette Zucman) ne sont pas testables faute de précédent.
 
-**Décisions appliquées le 14/10** : « Taux de recours » restreinte aux chiffrages à recours complet (vérifié pour Montaigne : tous les éligibles au montant plein) ; « Élasticité patrimoine » affaiblie à 0,97. **Reste à faire** : trouver des réalisés observés pour l'IS.
+**Décisions appliquées le 14/10** : « Taux de recours » restreinte aux chiffrages à recours complet (vérifié pour Montaigne : tous les éligibles au montant plein) ; « Élasticité patrimoine » affaiblie à 0,97. **Décision appliquée** : décote faible pour l'IS (0,94, fourchette 0,73-1). **À surveiller** : les soldes 2025 de la surtaxe et de la CDHR (déclarations de 2026), qui confirmeront ou non les acomptes.
 
 ### Effets distributifs (T7, `distributif_menages.csv`)
 
@@ -247,7 +248,7 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 | T7 Distributif | **Partiel** | Déciles : accès ERFS (CASD) ou maquette publique ; reproduire un cas type publié |
 | T8 Garde-fous | **Fait** ; CI prête (dépôt git à créer) | — |
 | T9 Pipeline | **Fait** : données dans `data/raw/`, schémas pydantic, 257 sources archivées avec sha256 | — |
-| T10 Backtest | **Fait** : 25 mesures ; calibration par institut (aucun biais significatif, n ≤ 8) | Recalculer à périmètre et base de prix identiques ; sortir les ex post administratifs |
+| T10 Backtest | **Fait** : 28 mesures ; calibration par institut (aucun biais significatif, n ≤ 8) | Recalculer à périmètre et base de prix identiques ; sortir les ex post administratifs |
 | T11 Tableau de bord (nouveau) | Version autonome fonctionnelle | Ajouter des sections moteur, projection, sensibilité, distributif ; mettre à jour l'artifact claude.ai si souhaité |
 
 **Calibration par institut (T10b)** : Montaigne n = 8, biais moyen −34 % (IC 95 % [−108 ; +39]) ; OFCE n = 5, +2 % [−19 ; +23] ; Fondation Concorde n = 5, +5 % [−30 ; +39]. Aucun facteur par institut n'est appliqué ; l'erreur absolue médiane (14,9 % tous instituts, 40 % pour Montaigne seul) sert d'incertitude par ligne.

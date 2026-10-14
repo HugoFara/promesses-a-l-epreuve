@@ -14,9 +14,9 @@ def ecart(r):
     a = float(r["ex_ante"]) * float(r["deflateur_ex_ante"])
     return ((a - float(r["ex_post_central"])) if r["sens"] == "cout" else (float(r["ex_post_central"]) - a)) / a * 100
 err = [ecart(r) for r in c]
-check("C1 erreur absolue médiane (%)", statistics.median(abs(e) for e in err), 9.55)
-check("C1 nombre de mesures (statistique principale)", len(c), 22, 0)
-check("C1 mesures à ±15 %", sum(abs(e) <= 15 for e in err), 15)
+check("C1 erreur absolue médiane (%)", statistics.median(abs(e) for e in err), 10.0)
+check("C1 nombre de mesures (statistique principale)", len(c), 25, 0)
+check("C1 mesures à ±15 %", sum(abs(e) <= 15 for e in err), 16)
 # Couche 2
 p = rows("programmes_stabilite_fr.csv")
 e1 = [float(r["real_t1"]) - float(r["prev_t1"]) for r in p if int(r["annee_t1"]) not in (2009, 2020)]
@@ -34,7 +34,7 @@ for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -150.5, -159.5), ("Ensemble 2024",
     check(f"App {prog} corrigé", sum(float(r["independant"]) * float(r["facteur"]) * float(r["facteur_reference"]) for r in l), exp_c, 0.1)
 # Paniers
 k = rows("paniers.csv")
-for v, em, ef in [("LFI intégral", -110.4, 41.1), ("LFI ajusté", -31.2, 41.1), ("Ensemble", -14.9, 7.5)]:
+for v, em, ef in [("LFI intégral", -110.4, 41.6), ("LFI ajusté", -31.2, 41.6), ("Ensemble", -14.9, 7.5)]:
     l = [r for r in k if r["variante"] == v]
     s = lambda role: sum(float(r["statique"]) * float(r["facteur"]) * float(r["facteur_reference"]) * float(r["facteur_interaction"] or 1) for r in l if r["role"].startswith(role))
     check(f"Panier {v} mesures", s("Mesure"), em, 0.1)

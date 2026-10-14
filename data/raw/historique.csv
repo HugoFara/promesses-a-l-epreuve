@@ -216,3 +216,12 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-10-14,regles,Élasticité patrimoine,facteur,0.85,0.97,"Validation : 5 dégradations sur 5 avec 0,85 ; la suppression de l'ISF a coûté presque son chiffrage statique",recherche/validation/README.md
 2026-10-14,moteur_parametres,perte_patrimoine,val_bas/central/haut,0.0615/0.13/0.2,0.012/0.03/0.13,"Décision après validation : central = backtest ISF→IFI (3,1 / 3,2 → 3 %) ; bas = départs nets France Stratégie (0,4 %/an × 3 ans) ; haut = ancien central (étranger, long terme)",recherche/validation/README.md
 2026-10-14,check_regression,App NFP corrigé / Paniers LFI financement,attendu,"−159,9 / +40,6","−159,5 / +41,1","Règle « Élasticité patrimoine » affaiblie (0,85 → 0,97) après validation",recherche/validation/README.md
+2026-10-14,mesures_cout,cebge_2025,*,,(nouvelle mesure),Réalisés observés pour l'IS et l'IR (recherche/IS),https://www.ccomptes.fr/sites/default/files/2026-04/20260422-RBDE-2025_0.pdf
+2026-10-14,mesures_cout,ce_is_5pct_2013,*,,(nouvelle mesure),Réalisés observés pour l'IS et l'IR (recherche/IS),https://www.ccomptes.fr/sites/default/files/EzPublish/20140528_rapport_budget_de_l_Etat_2013_resultats_gestion.pdf
+2026-10-14,mesures_cout,cdhr_2025,*,,(nouvelle mesure),Réalisés observés pour l'IS et l'IR (recherche/IS),https://www.ccomptes.fr/sites/default/files/2026-04/NEB-2026-Recettes-fiscales.pdf
+2026-10-14,check_regression,C1,attendu,"9,55 % ; 15/22","10,0 % ; 16/25","Ajout de trois réalisés observés : surtaxe d'IS 2025, contribution de 5 % sur l'IS 2013, CDHR 2025 (Cour des comptes)",recherche/IS/sources.csv
+2026-10-14,moteur_parametres,facteur_is,*,,0.73/0.94/1,Décote faible pour l'IS à l'horizon 2027 (décision après les réalisés observés),recherche/IS/rapport.md
+2026-10-14,moteur_regles,Élasticité IS,formule/parametres,semi_elasticite_taux / s=s_is;t0=t0_is;delta=delta_is;h=un,fixe / facteur_is,Réalisés observés : réponse faible à 1-2 ans ; formule de moyen terme gardée en borne basse,recherche/IS/rapport.md
+2026-10-14,regles,Élasticité IS,facteur,0.73,0.94,Décote faible : surtaxe 2025 à 94 % de son chiffrage (Cour des comptes),recherche/IS/rapport.md
+2026-10-14,paniers,l_surtaxe,facteur,0.73,0.94,Forfait de la règle « Élasticité IS » mis à jour,recherche/IS/rapport.md
+2026-10-14,check_regression,Paniers LFI financement,attendu,"+41,1","+41,6","Décote faible pour l'IS (0,73 → 0,94) sur la surtaxe pérenne",recherche/IS/rapport.md

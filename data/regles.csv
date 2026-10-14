@@ -15,7 +15,7 @@ Taux de recours,0.65,0,nr_rsa,"Prestation à la demande : recours ≈65 % comme 
 Élasticité patrimoine,0.97,0,isf_departs isf_bunching_fr isf_ifi wealth_nl wealth_dk,"Horizon 3 ans, preuves françaises : ISF→IFI coûté 3 % sous son chiffrage statique (backtest), départs nets ≈0,4 % de la base par an, élasticités aux seuils non significatives ; réponses étrangères de long terme (−14 % à −30 %) en borne haute"
 Élasticité revenus,0.9,0,eti_top,"Élasticité 0,15-0,2 pour le top 0,1 %"
 Élasticité succession,0.9,0,succession_us,"Élasticité ≈0,16 au taux net"
-Élasticité IS,0.73,0,is_shifting,"1 − 0,8 %/pt × (IS de base 25,83 + surtaxe 7,73 pts) : la baisse d'assiette touche aussi l'IS existant"
+Élasticité IS,0.94,0,is_shifting cebge_2025 ce_is_5pct_2013,"Horizon 1-2 ans, rendements observés : surtaxe 2025 à 94 % de son chiffrage, surtaxe 2013 au-dessus ; borne basse de moyen terme 0,73 (semi-élasticité 0,8 %/pt appliquée à tout l'IS)"
 Élasticité carburants,0.7,0,carbu_ct carbu_lt,"ε ≈ −0,3 (CT) à −0,65 (LT)"
 Élasticité SMIC (hypothèse : emplois perdus),1.1,0,smic,"Élasticité emploi ≈ −0,17 : coût alourdi par les emplois perdus"
 Effet emploi du SMIC,0.87,0,smic,Montant (Md€) des allocations et cotisations perdues : emplois perdus × coût d'un emploi perdu ; ligne de statique −1

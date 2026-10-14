@@ -9,10 +9,10 @@ Réforme structurelle,mitigée,2,"1 améliorée(s), 1 dégradée(s) ; erreur mé
 Substitution retraites,confirmée,2,"2 améliorée(s), 0 dégradée(s) ; erreur médiane 16 % → 4 %"
 Taux d'intérêt,non testée,0,aucune mesure passée de ce type dans le backtest
 Taux de recours,non testée (restreinte),8,"restreinte le 14/10/2026 aux chiffrages qui supposent un recours complet ; les chiffrages officiels testés (prime d'activité, CIR, CITE) intégraient déjà un recours partiel : la version restreinte n'est pas testée (version d'origine : 3 améliorée(s), 5 dégradée(s))"
-Élasticité IS,non concluante,4,réalisés = chiffrages administratifs à comportement constant (is_25 ; T10b)
+Élasticité IS,contredite,1,"0 améliorée(s), 1 dégradée(s) ; erreur médiane 50 % → 56 % (4 cas à réalisé administratif écarté(s))"
 Élasticité SMIC (hypothèse : emplois perdus),non testée,0,aucune mesure passée de ce type dans le backtest
 Élasticité capital,confirmée,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 55 % → 1 %"
 Élasticité carburants,non testée,0,aucune mesure passée de ce type dans le backtest
 Élasticité patrimoine,confirmée,5,"3 améliorée(s), 2 dégradée(s) ; erreur médiane 3 % → 2 %"
-Élasticité revenus,non testée,0,aucune mesure passée de ce type dans le backtest
+Élasticité revenus,confirmée,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 80 % → 70 %"
 Élasticité succession,non testée,0,aucune mesure passée de ce type dans le backtest

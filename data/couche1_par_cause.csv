@@ -1,10 +1,12 @@
 cause_principale,n,biais_median_pct,erreur_abs_mediane_pct,mesures
 Aucune (coût conforme),8,-1.9,2.5,cice th_80 hs_ir_2019 ir_baisse_2020 ip_2021 is_25 th_20 pacte_2015
+Élasticité comportementale,4,-50.7,67.6,pfu cir_2008 cite_2015 cdhr_2025
 Taux de recours,4,5.6,12.0,pa_2016 pa_2019 cheque_energie_exc_2021 cheque_energie_exc_2022
-Élasticité comportementale,3,-21.4,55.3,pfu cir_2008 cite_2015
 Base de référence,2,-3.4,6.6,isf_ifi tva_resto_2009
 Concessions parlementaires + conjoncture,1,-17.8,17.8,retraites_2023
-Conjoncture (récession 2009),1,20.0,20.0,tepa_hs
 Conjoncture,1,48.0,48.0,apl_contemp_2021
+Conjoncture (récession 2009),1,20.0,20.0,tepa_hs
 Conjoncture / volume d'heures,1,12.4,12.4,hs_2019
 Conjoncture + report vers chômage/invalidité,1,-13.8,13.8,woerth_2010
+"Indéterminée (comportement ou assiette, non isolés)",1,-6.2,6.2,cebge_2025
+"Indéterminée (assiette, non isolée)",1,50.0,50.0,ce_is_5pct_2013
