@@ -14,7 +14,7 @@
     if (s === "grand" || s === "tres-grand") document.documentElement.dataset.taille = s;
   } catch (e) {}
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js" defer></script>
+<script src="vendor/d3-7.9.0.min.js" defer></script>
 <script src="site.js" defer></script>
 </head>
 <body>
@@ -53,7 +53,7 @@
     <ul id="menu">
       <li><a href="#/accueil">Accueil</a></li>
       <li><a href="#/hier">Les promesses d'hier</a></li>
-      <li><a href="#/programmes">Les programmes 2024</a></li>
+      <li><a href="#/programmes">Les programmes</a></li>
       <li><a href="#/equilibre">Financer les promesses</a></li>
       <li><a href="#/foyer">Mon foyer</a></li>
       <li><a href="#/demain">Dette et déficit</a></li>
@@ -107,7 +107,7 @@
     <h2>Que voulez-vous savoir ?</h2>
     <ul class="tiles">
       <li class="tile"><h3><a href="#/hier">Les promesses d'hier ont-elles été tenues ?</a></h3><p>Le coût annoncé de mesures connues (CICE, flat tax, retraites…) comparé à leur coût réel.</p><span class="arrow" aria-hidden="true">→</span></li>
-      <li class="tile"><h3><a href="#/programmes">Combien coûtaient vraiment les programmes de 2024 ?</a></h3><p>Les programmes du Nouveau Front populaire et d'Ensemble, recalculés avec la même méthode.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/programmes">Combien coûtent vraiment les programmes ?</a></h3><p>Les programmes des partis, recalculés avec la même méthode pour tous.</p><span class="arrow" aria-hidden="true">→</span></li>
       <li class="tile"><h3><a href="#/equilibre">Peut-on financer les mesures phares ?</a></h3><p>Les principales promesses de chaque camp, et les recettes qui pourraient les payer.</p><span class="arrow" aria-hidden="true">→</span></li>
       <li class="tile"><h3><a href="#/foyer">Qu'est-ce que cela change pour mon foyer ?</a></h3><p>L'effet de quelques mesures sur le revenu de foyers types : salarié, retraités, cadre, parent seul.</p><span class="arrow" aria-hidden="true">→</span></li>
       <li class="tile"><h3><a href="#/demain">Où vont la dette et le déficit ?</a></h3><p>Les trajectoires possibles jusqu'en 2032, selon les choix faits.</p><span class="arrow" aria-hidden="true">→</span></li>
@@ -116,7 +116,7 @@
 
     <div class="callout warn">
       <h2>À savoir avant de lire</h2>
-      <p>Ce site ne donne <strong>aucune consigne de vote</strong>. Il ne juge pas si une mesure est souhaitable, seulement si son coût annoncé est réaliste. Une mesure coûteuse peut être un choix assumé. Les programmes de la présidentielle 2027 ne sont pas encore publiés : les exemples portent sur les législatives de 2024.</p>
+      <p>Ce site ne donne <strong>aucune consigne de vote</strong>. Il ne juge pas si une mesure est souhaitable, seulement si son coût annoncé est réaliste. Une mesure coûteuse peut être un choix assumé. <span id="note-scrutin"></span></p>
       <p>Un mot vous semble obscur ? Le <a href="#/lexique">lexique</a> l'explique simplement.</p>
     </div>
   </section>
@@ -183,10 +183,12 @@
   </section>
 
   <!-- ==================================================================== PROGRAMMES -->
-  <section class="view" id="v-programmes" data-titre="Les programmes 2024" hidden>
-    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Les programmes 2024</li></ol></nav>
-    <h1>Combien coûtaient vraiment les programmes de 2024 ?</h1>
-    <p class="lede">Pour les élections législatives de 2024, on reprend les programmes du Nouveau Front populaire (NFP) et d'Ensemble. On part d'un chiffrage indépendant, puis on le corrige avec les leçons du passé.</p>
+  <section class="view" id="v-programmes" data-titre="Les programmes" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Les programmes</li></ol></nav>
+    <h1>Combien coûtent vraiment les programmes ?</h1>
+    <p class="lede" id="lede-programmes"></p>
+    <fieldset class="choices" id="choix-scrutin" hidden><legend>Élection</legend></fieldset>
+    <fieldset class="choices" id="choix-progs" hidden><legend>Programmes affichés</legend></fieldset>
 
     <div class="callout">
       <h2>En bref</h2>
@@ -196,22 +198,22 @@
     <h2>1. Trois chiffrages pour chaque programme</h2>
     <ul class="prose">
       <li><strong>Annoncé par le parti</strong> : ce que le parti dit de son propre programme.</li>
-      <li><strong>Chiffrage indépendant</strong> : celui de l'Institut Montaigne, seul organisme à avoir chiffré les deux programmes mesure par mesure (orientation libérale).</li>
+      <li><strong>Chiffrage indépendant de départ</strong> : pour chaque mesure, le chiffrage d'un organisme indépendant (Institut Montaigne, iFRAP, OFCE…). Quand il manque, on prend la médiane des autres chiffrages. La provenance est indiquée sous chaque programme.</li>
       <li><strong>Après correction</strong> : ce même chiffrage, corrigé avec les erreurs constatées dans le passé (voir <a href="#/methode">la méthode</a>).</li>
     </ul>
     <div class="cards" id="cards-programmes"></div>
     <div class="chart-block">
-      <h3>Effet sur les comptes publics en 2027</h3>
+      <h3>Effet sur les comptes publics</h3>
       <p class="how">En milliards d'euros par an. Une barre vers la gauche signifie que le programme <strong>augmente le déficit</strong>.</p>
       <ul class="legend" id="lg-app"></ul>
       <div class="chart" id="ch-app"></div>
     </div>
 
     <h2>2. Quel déficit en 2027 ?</h2>
-    <p class="prose">Le déficit de 2027 additionne trois éléments : l'objectif officiel du gouvernement de l'époque, le dépassement habituel de cet objectif (voir <a href="#/hier">les promesses d'hier</a>) et le coût du programme.</p>
+    <p class="prose">Le déficit de 2027 additionne trois éléments : la prévision officielle au moment de l'élection, le dépassement habituel de ce type de prévision (voir <a href="#/hier">les promesses d'hier</a>) et le coût du programme.</p>
     <div class="chart-block">
       <h3>Déficit public en 2027, en % du PIB</h3>
-      <p class="how">Le trait pointillé montre la prévision actuelle du gouvernement pour 2027, pour comparaison.</p>
+      <p class="how" id="def-how"></p>
       <ul class="legend" id="lg-def"></ul>
       <div class="chart" id="ch-def"></div>
     </div>
@@ -227,7 +229,7 @@
     <div class="accs">
       <details class="acc"><summary>Pour aller plus loin : mesure par mesure</summary><div class="acc-body">
         <p class="prose small muted">Effet sur le solde public en milliards d'euros par an (négatif = hausse du déficit). La colonne « Après correction » applique la règle indiquée au chiffrage indépendant.</p>
-        <div class="field"><label for="f-prog">Programme</label><select id="f-prog"><option value="">Les deux programmes</option></select></div>
+        <div class="field"><label for="f-prog">Programme</label><select id="f-prog"></select></div>
         <div class="tbl-wrap tall" id="tb-app"></div>
       </div></details>
       <details class="acc"><summary>Pour aller plus loin : tous les chiffreurs</summary><div class="acc-body">
@@ -393,7 +395,7 @@
       <li><strong>Peu d'exemples.</strong> Seules les mesures adoptées peuvent être vérifiées, et elles sont peu nombreuses. Les règles détectent de grosses erreurs, pas des détails.</li>
       <li><strong>Des coûts réels parfois incertains.</strong> Quand les évaluations divergent, on retient une valeur centrale. Pour les retraites, le coût « réel » est une réestimation, pas une économie constatée.</li>
       <li><strong>Des études étrangères.</strong> Certaines réactions des contribuables sont mesurées à l'étranger (Danemark, Suisse, États-Unis) et se transposent mal en France.</li>
-      <li><strong>Le chiffreur de départ pèse lourd.</strong> Les chiffrages indépendants du NFP vont d'environ −50 à −179 milliards. Les corrections ne changent le résultat que de quelques milliards.</li>
+      <li><strong>Le chiffreur de départ pèse lourd.</strong> <span data-k="lim_chiffreurs"></span> Les corrections ne changent le résultat que de quelques milliards.</li>
       <li><strong>Des déficits révisés.</strong> Les déficits réels utilisés sont les séries actuelles d'Eurostat, révisées depuis leur première publication.</li>
     </ul>
 
@@ -473,7 +475,7 @@
         <h2>Explorer</h2>
         <ul>
           <li><a href="#/hier">Les promesses d'hier</a></li>
-          <li><a href="#/programmes">Les programmes 2024</a></li>
+          <li><a href="#/programmes">Les programmes</a></li>
           <li><a href="#/foyer">Mon foyer</a></li>
           <li><a href="#/demain">Dette et déficit</a></li>
         </ul>
@@ -487,7 +489,7 @@
         </ul>
       </div>
     </div>
-    <p class="legal small">Données mises à jour le 14 octobre 2026. Sources publiques citées pour chaque valeur dans les fichiers de données. Ce site n'utilise aucun cookie ; vos préférences d'affichage restent dans votre navigateur.</p>
+    <p class="legal small">Données mises à jour le <span data-k="maj">—</span>. Sources publiques citées pour chaque valeur dans les fichiers de données. Ce site n'utilise aucun cookie ; vos préférences d'affichage restent dans votre navigateur.</p>
   </div>
 </footer>
 </body>

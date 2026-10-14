@@ -4,6 +4,8 @@ Les fichiers de data/raw/ sont la seule source de vérité. Ceux de data/ sont r
 ne pas les éditer à la main.
 """
 import csv
+import datetime
+import subprocess
 import sys
 from pathlib import Path
 
@@ -61,6 +63,14 @@ for nom in ("application_lignes", "paniers"):
     for r in donnees[nom]:
         if r["regle"] not in regles:
             erreurs.append(f"{nom} {r['id']} : règle absente de regles.csv « {r['regle']} »")
+ids_param = {r["id"] for r in donnees["application_parametres"]}
+progs = {r["programme"] for r in donnees["application_programmes"]}
+for r in donnees["application_programmes"]:
+    for c in ("deficit_reference", "biais_reference"):
+        if r[c] not in ids_param:
+            erreurs.append(f"application_programmes {r['id']} : {c} inconnu de application_parametres « {r[c]} »")
+for x in progs ^ {r["programme"] for r in donnees["application_lignes"]}:
+    erreurs.append(f"programme « {x} » présent dans un seul des fichiers application_programmes / application_lignes")
 ids_app = {r["id"] for r in donnees["application_lignes"]}
 for r in donnees["chiffrages_instituts"]:
     if r["usage"] != "hors_lignes" and r["id_ligne"] not in ids_app:
@@ -125,4 +135,22 @@ for r in donnees["paniers"]:
         paniers.append({**r, "id": f"{r['id']}_{VARIANTE_SUFFIXE[v]}", "variante": v})
 cols = ["id", "variante"] + [c for c in donnees["paniers"][0] if c not in ("id", "variantes")]
 ecrire("paniers", paniers, cols)
+
+
+def date_des_donnees():
+    """Date de la dernière modification de data/raw/ : aujourd'hui si des fichiers ne sont pas encore commités,
+    sinon la date du dernier commit qui les touche (hors dépôt git : aujourd'hui)."""
+    try:
+        sale = subprocess.run(["git", "status", "--porcelain", "--", "raw"], capture_output=True, text=True, check=True).stdout.strip()
+        if not sale:
+            d = subprocess.run(["git", "log", "-1", "--format=%cs", "--", "raw"], capture_output=True, text=True, check=True).stdout.strip()
+            if d:
+                return d
+    except (OSError, subprocess.CalledProcessError):
+        pass
+    return datetime.date.today().isoformat()
+
+
+# Métadonnées lues par le site (date affichée en pied de page)
+ecrire("meta", [{"cle": "date_donnees", "valeur": date_des_donnees()}], ["cle", "valeur"])
 print(f"build : {len(SCHEMAS)} fichiers validés, {sum(map(len, donnees.values()))} lignes")

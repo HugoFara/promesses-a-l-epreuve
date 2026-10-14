@@ -13,6 +13,7 @@ const SOURCES = {
   variantes: "moteur_variantes", sensibilite: "sensibilite_chiffreurs", confiance: "confiance_programmes",
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
   validation_regles: "validation_regles", distributif: "distributif_menages", reformes: "distributif_reformes",
+  meta: "meta",
 };
 
 // Fichiers proposés au téléchargement (vue Méthode), avec une description lisible.
@@ -127,21 +128,34 @@ function calculer() {
   // Pays
   D.pairs.forEach(r => { r.v = num(r.erreur_3ans); });
 
-  // Programmes 2024
-  const pstab = par("deficit_pstab_2027"), bt3 = par("biais_t3");
-  K.prev_actuelle = par("prevision_2027_actuelle");
-  D.progs = D.programmes.map(p => {
-    const t = D.totaux.find(r => r.fichier === "application_lignes" && r.groupe === p.programme && r.composante === "solde");
-    const c = num(t.central);
-    return {id: p.id, nom: p.programme, court: p.programme.replace(/ 2024.*/, ""), position: p.position_parti,
-      annonce: p.solde_annonce === "" ? null : num(p.solde_annonce), montaigne: num(p.solde_montaigne),
-      corrige: c, p10: num(t.p10), p90: num(t.p90), pts_pib: -c / pib * 100,
-      pstab, biais: bt3, deficit: pstab + bt3 - c / pib * 100};
-  });
-
   // Lignes corrigées par le moteur
   const mot = new Map(D.moteur.map(r => [r.fichier + "|" + r.id, r]));
   D.app = D.application.map(r => ({...r, corrige: num(mot.get("application_lignes|" + r.id)?.corrige_central)}));
+
+  // Programmes : autant que les données en contiennent, regroupés par élection. Chacun est jugé par rapport à
+  // sa propre référence (deficit_reference, biais_reference) : 2024 → programme de stabilité + biais à 3 ans.
+  K.prev_actuelle = par("prevision_2027_actuelle");
+  const desc = id => D.parametres.find(x => x.id === id).description;
+  D.progs = D.programmes.map(p => {
+    const t = D.totaux.find(r => r.fichier === "application_lignes" && r.groupe === p.programme && r.composante === "solde");
+    const lignes = D.app.filter(r => r.programme === p.programme), c = num(t.central);
+    const ref = par(p.deficit_reference), biais = par(p.biais_reference);
+    return {id: p.id, nom: p.programme, court: p.programme.replace(/\s+20\d\d.*$/, ""), position: p.position_parti,
+      scrutin: p.scrutin, annee: num((p.scrutin.match(/\d{4}/) || [0])[0]),
+      annonce: p.solde_annonce === "" ? null : num(p.solde_annonce), depart: sum(lignes, r => num(r.independant)),
+      sources: sourcesDepart(lignes), corrige: c, p10: num(t.p10), p90: num(t.p90), pts_pib: -c / pib * 100,
+      ref, refId: p.deficit_reference, refLib: desc(p.deficit_reference).replace(/\s*\(.*$/, "").replace(/,.*$/, ""),
+      biais, biaisLib: (desc(p.biais_reference).match(/à \d ans?/) || [""])[0],
+      deficit: ref + biais - c / pib * 100};
+  });
+  D.scrutins = [...new Set(D.progs.map(p => p.scrutin))].sort((a, b) => num(b.match(/\d{4}/)) - num(a.match(/\d{4}/)));
+
+  // Limites : l'écart entre chiffreurs publiés, sur le programme où il est le plus grand
+  const ecarts = [...new Set(D.sensibilite.map(r => r.programme))].map(p => {
+    const v = D.sensibilite.filter(r => r.programme === p && r.solde_publie !== "").map(r => num(r.solde_publie));
+    return {p, lo: d3.min(v), hi: d3.max(v)};
+  }).filter(e => e.lo !== undefined).sort((a, b) => (b.hi - b.lo) - (a.hi - a.lo));
+  if (ecarts.length) K.lim_chiffreurs = `Pour ${ecarts[0].p}, les chiffrages publiés vont de ${sg(ecarts[0].lo, n0)} à ${sg(ecarts[0].hi, n0)} milliards d'euros.`;
   D.pan = D.paniers.map(r => ({...r, corrige: num(mot.get("paniers|" + r.id)?.corrige_central)}));
 
   // Scénarios d'équilibre
@@ -157,7 +171,20 @@ function calculer() {
   });
 
   K.el_n = D.elasticites.length;
+  const dd = D.meta.find(r => r.cle === "date_donnees")?.valeur;
+  if (dd) K.maj = new Date(dd + "T12:00:00").toLocaleDateString("fr-FR", {day: "numeric", month: "long", year: "numeric"});
 }
+
+/** Résumé lisible de la provenance du chiffrage de départ d'un programme : « Institut Montaigne (9 mesures), … ». */
+function sourcesDepart(lignes) {
+  const cat = s => /^médiane/i.test(s) ? "médiane des autres chiffreurs" : /^calcul/i.test(s) ? "calcul propre" : /^montant du parti/i.test(s) ? "montant du parti" : s;
+  const n = d3.rollup(lignes, v => v.length, r => cat(r.source_independant));
+  return [...n].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} (${v} mesure${v > 1 ? "s" : ""})`).join(", ");
+}
+
+/* ------------------------------------------------------------------ choix des programmes affichés */
+const SEL = {scrutin: null, caches: new Set()};
+const progsVus = () => D.progs.filter(p => p.scrutin === SEL.scrutin && !SEL.caches.has(p.nom));
 
 /* ------------------------------------------------------------------ graphiques */
 function svgIn(box, H, label) {
@@ -305,47 +332,56 @@ function groupedBars(box, groups, series, o) {
 
 const SERIES_APP = () => [
   {k: "annonce", n: "Annoncé par le parti", c: css("--s5")},
-  {k: "montaigne", n: "Chiffrage indépendant", c: css("--s6")},
+  {k: "depart", n: "Chiffrage indépendant de départ", c: css("--s6")},
   {k: "corrige", n: "Après correction", c: css("--s1")},
 ];
 function drawApp() {
   const S = SERIES_APP();
   legend($("#lg-app"), S.map(s => [s.n, s.c]));
-  groupedBars($("#ch-app"), D.progs, S, {label: "Effet des programmes 2024 sur le solde public en 2027 : " + D.progs.map(p => `${p.court} ${sg(p.corrige, n0)} Md€ après correction`).join(", ")});
+  groupedBars($("#ch-app"), progsVus(), S, {label: "Effet des programmes sur le solde public : " + progsVus().map(p => `${p.court} ${sg(p.corrige, n0)} Md€ après correction`).join(", ")});
 }
 
 function drawDef() {
-  const box = $("#ch-def"), fs = FS() * .875;
-  const parts = [["pstab", "Objectif officiel (avril 2024)", css("--s5")], ["biais", "Dépassement habituel", css("--s2")], ["pts_pib", "Coût du programme, après correction", css("--s1")]];
-  legend($("#lg-def"), [...parts.map(([, n, c]) => [n, c]), ["Prévision actuelle du gouvernement", css("--text"), "dash"]]);
-  const barH = Math.max(26, fs * 2), rowH = fs * 1.8 + barH + fs * 1.2, H = D.progs.length * rowH + fs * 2;
-  const {svg, W} = svgIn(box, H, "Déficit 2027 : " + D.progs.map(p => `${p.court} ${n1(p.deficit)} % du PIB`).join(", "));
-  const x = d3.scaleLinear([0, d3.max(D.progs, p => p.deficit) * 1.05], [0, W - 4]).nice();
+  const box = $("#ch-def"), fs = FS() * .875, P = progsVus();
+  const parts = [["ref", "Prévision officielle de référence", css("--s5")], ["biais", "Dépassement habituel", css("--s2")], ["pts_pib", "Coût du programme, après correction", css("--s1")]];
+  // Trait de comparaison : la prévision actuelle, seulement si elle n'est pas déjà la référence de tous les programmes
+  const trait = P.some(p => p.refId !== "prevision_2027_actuelle");
+  legend($("#lg-def"), [...parts.map(([, n, c]) => [n, c]), trait ? ["Prévision actuelle du gouvernement", css("--text"), "dash"] : null].filter(Boolean));
+  const refs = d3.groups(P, p => `${p.refLib.toLowerCase()} (${n1(p.ref)} %), plus le dépassement habituel ${p.biaisLib} (${pts(p.biais)})`);
+  $("#def-how").textContent = refs.map(([t, ps]) => (refs.length > 1 ? liste(ps.map(p => p.court)) + " : " : "Référence : ") + t + ".").join(" ") + (trait ? " Le trait pointillé montre la prévision actuelle du gouvernement pour 2027." : "");
+  const barH = Math.max(26, fs * 2), rowH = fs * 1.8 + barH + fs * 1.2, H = P.length * rowH + fs * 2;
+  const {svg, W} = svgIn(box, H, "Déficit 2027 : " + P.map(p => `${p.court} ${n1(p.deficit)} % du PIB`).join(", "));
+  const x = d3.scaleLinear([0, d3.max(P, p => Math.max(p.deficit, p.ref + p.biais, K.prev_actuelle)) * 1.05], [0, W - 4]).nice();
   const yEnd = H - fs * 1.6;
   x.ticks(W < 480 ? 4 : 8).forEach(t => {
     svg.append("line").attr("x1", x(t)).attr("x2", x(t)).attr("y1", 0).attr("y2", yEnd).attr("stroke", css("--grid"));
     svg.append("text").attr("x", x(t)).attr("y", H - 4).attr("text-anchor", "middle").attr("class", "lbl-muted").style("font-size", fs + "px").text(n0(t) + " %");
   });
-  D.progs.forEach((p, i) => {
+  P.forEach((p, i) => {
     const G = svg.append("g").attr("transform", `translate(0,${i * rowH})`);
     G.append("text").attr("x", 0).attr("y", fs * 1.2).style("font-size", fs * 1.1 + "px").style("font-weight", 700).text(`${p.court} : ${n1(p.deficit)} % du PIB`);
     let x0 = 0;
     parts.forEach(([k, n, c]) => {
-      const w = x(p[k]) - x(0);
-      G.append("rect").attr("x", x0).attr("y", fs * 1.8).attr("width", Math.max(1, w - 2)).attr("height", barH).attr("fill", c).append("title").text(`${n} : ${n1(p[k])} pt`);
-      if (w > txtW(svg, "0,0", fs) + 10) G.append("text").attr("x", x0 + w / 2).attr("y", fs * 1.8 + barH * .68).attr("text-anchor", "middle").style("font-size", fs + "px").style("font-weight", 700)
-        .style("fill", textOn(c)).text(n1(p[k]));
-      x0 += w;
+      const w = x(p[k]) - x(0), neg = w < 0;
+      // Un programme qui réduit le déficit : segment en retrait, en clair, depuis la fin de la barre
+      G.append("rect").attr("x", neg ? x0 + w : x0).attr("y", fs * 1.8).attr("width", Math.max(1, Math.abs(w) - 2)).attr("height", barH).attr("fill", c)
+        .attr("fill-opacity", neg ? .35 : 1).append("title").text(`${n} : ${sg(p[k])} pt`);
+      if (Math.abs(w) > txtW(svg, "−0,0", fs) + 10) G.append("text").attr("x", x0 + w / 2).attr("y", fs * 1.8 + barH * .68).attr("text-anchor", "middle").style("font-size", fs + "px").style("font-weight", 700)
+        .style("fill", neg ? css("--text") : textOn(c)).text(neg ? sg(p[k]) : n1(p[k]));
+      x0 += neg ? 0 : w;
     });
   });
-  const r = K.prev_actuelle;
-  svg.append("line").attr("x1", x(r)).attr("x2", x(r)).attr("y1", fs * 1.5).attr("y2", yEnd).attr("stroke", css("--text")).attr("stroke-width", 2).attr("stroke-dasharray", "5 4");
+  if (trait) {
+    const r = K.prev_actuelle;
+    svg.append("line").attr("x1", x(r)).attr("x2", x(r)).attr("y1", fs * 1.5).attr("y2", yEnd).attr("stroke", css("--text")).attr("stroke-width", 2).attr("stroke-dasharray", "5 4");
+  }
 }
 
 function drawSens() {
   const box = $("#ch-sens");
   box.textContent = "";
-  const progs = [...new Set(D.sensibilite.map(r => r.programme))];
+  const progs = progsVus().map(p => p.nom).filter(p => D.sensibilite.some(r => r.programme === p));
+  if (!progs.length) box.append(h("p", {class: "muted"}, "Pas encore d'autre chiffrage indépendant pour ces programmes."));
   progs.forEach(p => {
     box.append(h("h4", {style: "margin:1rem 0 .25rem"}, p));
     const sub = h("div", {class: "chart"}); box.append(sub);
@@ -374,14 +410,20 @@ function drawInc() {
   });
 }
 
-const PROJ = () => [
-  {n: "Référence du gouvernement", c: css("--s5"), court: "Gouvernement"},
-  {n: "Référence corrigée du biais", c: css("--text"), court: "Gouvernement corrigé"},
-  {n: "Panier LFI intégral", c: css("--s2"), court: "LFI intégral"},
-  {n: "Panier LFI ajusté", c: css("--s4"), court: "LFI ajusté"},
-  {n: "Panier Ensemble", c: css("--s3"), court: "Ensemble"},
-];
-const projNom = (n, stress) => (stress && n !== "Référence du gouvernement") ? n.replace(" du biais", "") + ", stress +25 pb" : n;
+/** Scénarios de projection, lus dans projection.csv (hors variantes « stress », qui en sont dérivées). */
+function PROJ() {
+  const pal = ["--s2", "--s4", "--s3", "--s6", "--s1"];
+  let i = 0;
+  return [...new Set(D.projection.map(r => r.scenario))].filter(n => !/, stress /.test(n)).map(n =>
+    n === "Référence du gouvernement" ? {n, c: css("--s5"), court: "Gouvernement", leg: "Prévision du gouvernement"}
+    : n === "Référence corrigée du biais" ? {n, c: css("--text"), court: "Gouvernement corrigé", leg: "Prévision corrigée de l'optimisme habituel"}
+    : {n, c: css(pal[i++ % pal.length]), court: n.replace(/^Panier /, ""), leg: "Scénario " + n.replace(/^Panier /, "")});
+}
+const projNom = (n, stress) => {
+  if (!stress) return n;
+  const st = n.replace(" du biais", "") + ", stress +25 pb";
+  return D.projection.some(r => r.scenario === st) ? st : n;  // sans variante « stress » (gouvernement) : série d'origine
+};
 function projSeries(ind, stress) {
   return PROJ().map(s => ({...s, pts: D.projection.filter(r => r.scenario === projNom(s.n, stress))
     .map(r => ({a: num(r.annee), v: num(r[ind]), ext: r.extrapole === "1"}))}));
@@ -392,7 +434,7 @@ function drawProj() {
   const lib = ind === "dette_pct" ? "Dette publique" : "Déficit public";
   $("#titre-proj").textContent = lib + ", en % du PIB";
   const series = projSeries(ind, stress);
-  legend($("#lg-proj"), series.map(s => [s.court === "Gouvernement" ? "Prévision du gouvernement" : s.court === "Gouvernement corrigé" ? "Prévision corrigée de l'optimisme habituel" : "Scénario " + s.court, s.c, "line"]));
+  legend($("#lg-proj"), series.map(s => [s.leg, s.c, "line"]));
   const box = $("#ch-proj"), fs = FS() * .875;
   const W0 = Math.max(280, box.clientWidth), endLab = W0 >= 600;
   const H = 340, m = {t: 14, r: endLab ? 170 : 12, b: fs * 2.2, l: fs * 2.6};
@@ -468,49 +510,101 @@ function vueHier() {
 }
 
 function vueProgrammes() {
+  const recents = D.scrutins.filter(sc => num(sc.match(/\d{4}/)) >= 2027);
+  $("#note-scrutin").textContent = recents.length
+    ? `Les programmes ${liste(recents.map(scrutinDe))} sont ajoutés au fur et à mesure de leur publication et de leur chiffrage.`
+    : `Les programmes de la présidentielle de 2027 ne sont pas encore publiés : les exemples portent sur ${liste(D.scrutins.map(scrutinLes))}.`;
+  // Choix de l'élection (si plusieurs) et des programmes affichés (s'il y en a plus de deux)
+  SEL.scrutin = D.scrutins[0];
+  const fsS = $("#choix-scrutin"), fsP = $("#choix-progs");
+  fsS.hidden = D.scrutins.length < 2;
+  $$(".choice", fsS).forEach(e => e.remove());
+  D.scrutins.forEach((sc, i) => fsS.append(h("label", {class: "choice"}, h("input", {type: "radio", name: "scrutin", value: sc, checked: i === 0 ? "" : null}), h("span", {}, sc))));
+  fsS.onchange = () => { SEL.scrutin = $("input[name=scrutin]:checked").value; SEL.caches.clear(); majProgrammes(); };
+  fsP.onchange = e => { e.target.checked ? SEL.caches.delete(e.target.value) : SEL.caches.add(e.target.value); majProgrammes(); };
+  $("#f-prog").onchange = tableProgrammes;
+  majProgrammes();
+}
+
+function majProgrammes() {
+  const tous = D.progs.filter(p => p.scrutin === SEL.scrutin), P = progsVus();
+  const fsP = $("#choix-progs");
+  fsP.hidden = tous.length < 3;
+  $$(".check", fsP).forEach(e => e.remove());
+  tous.forEach(p => fsP.append(h("label", {class: "check"}, h("input", {type: "checkbox", value: p.nom, checked: SEL.caches.has(p.nom) ? null : ""}), p.nom)));
+
+  $("#lede-programmes").textContent = `${SEL.scrutin} : ${tous.length === 1 ? "le programme" : "les programmes"} ${liste(tous.map(p => p.nom))}. ` +
+    "On part d'un chiffrage indépendant, mesure par mesure, puis on le corrige avec les leçons du passé.";
+
   const bref = $("#bref-programmes"); bref.textContent = "";
-  D.progs.forEach(p => {
-    const ann = p.annonce === null ? "n'avait pas publié de chiffrage global" : p.annonce === 0 ? "se présentait comme équilibré" : `annonçait ${sg(p.annonce, n0)} Md€`;
-    bref.append(h("li", {}, h("strong", {}, p.court), ` ${ann}. Après correction, il augmenterait le déficit d'environ ${md(p.corrige)} par an, soit ${pts(p.pts_pib)} de PIB.`));
+  P.forEach(p => {
+    const ann = p.annonce === null ? "n'a pas publié de chiffrage global" : p.annonce === 0 ? "se présente comme équilibré" : `annonce ${sg(p.annonce, n0)} Md€`;
+    const eff = p.corrige < 0 ? `augmenterait le déficit d'environ ${md(p.corrige)} par an, soit ${pts(p.pts_pib)} de PIB` : `réduirait le déficit d'environ ${md(p.corrige)} par an`;
+    bref.append(h("li", {}, h("strong", {}, p.court), ` ${ann}. Après correction, il ${eff}.`));
   });
-  bref.append(h("li", {}, `Dans les deux cas, le déficit de 2027 dépasserait l'objectif officiel de l'époque (${n1(D.progs[0].pstab)} % du PIB) : ` +
-    D.progs.map(p => `${n1(p.deficit)} % pour ${p.court}`).join(", ") + "."));
+  const au = P.filter(p => p.deficit > p.ref);
+  if (au.length) bref.append(h("li", {}, `${au.length === P.length && P.length > 1 ? "Pour tous les programmes affichés, le" : "Le"} déficit de 2027 dépasserait la prévision officielle de référence : ` +
+    au.map(p => `${n1(p.deficit)} % du PIB pour ${p.court} (référence ${n1(p.ref)} %)`).join(", ") + "."));
+  if (!P.length) bref.append(h("li", {}, "Aucun programme sélectionné."));
 
   const box = $("#cards-programmes"); box.textContent = "";
-  D.progs.forEach(p => box.append(h("article", {class: "card"}, h("h3", {}, p.nom), h("p", {class: "muted small"}, p.position),
+  P.forEach(p => box.append(h("article", {class: "card"}, h("h3", {}, p.nom), h("p", {class: "muted small"}, p.position),
     h("dl", {},
       h("dt", {}, "Annoncé par le parti"), h("dd", {}, p.annonce === null ? "non chiffré" : sg(p.annonce, n0) + " Md€"),
-      h("dt", {}, "Chiffrage indépendant"), h("dd", {}, sg(p.montaigne, n0) + " Md€"),
-      h("dt", {class: "total"}, "Après correction"), h("dd", {class: "total neg"}, sg(p.corrige, n0) + " Md€"),
+      h("dt", {}, "Chiffrage indépendant de départ"), h("dd", {}, sg(p.depart, n0) + " Md€"),
+      h("dt", {class: "total"}, "Après correction"), h("dd", {class: "total " + signCls(p.corrige)}, sg(p.corrige, n0) + " Md€"),
       h("dt", {}, "Fourchette (8 chances sur 10)"), h("dd", {}, `${sg(p.p10, n0)} à ${sg(p.p90, n0)}`),
-      h("dt", {}, "Déficit 2027 qui en résulte"), h("dd", {}, n1(p.deficit) + " % du PIB"))))) ;
+      h("dt", {}, "Déficit 2027 qui en résulte"), h("dd", {}, n1(p.deficit) + " % du PIB")),
+    h("p", {class: "small muted", style: "margin:.9rem 0 0"}, "Point de départ : " + p.sources + "."))));
 
   const sel = $("#f-prog");
-  if (sel.options.length === 1) D.progs.forEach(p => sel.append(h("option", {value: p.nom}, p.nom)));
-  const drawTb = () => table($("#tb-app"), [
-    {t: "Mesure", f: r => r.ligne},
-    {t: "Annoncé par le parti", num: true, f: r => r.annonce_parti === "" ? "—" : sg(num(r.annonce_parti))},
-    {t: "Indépendant", num: true, f: r => sg(num(r.independant))},
-    {t: "Après correction", num: true, f: r => sg(r.corrige), cls: r => signCls(r.corrige - num(r.independant))},
-    {t: "Règle", f: r => r.regle},
-    {t: "Justification", f: r => r.justification},
-    {t: "Autres chiffrages", f: r => r.autres_estimations},
-  ], D.app.filter(r => !sel.value || r.programme === sel.value), {group: r => r.programme});
-  sel.onchange = drawTb; drawTb();
+  sel.textContent = ""; sel.append(h("option", {value: ""}, P.length > 1 ? "Tous les programmes affichés" : P[0]?.nom || "—"));
+  if (P.length > 1) P.forEach(p => sel.append(h("option", {value: p.nom}, p.nom)));
+  tableProgrammes();
 
+  const noms = new Set(P.map(p => p.nom));
   table($("#tb-sens"), [
     {t: "Chiffreur", f: r => r.chiffreur}, {t: "Statut", f: r => r.statut},
     {t: "Lignes chiffrées", num: true, f: r => `${r.lignes_chiffrees} / ${r.lignes_programme}`},
     {t: "Publié", num: true, f: r => sg(num(r.solde_publie))},
     {t: "Propre, statique", num: true, f: r => sg(num(r.propre_statique))}, {t: "Propre, corrigé", num: true, f: r => sg(num(r.propre_corrige))},
     {t: "Complété, statique", num: true, f: r => sg(num(r.complete_statique))}, {t: "Complété, corrigé", num: true, f: r => sg(num(r.complete_corrige))},
-  ], D.sensibilite, {group: r => r.programme});
+  ], D.sensibilite.filter(r => noms.has(r.programme)), {group: r => r.programme});
 
   const cols = Object.keys(D.confiance[0]).filter(c => c.startsWith("correction_"));
   table($("#tb-confiance"), [{t: "Programme ou scénario", f: r => r.groupe},
     ...cols.map(c => ({t: c.replace("correction_", "").replace(/_/g, " ").replace(/^./, s => s.toUpperCase()), num: true, f: r => sg(num(r[c]))})),
-    {t: "Part confirmée", num: true, f: r => r.part_confirmee_pct + " %"}], D.confiance);
+    {t: "Part confirmée", num: true, f: r => r.part_confirmee_pct + " %"}], D.confiance.filter(r => r.fichier !== "application_lignes" || noms.has(r.groupe)));
+
+  if (vueCourante === "programmes") dessiner();
 }
+
+function tableProgrammes() {
+  const v = $("#f-prog").value, noms = new Set(progsVus().map(p => p.nom));
+  table($("#tb-app"), [
+    {t: "Mesure", f: r => r.ligne},
+    {t: "Annoncé par le parti", num: true, f: r => r.annonce_parti === "" ? "—" : sg(num(r.annonce_parti))},
+    {t: "Indépendant", num: true, f: r => sg(num(r.independant))},
+    {t: "Source", f: r => r.source_independant},
+    {t: "Après correction", num: true, f: r => sg(r.corrige), cls: r => signCls(r.corrige - num(r.independant))},
+    {t: "Règle", f: r => r.regle},
+    {t: "Justification", f: r => r.justification},
+    {t: "Autres chiffrages", f: r => r.autres_estimations},
+  ], D.app.filter(r => v ? r.programme === v : noms.has(r.programme)), {group: r => r.programme});
+}
+
+/** « Législatives 2024 » → « les législatives de 2024 » ; « Présidentielle 2027 » → « la présidentielle de 2027 ». */
+function scrutinLes(sc) {
+  const m = sc.match(/^(.*\S)\s+(\d{4})$/);
+  if (!m) return sc;
+  const nom = m[1].toLowerCase();
+  return (/s$/.test(nom) ? "les " : "la ") + nom + " de " + m[2];
+}
+/** … avec « de » contracté : « des législatives de 2024 », « de la présidentielle de 2027 ». */
+const scrutinDe = sc => { const t = scrutinLes(sc); return t.startsWith("les ") ? "des " + t.slice(4) : "de " + t; };
+
+/** « A », « A et B », « A, B et C » */
+function liste(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " et " + a[a.length - 1]; }
 
 function vueEquilibre() {
   const bref = $("#bref-equilibre"); bref.textContent = "";
@@ -590,11 +684,13 @@ function vueFoyer() {
 }
 
 function vueDemain() {
-  const sd = projSeries("dette_pct", false), last = sd.map(s => s.pts[s.pts.length - 1]), a = last[0].a;
+  const sd = projSeries("dette_pct", false).map(s => ({...s, fin: s.pts[s.pts.length - 1]}));
+  const gouv = sd.find(s => s.n === "Référence du gouvernement"), corr = sd.find(s => s.n === "Référence corrigée du biais");
+  const autres = sd.filter(s => s !== gouv && s !== corr);
   const bref = $("#bref-demain"); bref.textContent = "";
-  bref.append(h("li", {}, `Selon la trajectoire du gouvernement prolongée, la dette serait de ${n0(last[0].v)} % du PIB en ${a}.`));
-  bref.append(h("li", {}, `Si les objectifs sont manqués comme d'habitude, elle atteindrait plutôt ${n0(last[1].v)} %.`));
-  bref.append(h("li", {}, "Avec les scénarios de financement : " + sd.slice(2).map((s, i) => `${s.court} ${n0(last[i + 2].v)} %`).join(", ") + "."));
+  if (gouv) bref.append(h("li", {}, `Selon la trajectoire du gouvernement prolongée, la dette serait de ${n0(gouv.fin.v)} % du PIB en ${gouv.fin.a}.`));
+  if (corr) bref.append(h("li", {}, `Si les objectifs sont manqués comme d'habitude, elle atteindrait plutôt ${n0(corr.fin.v)} %.`));
+  if (autres.length) bref.append(h("li", {}, "Avec les scénarios : " + autres.map(s => `${s.court} ${n0(s.fin.v)} %`).join(", ") + "."));
   bref.append(h("li", {}, "Au-delà de 2029, ces chiffres prolongent simplement les tendances : ils sont indicatifs."));
   $$("input[name=ind], #f-stress").forEach(i => i.onchange = drawProj);
   const nt = $("#nt-proj");

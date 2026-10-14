@@ -14,6 +14,7 @@ Le 14 octobre, les tâches T1, T2, T4, T5, T6, T8, T9 et T10 ont été traitées
 backtest-chiffrages/
 ├── HANDOFF.md
 ├── requirements.txt            pandas, numpy, pydantic
+├── requirements-web.txt        playwright (contrôle du site ; facultatif en local, requis en CI)
 ├── .github/workflows/ci.yml    lance run_all.sh à chaque push
 ├── data/
 │   ├── raw/                    SOURCE DE VÉRITÉ : seuls fichiers à éditer (CSV UTF-8, virgule, point décimal, LF)
@@ -29,20 +30,23 @@ backtest-chiffrages/
 │   ├── projection.py           T5 : trajectoires 2026-2032 (déficit, dette, intérêts, stress +25 pb)
 │   ├── distributif.py / .sh    T7 : ménages types sous OpenFisca-France
 │   ├── build_web.py            génère web/complet.html (tableau de bord complet, autonome)
+│   ├── test_web.py             ouvre chaque vue du site dans Chromium (2 écrans) : erreurs JS, débordement, chiffres clés vs CSV
 │   ├── check_regression.py     17 valeurs de référence
 │   ├── garde_fous.py           T8 : symétrie, traçabilité, double compte
 │   └── appliquer_corrections.py  applique un fichier de corrections (format T2) avec historique
-├── modeles/programme_2027.csv  gabarit de saisie T3
+├── modeles/programme_2027.csv  gabarit de saisie T3 (lignes, à ajouter à data/raw/application_lignes.csv)
+├── modeles/programme_2027_entete.csv  gabarit T3 (une ligne par programme, à ajouter à data/raw/application_programmes.csv)
 ├── recherche/<tâche>/          rapports et extractions des agents (rapport.md, CSV, sources.csv)
 ├── sources/<tâche>/            ≈270 documents archivés (≈350 Mo), NON versionnés (.gitignore) ; URL, date et sha256 dans
 │                               recherche/*/sources.csv ; contrôle : python3 scripts/verifier_sources.py
 └── web/
     ├── index.html, site.css, site.js   site public en vues séparées (écrit à la main, lit les CSV de data/)
+    ├── vendor/                 d3 7.9.0 en copie locale (intégrité vérifiée sur le registre npm), avec sa licence
     ├── dashboard_page.html     page du tableau de bord pour l'artifact claude.ai
     └── complet.html            tableau de bord complet, version autonome (générée)
 ```
 
-Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 erreur(s) ». Le mode strict (statut de référence obligatoire) est activé par défaut ; `STRICT_REFERENCE=0` le désactive.
+Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 erreur(s) ». Le contrôle du site (`test_web.py`) est sauté si Playwright est absent, sauf avec `TEST_WEB_STRICT=1` (activé en CI). Le mode strict (statut de référence obligatoire) est activé par défaut ; `STRICT_REFERENCE=0` le désactive.
 
 **Historique (règle 5).** Toute modification d'une valeur existante est inscrite dans `data/raw/historique.csv` (date, fichier, id, colonne, ancienne valeur, nouvelle, raison, source). Ce journal tient lieu de la colonne `valeur_precedente` demandée en T2. `appliquer_corrections.py` refuse une correction si la valeur actuelle ne correspond pas à l'ancienne valeur annoncée.
 
@@ -245,7 +249,7 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 |---|---|---|
 | T1 Référence 2027 | **Fait** : 68 lignes avec statut (aucune inconnue), `facteur_reference`, paramètres du PLF 2027 | Suivre le vote du PLF/PLFSS 2027 (abattement des retraités, surtaxe, holdings) et mettre à jour `statut_reference_2027.csv` |
 | T2 Sources primaires | **Largement fait** : couche 2 entièrement high ; 74/75 élasticités high ; sources « navigateur » lues (T2c : cepr.org, Dares, DREES, Persée, Cour des comptes, budget.gouv.fr) | 10 mesures de la couche 1 et 8 lignes de paniers en medium (section 6 ; T12 a lu les évaluations préalables disponibles) |
-| T3 Programmes 2027 | **Prêt** : gabarit `modeles/programme_2027.csv` ; garde-fous et sensibilité s'appliquent automatiquement | Saisir LFI 2027 dès le 6/11, puis les autres ; faire auditer par un agent indépendant |
+| T3 Programmes 2027 | **Prêt** : gabarits `modeles/programme_2027.csv` (lignes) et `programme_2027_entete.csv` (programme : `scrutin` = « Présidentielle 2027 », référence `prevision_2027_actuelle` + `biais_t1`, car le PLF 2027 est à 1 an de 2027) ; garde-fous, sensibilité et site s'appliquent automatiquement (le site affiche l'élection la plus récente, avec un sélecteur d'élection et des cases à cocher au-delà de deux programmes) | Saisir LFI 2027 dès le 6/11, puis les autres ; faire auditer par un agent indépendant |
 | T4 Moteur | **Fait** (critère rempli) | Barèmes IR et successions dès qu'un parti les publie ; distribution des dividendes par tranche (DGFiP) |
 | T5 Projection | **Fait** (critère rempli) ; montée en charge des retraites ajoutée (T14) | Profils d'autres lignes si documentés ; propager les bornes ; bouclage macro (multiplicateurs Mésange) ; trajectoire 2030+ si publiée |
 | T6 Sensibilité | **Fait** | Ajouter les chiffreurs des programmes 2027 |

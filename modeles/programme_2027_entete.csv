@@ -1,0 +1,2 @@
+id,programme,solde_annonce,solde_montaigne,position_parti,chiffrages_independants,scrutin,deficit_reference,biais_reference
+lfi27,LFI 2027,,,"Position du parti sur son propre chiffrage (une phrase, avec le solde annoncé s'il existe)","Chiffreur −xx ; chiffreur −yy (voir chiffrages_instituts.csv)",Présidentielle 2027,prevision_2027_actuelle,biais_t1

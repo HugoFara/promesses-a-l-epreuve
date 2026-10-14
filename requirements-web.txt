@@ -1,0 +1,3 @@
+# Contrôle du site dans un navigateur (scripts/test_web.py) ; facultatif en local, requis en CI.
+# Après installation : playwright install chromium
+playwright==1.64.0

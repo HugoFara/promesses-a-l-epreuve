@@ -5,7 +5,7 @@ complet.html en reste la version « spécialistes », toutes sections sur une pa
 
 La page d'origine (web/dashboard_page.html) attend l'environnement d'un artifact claude.ai (objet `dash`,
 variables CSS du système de design). Ce script l'enveloppe dans une page complète : variables CSS (clair/sombre),
-d3 v7 et une cale qui recrée dash.data / dash.calc / dash.onData / dash.colors à partir des CSV.
+d3 v7 (copie locale web/vendor/, sans dépendance réseau) et une cale qui recrée dash.data / dash.calc / dash.onData / dash.colors à partir des CSV.
 
 Affichage : depuis la racine du projet, `python3 -m http.server 8000` puis http://localhost:8000/web/
 (les navigateurs bloquent la lecture de fichiers locaux par fetch en file://).
@@ -28,7 +28,7 @@ TETE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tableau de bord complet</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="vendor/d3-7.9.0.min.js"></script>
 <style>
 /* Palette : instance de référence validée (skill dataviz, references/palette.md) */
 :root {

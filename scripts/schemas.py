@@ -119,8 +119,11 @@ class LigneApplication(Ligne):
 
 
 class ProgrammeApplication(Ligne):
-    id: str; programme: str; solde_annonce: OptFloat = None; solde_montaigne: float
+    id: str; programme: str; solde_annonce: OptFloat = None; solde_montaigne: OptFloat = None
     position_parti: str; chiffrages_independants: str
+    # Élection, et paramètres (ids d'application_parametres) du déficit de référence et du biais à l'horizon du
+    # programme : 2024 → programme de stabilité d'avril 2024 + biais à 3 ans ; 2027 → PLF 2027 + biais à 1 an.
+    scrutin: str; deficit_reference: str; biais_reference: str
 
 
 class Parametre(Ligne):

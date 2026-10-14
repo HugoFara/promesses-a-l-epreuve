@@ -10,5 +10,6 @@ python3 ../scripts/validation.py > /dev/null
 [ -f projection_parametres.csv ] && python3 ../scripts/projection.py > /dev/null
 bash ../scripts/distributif.sh > /dev/null
 python3 ../scripts/build_web.py > /dev/null
+python3 ../scripts/test_web.py
 python3 ../scripts/check_regression.py
 STRICT_REFERENCE="${STRICT_REFERENCE:-1}" python3 ../scripts/garde_fous.py
