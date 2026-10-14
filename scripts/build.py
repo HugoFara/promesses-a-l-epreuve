@@ -39,7 +39,7 @@ for nom, schema in SCHEMAS.items():
         except ValidationError as e:
             for err in e.errors():
                 erreurs.append(f"{nom}.csv l.{i} ({r.get(cle)}) {'.'.join(map(str, err['loc']))} : {err['msg']}")
-        if nom not in ("historique", "chiffrages_instituts", "totaux_instituts", "statut_reference_2027", "ifrap_nfp_2024", "calibration_instituts", "variantes_sensibilite", "validation_attribution"):
+        if nom not in ("historique", "chiffrages_instituts", "totaux_instituts", "statut_reference_2027", "ifrap_nfp_2024", "calibration_instituts", "variantes_sensibilite", "validation_attribution", "montee_en_charge"):
             if r[cle] in vus:
                 erreurs.append(f"{nom}.csv : clé en double {r[cle]}")
             vus.add(r[cle])
@@ -79,6 +79,10 @@ for r in donnees["moteur_parametres"]:
                 erreurs.append(f"moteur_parametres {r['id']} : référence inconnue {x}")
     elif r["source_type"] == "url" and not (r["source_ref"] or "").startswith("http"):
         erreurs.append(f"moteur_parametres {r['id']} : URL manquante")
+ids_paniers = {r["id"] for r in donnees["paniers"]}
+for r in donnees["montee_en_charge"]:
+    if r["id"] not in ids_paniers:
+        erreurs.append(f"montee_en_charge : ligne de panier inconnue {r['id']}")
 for r in donnees["paniers"]:
     for v in r["variantes"].split(";"):
         if v not in VARIANTE_SUFFIXE:
@@ -112,6 +116,10 @@ for r in donnees["moteur_parametres"]:
                 erreurs.append(f"moteur_parametres {r['id']} : référence inconnue {x}")
     elif r["source_type"] == "url" and not (r["source_ref"] or "").startswith("http"):
         erreurs.append(f"moteur_parametres {r['id']} : URL manquante")
+ids_paniers = {r["id"] for r in donnees["paniers"]}
+for r in donnees["montee_en_charge"]:
+    if r["id"] not in ids_paniers:
+        erreurs.append(f"montee_en_charge : ligne de panier inconnue {r['id']}")
 for r in donnees["paniers"]:
     for v in r["variantes"].split(";"):
         paniers.append({**r, "id": f"{r['id']}_{VARIANTE_SUFFIXE[v]}", "variante": v})

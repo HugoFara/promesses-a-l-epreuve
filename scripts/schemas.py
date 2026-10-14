@@ -219,6 +219,10 @@ class AttributionValidation(Ligne):
     justification: str; issue_connue: Literal["oui", "non"]
 
 
+class MonteeEnCharge(Ligne):
+    id: str; annee: int; coef_bas: float; coef_central: float; coef_haut: float; source: str; note: OptStr = None
+
+
 class Historique(Ligne):
     date: str; fichier: str; id: str; colonne: str; ancienne: OptStr = None; nouvelle: OptStr = None
     raison: str; source: OptStr = None
@@ -251,5 +255,6 @@ SCHEMAS = {
     "distributif_reformes": ReformeDistributive,
     "variantes_sensibilite": VarianteSensibilite,
     "validation_attribution": AttributionValidation,
+    "montee_en_charge": MonteeEnCharge,
     "historique": Historique,
 }

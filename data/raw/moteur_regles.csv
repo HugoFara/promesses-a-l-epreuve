@@ -20,3 +20,4 @@ Taux de recours,fixe,taux_recours,
 Élasticité SMIC (hypothèse : emplois perdus),smic,eps=eps_smic;hausse=hausse_smic;n=n_smic;c=cout_emploi_perdu;statique=statique_smic,Règle remplacée par « Effet emploi du SMIC » (ligne séparée) ; conservée pour l'historique
 Effet emploi du SMIC,emploi_smic,eps=eps_smic;h=hausse_moy_smic;n=n_smic_tranche;c=cout_emploi_perdu,
 Taxe sur les rachats d'actions,assiette_reduite_nette,s=part_perdue_rachats;b=assiette_rachats_rel;r=part_taxe_rachats_existante,
+Élasticité électricité,accise,eps=eps_elec;dp=dp_elec;a=a_elec,

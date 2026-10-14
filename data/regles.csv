@@ -20,3 +20,4 @@ Taux de recours,0.65,0,nr_rsa,"Prestation à la demande : recours ≈65 % comme 
 Élasticité SMIC (hypothèse : emplois perdus),1.1,0,smic,"Élasticité emploi ≈ −0,17 : coût alourdi par les emplois perdus"
 Effet emploi du SMIC,1.67,0,smic_fr smic,"Montant (Md€) des allocations et cotisations perdues : |élasticité au coût| × hausse moyenne du coût × effectif 1-1,15 SMIC × coût d'un emploi perdu ; ligne de statique −1"
 Taxe sur les rachats d'actions,0.126,0,rachats_taxe,"Rendement = taux × assiette vérifiée × (1 − part perdue 0,85) − taxe existante ; report vers les dividendes non taxés à ce niveau"
+Élasticité électricité,0.92,0,elec_menages,Baisse d'accise : la consommation supplémentaire est taxée au tarif réduit ; même formule que les hausses d'accise (l_brunes)

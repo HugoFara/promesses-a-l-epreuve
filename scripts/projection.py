@@ -1,7 +1,7 @@
 """Projection pluriannuelle du déficit et de la dette, 2026-2032 (T5).
 
 Entrées (data/) : projection_reference.csv (trajectoire du gouvernement : croissance, déflateur, solde ; dette publiée
-                  pour contrôle ; ajustements stock-flux), projection_parametres.csv, moteur_lignes.csv.
+                  pour contrôle ; ajustements stock-flux), projection_parametres.csv, moteur_lignes.csv, montee_en_charge.csv.
 Sorties (data/) : projection.csv (scénario × année), projection_controle.csv.
 
 Mécanique, par année t (Md€ ; ratios en % du PIB) :
@@ -11,8 +11,8 @@ Mécanique, par année t (Md€ ; ratios en % du PIB) :
   biais_t    : couche 2, selon l'horizon h = t − année du PLF (h = 1 : biais à 1 an ; interpolé jusqu'à 3 ans ; constant ensuite)
   impact_t   = Σ lignes (montant corrigé de l'année, moteur_lignes.csv) × PIB_t / PIB_2027 :
                2027 = corrige_central ; 2028 et après = corrige_2028 (facteur de référence propre à 2028+,
-               ex. surtaxe d'IS temporaire dans la référence) ; constant en % du PIB ensuite.
-               Pas de montée en charge par ligne (limite signalée : retraites).
+               ex. surtaxe d'IS temporaire dans la référence), × coefficient de montée en charge de l'année
+               (montee_en_charge.csv, central ; 1 par défaut, soit constant en % du PIB).
   investissement_t = emprunt « règle d'or » (lignes Investissement), compté dans le déficit et la dette, publié à part
   intérêts supplémentaires_t = dette supplémentaire_{t-1} × taux OAT
                              + Σ_u spread_u × (part refinancée(u) − part refinancée(u−1)) × dette de référence_{t-1}
@@ -80,7 +80,7 @@ def trajectoire(impact, choc_pb=0.0, avec_biais=True, invest=None):
         sfa = float(REF[t]["sfa_pct"] or 0) / 100 * PIB[t]
         b = -biais(t) / 100 * PIB[t] if avec_biais else 0.0
         ech = PIB[t] / PIB[2027]
-        imp = -(impact.get(min(t, 2028), 0.0) if t >= 2027 else 0.0) * ech
+        imp = -(impact.get(t, impact.get(2028, 0.0)) if t >= 2027 else 0.0) * ech
         inv = -((invest or {}).get(min(t, 2028), 0.0) if t >= 2027 else 0.0) * ech
         dette_sup = dette - DETTE_REF[t - 1]
         spreads[t] = P["spread_pb_par_pt"] * (dette_sup / PIB[t - 1] * 100) / 1e4
@@ -97,12 +97,17 @@ def trajectoire(impact, choc_pb=0.0, avec_biais=True, invest=None):
 
 def main():
     ml = [r for r in lire("moteur_lignes.csv") if r["fichier"] == "paniers"]
+    # Montée en charge (montee_en_charge.csv) : coefficient central par année, relatif au montant 2027 en % du PIB
+    mec = {}
+    for r in lire("montee_en_charge.csv"):
+        mec.setdefault(r["id"], {})[int(r["annee"])] = float(r["coef_central"])
     impacts, invests = {}, {}
     for r in ml:
         cible = invests if r["composante"] == "investissement" else impacts
-        d = cible.setdefault(r["groupe"], {2027: 0.0, 2028: 0.0})
-        d[2027] += float(r["corrige_central"])
-        d[2028] += float(r["corrige_2028"])
+        d = cible.setdefault(r["groupe"], {t: 0.0 for t in ANNEES if t >= 2027})
+        coef = mec.get(r["id"].rsplit("_", 1)[0], {})
+        for t in d:
+            d[t] += float(r["corrige_central" if t == 2027 else "corrige_2028"]) * coef.get(t, 1.0)
     choc = P["choc_stress_pb"]
     scenarios = [("Référence du gouvernement", {}, 0.0, False, None),
                  ("Référence corrigée du biais", {}, 0.0, True, None),

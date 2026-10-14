@@ -18,3 +18,4 @@ Taxe sur les rachats d'actions,non testée,0,aucune mesure passée de ce type da
 Élasticité patrimoine,confirmée,5,"3 améliorée(s), 2 dégradée(s) ; erreur médiane 3 % → 2 %"
 Élasticité revenus,confirmée,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 80 % → 70 %"
 Élasticité succession,non testée,0,aucune mesure passée de ce type dans le backtest
+Élasticité électricité,non testée,0,aucune mesure passée de ce type dans le backtest

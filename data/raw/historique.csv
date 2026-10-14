@@ -260,3 +260,17 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-10-14,check_regression,C3 nb estimations,attendu,75,77,Ajout de smic_fr et rachats_taxe,recherche/T13/rapport.md
 2026-10-14,check_regression,Panier LFI mesures,attendu,"-110,4 / -31,2","-111,2 / -32,0","Effet emploi du SMIC recalculé (−0,87 → −1,67)",recherche/T13/rapport.md
 2026-10-14,check_regression,Paniers LFI financement,attendu,"+41,6","+38,9","Règle propre des rachats d'actions (3,7 → 1,06)",recherche/T13/rapport.md
+2026-10-14,elasticites,elec_menages,*,,(nouvelle ligne),"Élasticité-prix de l'électricité (audit, point 15)",recherche/T14/rapport.md
+2026-10-14,parametres_bareme,accise_elec_normale,*,,(nouvelle ligne),Paramètres de la formule accise pour l'électricité,recherche/T14/rapport.md
+2026-10-14,parametres_bareme,accise_elec_reduite_2024,*,,(nouvelle ligne),Paramètres de la formule accise pour l'électricité,recherche/T14/rapport.md
+2026-10-14,parametres_bareme,hausse_facture_elec_fev2024,*,,(nouvelle ligne),Paramètres de la formule accise pour l'électricité,recherche/T14/rapport.md
+2026-10-14,moteur_parametres,eps_elec,*,,-0.2/-0.8/-0.8,Formule accise pour l'électricité,recherche/T14/rapport.md
+2026-10-14,moteur_parametres,dp_elec,*,,-0.0473/-0.0506/-0.0539,Formule accise pour l'électricité,recherche/T14/rapport.md
+2026-10-14,moteur_parametres,a_elec,*,,/-2.909/,Formule accise pour l'électricité,recherche/T14/rapport.md
+2026-10-14,regles,Élasticité électricité,*,,0.92,Formule accise symétrique (audit point 15),recherche/T14/rapport.md
+2026-10-14,paniers,e_elec,regle,Aucune,Élasticité électricité,Symétrie avec l_brunes (audit point 15),recherche/T14/rapport.md
+2026-10-14,paniers,e_elec,facteur,1,0.92,1 + ε·dp·(1 + a),recherche/T14/rapport.md
+2026-10-14,check_regression,C3 nb estimations,attendu,77,78,Ajout de elec_menages,recherche/T14/rapport.md
+2026-10-14,check_regression,Panier Ensemble mesures,attendu,"-14,9","-14,7",Formule accise appliquée à la baisse d'accise sur l'électricité,recherche/T14/rapport.md
+2026-10-14,montee_en_charge,l_ret62,*,,"coefficients 2028-2032 (central 1,32 → 2,00)",Montée en charge du coût de l'abrogation (audit §4.2),recherche/T14/rapport.md
+2026-10-14,montee_en_charge,l_ret60,*,,"coefficients 2028-2032 (central 1,036 → 1,113)",Montée en charge de la composante réforme 2023 du retour à 60 ans (audit §4.2),recherche/T14/rapport.md
