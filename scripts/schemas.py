@@ -244,6 +244,7 @@ class Idee(Ligne):
 class IdeeChiffre(Ligne):
     """Un chiffre d'une carte : sourcé ici, ou lu dans moteur_lignes.csv (ligne_moteur = fichier/id)."""
     idee: str; ordre: int; libelle: str; principal: Literal["oui", "non"]
+    repere: Literal["oui", "non"]  # comparé au déficit : rendement ou coût d'une mesure, pas la taille d'une dépense existante
     nature: Literal["officiel", "estimation", "calcul", "militant", "moteur"]
     ligne_moteur: OptStr = None; valeur: OptFloat = None; unite: OptStr = None; annee: OptStr = None
     url: OptStr = None; titre: OptStr = None; citation: OptStr = None; page: OptStr = None

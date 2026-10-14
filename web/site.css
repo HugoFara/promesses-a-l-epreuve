@@ -364,3 +364,13 @@ a.term:hover { color: var(--primary); }
   #acc-result .foyer-row { grid-template-columns: 1fr; }
   #acc-result .amt { text-align: left; }
 }
+/* Idées qui reviennent */
+.idees .card, .card.idee { display: flex; flex-direction: column; gap: .25rem; }
+.card.idee h4 { margin: .6rem 0 0; font-size: 1rem; }
+.card.idee p { margin: .2rem 0; }
+.idee-chiffres { display: grid; gap: .6rem; margin: .5rem 0; }
+.idee-chiffre { display: flex; flex-direction: column; border-left: 4px solid var(--primary); padding-left: .75rem; }
+.idee-chiffre .val { font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.idee-chiffre .lib { color: var(--text); }
+.idee-chiffre .rep { color: var(--text-muted); font-size: .9rem; }
+.cards.idees { list-style: none; padding: 0; }

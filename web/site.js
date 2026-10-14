@@ -13,6 +13,7 @@ const SOURCES = {
   variantes: "moteur_variantes", sensibilite: "sensibilite_chiffreurs", confiance: "confiance_programmes",
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
   validation_regles: "validation_regles", distributif: "distributif_menages", grille: "distributif_grille", reformes: "distributif_reformes",
+  idees: "idees", idees_chiffres: "idees_chiffres", projref: "projection_reference",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
 };
 
@@ -784,6 +785,100 @@ function vueFoyer() {
     }, cls: m => ""}))], menages);
 }
 
+/* Les idées qui reviennent (T16) : une carte par idée de idees.csv, ses chiffres dans idees_chiffres.csv.
+   Un chiffre lié au moteur (ligne_moteur) affiche l'annonce et la correction lues dans moteur_lignes.csv. */
+const GROUPES_IDEES = {recettes: "Faire payer davantage", economies: "Dépenser moins", baisses: "Baisser des taxes"};
+const STATUTS_IDEES = {
+  deja_en_vigueur: ["Déjà en vigueur", "ok"], proposee_budget_2027: ["Proposée dans le budget 2027", "info"],
+  en_partie: ["En partie en place ou proposée", "info"], non_prevue: ["Non prévue", ""],
+  contraire_traites: ["Impossible sans changer les règles européennes", "warn"],
+};
+function montant(v, unite) {
+  // Les signes des sources (solde « −7,9 », marge « −12,6 ») sont portés par le libellé : on affiche la valeur absolue
+  const u = (unite || "").replace(/\s*\(plus de\)/, ""), plus = /plus de/.test(unite || "") ? "plus de " : "";
+  const a = Math.abs(v), an = /\/an/.test(u) ? " par an" : "";
+  if (/^Md€/.test(u)) return plus + md(a) + an;
+  if (/^M€/.test(u)) return plus + (a >= 1000 ? md(a / 1000) : (a < 10 ? n1 : n0)(a) + "\u00a0millions d'euros") + an;
+  if (/^€\/mois/.test(u)) return plus + eur(a) + " par mois";
+  if (/^€\/an/.test(u)) return plus + eur(a) + " par an";
+  if (/^%/.test(u)) return plus + FR.format(",.1~f")(a) + "\u00a0%";
+  return plus + n0(a) + " " + u;
+}
+function enMd(v, unite) { return /^Md€/.test(unite || "") ? Math.abs(v) : /^M€/.test(unite || "") ? Math.abs(v) / 1000 : NaN; }
+
+function vueIdees() {
+  const r25 = D.projref.find(r => r.annee === "2025"), deficit = -num(r25.pib) * num(r25.solde_pct) / 100;
+  $("#idees-repere").textContent = `Le déficit public de 2025 : ${md(deficit)}. C'est ce que les administrations ont dépensé de plus qu'elles n'ont reçu, en un an.`;
+  const part = md_ => {
+    const p = md_ / deficit * 100;
+    return p < 0.1 ? "moins de 0,1 % du déficit" : p < 1 ? "moins de 1 % du déficit" : `environ ${n0(p)} % du déficit`;
+  };
+    const repere = (v, c) => { const m = enMd(v, c.unite); return c.repere === "oui" && m > 0 ? part(m) : ""; };
+  const moteur = c => {
+    const [f, id] = c.ligne_moteur.split("/"), m = D.moteur.find(x => x.fichier === f && x.id === id);
+    if (!m) return null;
+    const fi = num(m.facteur_interaction), seul = num(m.corrige_central) / fi;
+    return {m, f, id, v: seul, txt: fi === 1
+      ? `Annoncé : ${md(num(m.montant))}. Après correction du site : ${md(seul)} (fourchette de ${n1(num(m.p10))} à ${n1(num(m.p90))}).`
+      : `Annoncé : ${md(num(m.montant))}. Après correction du site, mesure prise seule : environ ${md(seul)}.`};
+  };
+  const liste = $("#idees-liste"), apercu = []; liste.textContent = "";
+  Object.entries(GROUPES_IDEES).forEach(([g, titre]) => {
+    const idees = D.idees.filter(i => i.groupe === g).sort((a, b) => num(a.ordre) - num(b.ordre));
+    if (!idees.length) return;
+    const ul = h("ul", {class: "cards idees"});
+    liste.append(h("h2", {id: "idees-" + g}, titre), ul);
+    idees.forEach(i => {
+      const cs = D.idees_chiffres.filter(c => c.idee === i.id).sort((a, b) => num(a.ordre) - num(b.ordre));
+      const [st, cls] = STATUTS_IDEES[i.statut] || [i.statut, ""];
+      const principaux = h("div", {class: "idee-chiffres"});
+      cs.filter(c => c.principal === "oui").forEach(c => {
+        if (c.ligne_moteur) {
+          const r = moteur(c); if (!r) return;
+          principaux.append(h("p", {class: "idee-chiffre"}, h("span", {class: "val"}, md(r.v) + " par an"),
+            h("span", {class: "lib"}, c.libelle), h("span", {class: "rep"}, part(r.v)),
+            h("span", {class: "rep"}, r.txt, " ", btnPourquoi(r.f, r.id, c.libelle))));
+        } else {
+          const v = num(c.valeur);
+          principaux.append(h("p", {class: "idee-chiffre"}, h("span", {class: "val"}, montant(v, c.unite)),
+            h("span", {class: "lib"}, c.libelle + (c.nature === "calcul" ? " (calcul du site)" : "")),
+            repere(v, c) ? h("span", {class: "rep"}, repere(v, c)) : null));
+        }
+      });
+      const origine = [i.part_cahiers ? `Abordée dans ${n0(num(i.part_cahiers))} % des cahiers citoyens de 2019 (sujet « ${i.sous_theme_cahiers} »).` : "",
+        i.sondage ? "Testée dans un sondage national (Elabe pour Les Echos, septembre 2026)." : ""].filter(Boolean).join(" ");
+      const tous = h("ul", {class: "prose small"});
+      cs.forEach(c => {
+        if (c.ligne_moteur) {
+          const r = moteur(c); if (!r) return;
+          tous.append(h("li", {}, h("strong", {}, c.libelle), " : ", r.txt, " Détail : ", btnPourquoi(r.f, r.id, c.libelle)));
+        } else {
+          tous.append(h("li", {}, h("strong", {}, c.libelle), ` : ${montant(num(c.valeur), c.unite)} (${c.annee}). `,
+            c.nature !== "officiel" ? badge({estimation: "estimation", calcul: "calcul du site", militant: "estimation militante"}[c.nature] || c.nature, c.nature === "militant" ? "warn" : "") : null,
+            " ", lien(c.url, c.titre || "source"), c.page ? `, ${c.page}` : "",
+            c.citation ? h("span", {class: "muted"}, ` : « ${c.citation} »`) : null));
+        }
+      });
+      ul.append(h("li", {class: "card idee", id: "idee-" + i.id},
+        h("h3", {}, i.idee), h("p", {}, badge(st, cls)), principaux,
+        h("p", {}, i.resume),
+        h("details", {class: "acc"}, h("summary", {}, "Peut-on s'y fier ? Qui paierait ?"), h("div", {class: "acc-body"},
+          h("h4", {}, "Peut-on s'y fier ?"), h("p", {}, i.fiable),
+          h("h4", {}, "Qui paierait ?"), h("p", {}, i.qui_paie),
+          origine ? h("p", {class: "small muted"}, origine) : null,
+          h("h4", {}, "Tous les chiffres et leurs sources"), tous))));
+      // Vue d'ensemble : le premier chiffre principal de chaque idée
+      const c0 = cs.find(c => c.principal === "oui"), r0 = c0?.ligne_moteur ? moteur(c0) : null;
+      apercu.push({g: titre, i, st, cls, txt: !c0 ? "—" : r0 ? md(r0.v) + " par an" : montant(num(c0.valeur), c0.unite)});
+    });
+  });
+  table($("#tb-idees"), [
+    {t: "Idée", f: r => h("a", {href: "#/idees/" + r.i.id}, r.i.idee)},
+    {t: "Ordre de grandeur", f: r => r.txt},
+    {t: "Où en est-elle ?", f: r => badge(r.st, r.cls)},
+  ], apercu, {group: r => r.g, caption: "Les idées en un coup d'œil"});
+}
+
 function vueDemain() {
   const sd = projSeries("dette_pct", false).map(s => ({...s, fin: s.pts[s.pts.length - 1]}));
   const gouv = sd.find(s => s.n === "Référence du gouvernement"), corr = sd.find(s => s.n === "Référence corrigée du biais");
@@ -1049,7 +1144,7 @@ function route() {
   ecrireEtat();
   dessiner();
   if (sub) {
-    const t = $("#g-" + sub);
+    const t = $("#g-" + sub) || $("#idee-" + sub);  // graphique, ou carte d'une idée (#/idees/isf)
     if (t) { t.scrollIntoView(); t.setAttribute("tabindex", "-1"); t.focus({preventScroll: true}); }
   } else if (!premier) {
     window.scrollTo(0, 0);
@@ -1155,7 +1250,7 @@ async function init() {
   }
   calculer();
   remplirK();
-  [vueAccueil, vueHier, vueProgrammes, vueEquilibre, vueFoyer, vueDemain, vueMethode].forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
+  [vueAccueil, vueIdees, vueHier, vueProgrammes, vueEquilibre, vueFoyer, vueDemain, vueMethode].forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
   $("#chargement").remove();
   // Choix par défaut de chaque vue, avant d'appliquer ceux de l'adresse
   $$(".view").forEach(sec => { DEFAUTS[sec.id.slice(2)] = lireEtat(sec); });

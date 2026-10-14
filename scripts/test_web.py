@@ -29,7 +29,7 @@ RACINE = Path(__file__).resolve().parent.parent
 DATA = RACINE / "data"
 AXE = RACINE / "scripts" / "vendor" / "axe-core-4.10.3.min.js"
 AXE_REGLES = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]
-VUES = ["accueil", "hier", "programmes", "equilibre", "foyer", "demain", "methode", "lexique"]
+VUES = ["accueil", "idees", "hier", "programmes", "equilibre", "foyer", "demain", "methode", "lexique"]
 AVEC_GRAPHIQUES = {"hier", "programmes", "equilibre", "demain"}
 ECRANS = {"large": (1280, 900), "téléphone": (390, 844)}
 
@@ -69,7 +69,8 @@ def attendus():
     soldes = {p["programme"]: totaux[p["programme"]] for p in progs if p["scrutin"] == dernier}
     date = next(r["valeur"] for r in lire("meta") if r["cle"] == "date_donnees")
     return {"mes_n": st["n"], "mes_mediane": fr(float(st["erreur_abs_mediane_pct"])) + " %", "soldes": soldes, "date": date,
-            "foyer": [r for r in lire("distributif_grille") if r["id"] == "retraite_couple_2_0_2000_0"]}
+            "foyer": [r for r in lire("distributif_grille") if r["id"] == "retraite_couple_2_0_2000_0"],
+            "idees": lire("idees"), "isf": next(r for r in lire("moteur_lignes") if r["fichier"] == "paniers" and r["id"] == "l_isf_i")}
 
 
 def main():
@@ -144,6 +145,21 @@ def main():
                     echecs.append("pourquoi : la fenêtre du total ne s'ouvre pas")
                 echecs += accessibilite(page, "fenêtre « Pourquoi ce chiffre ? »")
                 page.keyboard.press("Escape")
+                # Idées qui reviennent : une carte par idée, montants lus dans les CSV (moteur compris), lien vers une carte
+                page.evaluate("location.hash = '#/idees'")
+                page.wait_for_selector("#v-idees:not([hidden])")
+                if page.locator(".card.idee").count() != len(att["idees"]):
+                    echecs.append(f"idées : {page.locator('.card.idee').count()} cartes, {len(att['idees'])} idées attendues")
+                isf = re.sub(r"\s", "", page.locator("#idee-isf").inner_text())
+                for c in ("montant", "corrige_central"):
+                    if fr(float(att["isf"][c]), 1) + "milliards" not in isf:
+                        echecs.append(f"idées : ISF, {c} du moteur absent ({att['isf'][c]})")
+                if "1,2milliard" not in re.sub(r"\s", "", page.locator("#idee-elus").inner_text()):
+                    echecs.append("idées : coût des pouvoirs publics absent de la carte des élus")
+                page.goto(base + "#/idees/elus")
+                page.wait_for_timeout(200)
+                if page.evaluate("document.activeElement.id") != "idee-elus":
+                    echecs.append("idées : le lien #/idees/elus ne mène pas à la carte")
                 # Simulateur de l'accueil (même situation, en euros par mois) et son lien vers « Mon foyer »
                 serre = lambda t: re.sub(r"\s", "", t)  # sans espaces (le site sépare les milliers par une espace fine)
                 page.evaluate("location.hash = '#/accueil'")

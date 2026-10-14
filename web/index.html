@@ -54,6 +54,7 @@
     <button class="btn-tool nav-toggle" type="button" id="btn-menu" aria-expanded="false" aria-controls="menu">Menu</button>
     <ul id="menu">
       <li><a href="#/accueil">Accueil</a></li>
+      <li><a href="#/idees">Les idées</a></li>
       <li><a href="#/hier">Les promesses d'hier</a></li>
       <li><a href="#/programmes">Les programmes</a></li>
       <li><a href="#/equilibre">Financer les promesses</a></li>
@@ -127,6 +128,7 @@
 
     <h2>Pour aller plus loin</h2>
     <ul class="tiles">
+      <li class="tile"><h3><a href="#/idees">Les idées qui reviennent : combien ça rapporte ?</a></h3><p>ISF, train de vie de l'État, fraude, carburants… les montants réels et qui paierait.</p><span class="arrow" aria-hidden="true">→</span></li>
       <li class="tile"><h3><a href="#/programmes">Combien coûtent vraiment les programmes ?</a></h3><p>Les programmes des partis, recalculés avec la même méthode pour tous.</p><span class="arrow" aria-hidden="true">→</span></li>
       <li class="tile"><h3><a href="#/equilibre">Peut-on financer les mesures phares ?</a></h3><p>Les principales promesses de chaque camp, et les recettes qui pourraient les payer.</p><span class="arrow" aria-hidden="true">→</span></li>
       <li class="tile"><h3><a href="#/hier">Les promesses d'hier ont-elles été tenues ?</a></h3><p>Le coût annoncé de mesures connues (CICE, flat tax, retraites…) comparé à leur coût réel.</p><span class="arrow" aria-hidden="true">→</span></li>
@@ -145,6 +147,28 @@
     <div class="callout warn">
       <h2>À savoir</h2>
       <p>Ce site ne donne <strong>aucune consigne de vote</strong> et ne dit pas si une mesure est souhaitable. Un gain ou une perte pour votre foyer n'est qu'un critère parmi d'autres. <span id="note-scrutin"></span></p>
+    </div>
+  </section>
+
+  <!-- ==================================================================== IDÉES -->
+  <section class="view" id="v-idees" data-titre="Les idées qui reviennent" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Les idées qui reviennent</li></ol></nav>
+    <h1>Les idées qui reviennent : combien ça rapporte vraiment ?</h1>
+    <p class="lede">Des idées souvent écrites dans les cahiers citoyens de 2019, ou testées dans un sondage en 2026. Pour chacune : ce qu'elle rapporterait ou coûterait, si l'on peut se fier au chiffre, et qui paierait.</p>
+
+    <div class="callout">
+      <h2>Pour comparer</h2>
+      <p class="big" id="idees-repere"></p>
+    </div>
+
+    <div class="tbl-wrap" id="tb-idees"></div>
+    <p class="small muted">Chaque idée est détaillée plus bas : son montant, si l'on peut se fier au chiffre, et qui paierait.</p>
+
+    <div id="idees-liste"></div>
+
+    <div class="callout warn">
+      <h2>Comment ces idées ont été choisies</h2>
+      <p>Le site ne les a pas choisies : une idée figure ici si elle revient dans au moins un cahier citoyen sur cinq de 2019, ou si elle a été testée dans un sondage national publié en 2026, et si elle a un effet sur le budget. Les comptes des cahiers viennent du projet <a href="https://github.com/dataforgoodfr/15-Les-cahiers-pour-decider-et-agir" target="_blank" rel="noopener">« Les cahiers pour décider et agir »</a> (Data For Good) : ils disent qu'un sujet est abordé, pas dans quel sens. Le site ne dit pas si une idée est bonne : un petit montant peut compter pour d'autres raisons, et un gros montant peut avoir un coût pour ceux qui paient.</p>
     </div>
   </section>
 
@@ -540,6 +564,7 @@
       <div>
         <h2>Explorer</h2>
         <ul>
+          <li><a href="#/idees">Les idées qui reviennent</a></li>
           <li><a href="#/hier">Les promesses d'hier</a></li>
           <li><a href="#/programmes">Les programmes</a></li>
           <li><a href="#/foyer">Mon foyer</a></li>
