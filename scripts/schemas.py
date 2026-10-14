@@ -166,7 +166,7 @@ class TotalInstitut(Ligne):
 class StatutReference2027(Ligne):
     fichier: Literal["application_lignes", "paniers"]; id_ligne: str; ligne: str; statut_reference: Statut
     texte: OptStr = None; montant_reference_2027: OptFloat = None; facteur_suggere: float; url: OptStr = None
-    citation: OptStr = None; page: OptStr = None; confiance: Confiance; note: str
+    citation: OptStr = None; page: OptStr = None; confiance: Confiance; note: str; raison_ecart: OptStr = None
 
 
 class ParametreBareme(Ligne):

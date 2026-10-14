@@ -274,3 +274,5 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-10-14,check_regression,Panier Ensemble mesures,attendu,"-14,9","-14,7",Formule accise appliquée à la baisse d'accise sur l'électricité,recherche/T14/rapport.md
 2026-10-14,montee_en_charge,l_ret62,*,,"coefficients 2028-2032 (central 1,32 → 2,00)",Montée en charge du coût de l'abrogation (audit §4.2),recherche/T14/rapport.md
 2026-10-14,montee_en_charge,l_ret60,*,,"coefficients 2028-2032 (central 1,036 → 1,113)",Montée en charge de la composante réforme 2023 du retour à 60 ans (audit §4.2),recherche/T14/rapport.md
+2026-10-14,statut_reference_2027,*,raison_ecart,,"(nouvelle colonne, 10 lignes)","Synchronisation avec les facteurs en vigueur : écarts expliqués, contrôlés par garde_fous.py",recherche/audit/rapport.md
+2026-10-14,paniers,e_prime,note_confiance,,(texte),"Audit point 15 : l'aubaine de la PPV est déjà dans le chiffrage Montaigne (substitution 0,3) ; facteur 1 maintenu",sources/T6/montaigne_ens_prime_wb20240725.html

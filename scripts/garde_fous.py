@@ -63,6 +63,12 @@ for r in rows("statut_reference_2027.csv"):
         deja_traitee = True  # l'application 2024 est jugée par rapport au PStab 2024, pas à la référence 2027
     if not deja_traitee and r["statut_reference"] == "absente" and r["montant_reference_2027"] not in ("", "0", "0.0"):
         alertes.append(f"RÉFÉRENCE {r['fichier']} {r['id_ligne']} : statut absente mais montant de référence {r['montant_reference_2027']}")
+    # Synchronisation : un statut ou un facteur des paniers différent de celui proposé par T1 doit être expliqué
+    if r["fichier"] == "paniers" and ligne:
+        ecart = (ligne.get("statut_reference") != r["statut_reference"]
+                 or abs(float(ligne.get("facteur_reference") or 1) - float(r["facteur_suggere"] or 1)) > 1e-9)
+        if ecart and not r.get("raison_ecart"):
+            erreurs.append(f"RÉFÉRENCE {r['id_ligne']} : statut ou facteur différent de T1 sans raison_ecart")
 
 for nom, url_cols in (("mesures_cout", ("source_ex_ante", "source_ex_post")), ("elasticites", ("url",)),
                       ("programmes_stabilite_fr", ("source",))):

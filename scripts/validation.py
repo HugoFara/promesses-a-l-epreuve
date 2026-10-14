@@ -13,7 +13,8 @@ Entrées (data/) : validation_attribution.csv, mesures_cout.csv, mesures_effets.
                   moteur_regles.csv, moteur_parametres.csv, regles.csv.
 Sorties (data/) : validation_mesures.csv (une ligne par mesure), validation_resume.csv,
                   validation_regles.csv (statut de chaque règle), confiance_programmes.csv (part des corrections de
-                  chaque programme qui repose sur une règle confirmée, contredite, non concluante ou non testée).
+                  chaque programme qui repose sur une règle confirmée, contredite, non concluante ou non testée),
+                  biais_residuels.csv (biais signés dans le sens du solde, avant et après correction).
 """
 import csv
 import statistics
@@ -117,6 +118,31 @@ def main():
         w = csv.DictWriter(fh, list(lignes[0]), lineterminator="\n")
         w.writeheader()
         w.writerows(lignes)
+
+    # Biais signés résiduels (audit §3.5 point 5) : erreur exprimée dans le sens du solde (+ = mieux que prévu pour les
+    # finances publiques), avant et après correction. Le Monte-Carlo tire une erreur centrée : justifié si la médiane
+    # résiduelle est proche de 0 ; une moyenne négative signale une queue asymétrique (gros ratés défavorables).
+    sens = {r["id"]: r["sens"] for r in lire("mesures_cout.csv")}
+    groupes = {}
+    for l in lignes:
+        if l["source"] == "officiel":
+            g, s_ = "Chiffrages officiels, statistique principale", (-1 if sens.get(l["id"]) == "cout" else 1)
+        elif l["source"].startswith("institut"):
+            g, s_ = "Chiffrages d'instituts", 1  # montants déjà signés (négatif = coût)
+        else:
+            continue
+        for k in (g, f"{g} | règle : {l['regle']}"):
+            groupes.setdefault(k, []).append((s_ * l["erreur_depart_pct"], s_ * l["erreur_nous_pct"]))
+    biais = [{"groupe": k, "n": len(v),
+              "biais_median_depart_pct": round(statistics.median(a for a, _ in v), 1),
+              "biais_median_corrige_pct": round(statistics.median(b for _, b in v), 1),
+              "biais_moyen_depart_pct": round(statistics.mean(a for a, _ in v), 1),
+              "biais_moyen_corrige_pct": round(statistics.mean(b for _, b in v), 1)}
+             for k, v in sorted(groupes.items())]
+    with open("biais_residuels.csv", "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, list(biais[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(biais)
 
     def resume(nom, sel):
         if not sel:

@@ -1,0 +1,17 @@
+groupe,n,biais_median_depart_pct,biais_median_corrige_pct,biais_moyen_depart_pct,biais_moyen_corrige_pct
+Chiffrages d'instituts,22,1.4,0.1,-10.4,-12.3
+Chiffrages d'instituts | règle : Aucune,13,2.8,2.8,-8.2,-8.2
+Chiffrages d'instituts | règle : Réforme structurelle,1,-107.7,-91.9,-107.7,-91.9
+Chiffrages d'instituts | règle : Taux de recours,1,88.2,53.2,88.2,53.2
+Chiffrages d'instituts | règle : Élasticité IS,3,-1.9,-7.9,-13.1,-19.1
+Chiffrages d'instituts | règle : Élasticité patrimoine,4,-6.3,-7.5,-15.5,-16.7
+"Chiffrages officiels, statistique principale",26,-1.9,0.1,-0.4,-4.9
+"Chiffrages officiels, statistique principale | règle : Aucune",12,1.5,1.5,4.3,4.3
+"Chiffrages officiels, statistique principale | règle : Nouvelle assiette : risque juridique",1,25.0,40.8,25.0,40.8
+"Chiffrages officiels, statistique principale | règle : Réforme structurelle",1,48.0,63.8,48.0,63.8
+"Chiffrages officiels, statistique principale | règle : Substitution retraites",2,-15.8,4.2,-15.8,4.2
+"Chiffrages officiels, statistique principale | règle : Taux de recours",4,-15.2,-50.2,-30.3,-65.3
+"Chiffrages officiels, statistique principale | règle : Élasticité IS",3,-4.5,-6.2,13.1,13.2
+"Chiffrages officiels, statistique principale | règle : Élasticité capital",1,55.3,-1.0,55.3,-1.0
+"Chiffrages officiels, statistique principale | règle : Élasticité patrimoine",1,3.1,1.9,3.1,1.9
+"Chiffrages officiels, statistique principale | règle : Élasticité revenus",1,-80.0,-70.0,-80.0,-70.0
