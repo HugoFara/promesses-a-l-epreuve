@@ -3,1084 +3,492 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Backtest des chiffrages</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<style>
-/* Palette : instance de référence validée (skill dataviz, references/palette.md) */
-:root {
-  --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-anthropic-serif: Georgia, "Times New Roman", serif;
-  --color-bg: #f9f9f7; --color-panel: #fcfcfb; --color-fg: #0b0b0b; --color-fg-muted: #52514e;
-  --color-border-line: #e1e0d9; --color-ok: #006300; --color-bad: #d03b3b;
-  --cds-surface-popover: #fcfcfb; --cds-border: #c3c2b7; --cds-text-secondary: #52514e;
-  --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.12);
-  --cds-chart-muted: #898781; --cds-chart-reference: #898781; --cds-chart-grid: #e1e0d9;
-  --cds-chart-status-critical: #d03b3b;
-  --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-lg: 16px;
-  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 12px; --cds-gap-lg: 20px; --cds-gap-xl: 32px;
-  --cds-radius: 8px; --cds-font-size-title: 1.75rem; --cds-font-size-heading: 1.1rem;
-  --cds-font-size-body: 0.95rem; --cds-font-size-caption: 0.8rem; --cds-font-weight-medium: 600;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-bg: #0d0d0d; --color-panel: #1a1a19; --color-fg: #f0efec; --color-fg-muted: #c3c2b7;
-    --color-border-line: #2c2c2a; --color-ok: #0ca30c; --color-bad: #e66767;
-    --cds-surface-popover: #1a1a19; --cds-border: #383835; --cds-text-secondary: #c3c2b7;
-    --cds-chart-grid: #2c2c2a;
-  }
-}
-:root[data-theme="dark"] {
-  --color-bg: #0d0d0d; --color-panel: #1a1a19; --color-fg: #f0efec; --color-fg-muted: #c3c2b7;
-  --color-border-line: #2c2c2a; --color-ok: #0ca30c; --color-bad: #e66767;
-  --cds-surface-popover: #1a1a19; --cds-border: #383835; --cds-text-secondary: #c3c2b7; --cds-chart-grid: #2c2c2a;
-}
-body { margin: 0; padding: 24px 16px; background: var(--color-bg); color: var(--color-fg); }
-.dash-skeleton { color: transparent; background: var(--color-border-line); border-radius: 4px; }
-select { font: inherit; }
-</style>
+<title>Chiffrages à l'épreuve</title>
+<meta name="description" content="Les promesses budgétaires passées comparées à leur coût réel, et ce que cela dit des programmes actuels. Projet d'étude indépendant.">
+<link rel="stylesheet" href="site.css">
 <script>
-(() => {
-  const SOURCES = {"mesures": "mesures_cout", "effets": "mesures_effets", "ps": "programmes_stabilite_fr", "pairs": "pairs_frankel_schreger", "regles": "regles_calibration", "elasticites": "elasticites", "hypotheses": "hypotheses_defaut", "application": "application_lignes", "programmes": "application_programmes", "parametres": "application_parametres", "paniers": "paniers", "moteur": "moteur_lignes", "moteur_totaux": "moteur_totaux", "moteur_variantes": "moteur_variantes", "sensibilite": "sensibilite_chiffreurs", "projection": "projection", "projection_controle": "projection_controle", "validation_resume": "validation_resume", "validation_regles": "validation_regles", "distributif": "distributif_menages"};
-  const sombre = matchMedia("(prefers-color-scheme: dark)").matches;
-  const store = {}, calcs = [], rappels = [];
-  window.dash = {
-    colors: sombre ? ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181"]
-                   : ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"],
-    data: nom => store[nom] || {status: "loading", data: null},
-    calc: (nom, def) => calcs.push([nom, def]),
-    onData: cb => rappels.push(cb),
-  };
-  addEventListener("DOMContentLoaded", () => {
-    Promise.all(Object.entries(SOURCES).map(([k, f]) =>
-      d3.csv(`../data/${f}.csv`).then(rows => { store[k] = {status: "ok", data: rows}; },
-                                     err => { store[k] = {status: "error", error: err}; })))
-    .then(() => {
-      for (const [nom, def] of calcs) {
-        try { store[nom] = {status: "ok", data: def.fn(...def.inputs.map(i => store[i].data))}; }
-        catch (e) { store[nom] = {status: "error", error: e}; console.error(nom, e); }
-      }
-      rappels.forEach(cb => cb());
-    });
-  });
-})();
+  // Thème et taille du texte appliqués avant l'affichage, pour éviter un clignement.
+  try {
+    const t = localStorage.getItem("ce-theme"), s = localStorage.getItem("ce-taille");
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    if (s === "grand" || s === "tres-grand") document.documentElement.dataset.taille = s;
+  } catch (e) {}
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js" defer></script>
+<script src="site.js" defer></script>
 </head>
 <body>
-<style>
-#dash-root { --dash-gutter: var(--cds-pad-lg); }
-.bt { font-family: var(--font-anthropic-sans); color: var(--color-fg); max-width: 72rem; margin-inline: auto; }
-.bt h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); }
-.bt .lede { font-size: var(--cds-font-size-body); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-lg); max-width: 50rem; line-height: 1.5; }
-.bt .lede b { color: var(--color-fg); font-weight: 600; }
-.bt .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr)); gap: var(--cds-gap-md); margin-bottom: var(--cds-gap-xl); }
-.bt .kpi, .bt .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); }
-.bt .kpi .lbl { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.35; min-height: 2.7em; }
-.bt .kpi .val { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; margin-top: var(--cds-gap-xs); }
-.bt .kpi .sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: var(--cds-gap-xs); }
-.bt h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: var(--cds-gap-xl) 0 var(--cds-gap-xs); }
-.bt .sec-note { font-size: var(--cds-font-size-body); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-md); max-width: 50rem; line-height: 1.5; }
-.bt .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
-.bt .card h3 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
-.bt .card .note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: var(--cds-gap-xs) 0 var(--cds-gap-md); line-height: 1.4; }
-.bt .chart { position: relative; min-height: 220px; }
-.bt .tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); display: none; z-index: 2; max-width: 16rem; }
-.bt .tip .t1 { color: var(--cds-text-secondary); margin-bottom: 2px; }
-.bt .legend { display: flex; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: var(--cds-gap-sm); flex-wrap: wrap; }
-.bt .legend i { display: inline-block; width: .7rem; height: .7rem; border-radius: 2px; margin-right: .35rem; vertical-align: -1px; }
-.bt .tbl-wrap { overflow: auto; max-height: 34rem; }
-.bt table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
-.bt th { text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); position: sticky; top: 0; background: var(--color-panel); vertical-align: bottom; }
-.bt td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); vertical-align: top; line-height: 1.4; }
-.bt td.num, .bt th.num { text-align: right; white-space: nowrap; }
-.bt td a { color: inherit; text-decoration: underline; text-decoration-color: var(--color-border-line); }
-.bt .pos { color: var(--color-ok); } .bt .neg { color: var(--color-bad); }
-.bt .pill { display: inline-block; padding: 0 .4rem; border-radius: 999px; border: 1px solid var(--color-border-line); white-space: nowrap; }
-.bt .method { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.55; }
-.bt .method p { margin: 0 0 var(--cds-gap-sm); }
-.bt .fail { display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: inherit; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
-.bt .fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
-.bt [data-dash-source-state=empty] { color: transparent; }
-.bt [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
-.bt .filters { display: flex; gap: var(--cds-gap-sm); flex-wrap: wrap; margin-bottom: var(--cds-gap-sm); }
-.bt .filters select, .bt .filters input { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); min-width: 10rem; }
-@media (max-width: 40rem) { .bt .hide-narrow { display: none; } }
-</style>
+<a class="skip" href="#contenu">Aller au contenu</a>
 
-<div class="bt">
-  <h1 id="titre">Backtest des chiffrages budgétaires</h1>
-  <p class="lede" id="lede">Les mesures sont plutôt bien chiffrées (erreur médiane de <b data-source="kpi_mesures" data-field="mediane_abs" data-row="0" class="dash-skeleton">—</b> sur leur coût), mais les trajectoires ne tiennent pas : à trois ans, le déficit réel dépasse la cible de <b data-source="kpi_ps" data-field="t3_hors_crise_abs" data-row="0" class="dash-skeleton">—</b> de PIB en moyenne hors crises, et c'est le cas dans <b data-source="kpi_ps" data-field="part_optimistes_t3" data-row="0" class="dash-skeleton">—</b> des programmes.</p>
-
-  <div class="kpis">
-    <div class="kpi"><div class="lbl">Erreur médiane sur le coût d'une mesure</div><div class="val dash-skeleton" data-source="kpi_mesures" data-field="mediane_abs" data-row="0">—</div><div class="sub">en valeur absolue</div></div>
-    <div class="kpi"><div class="lbl">Mesures chiffrées à ±15 % près</div><div class="val"><span class="dash-skeleton" data-source="kpi_mesures" data-field="n_15" data-row="0">—</span> / <span class="dash-skeleton" data-source="kpi_mesures" data-field="n" data-row="0">—</span></div><div class="sub">coût réel vs annoncé</div></div>
-    <div class="kpi"><div class="lbl">Erreur sur le déficit à 1 an, hors crises</div><div class="val dash-skeleton" data-source="kpi_ps" data-field="t1_hors_crise" data-row="0">—</div><div class="sub">points de PIB, programmes de stabilité</div></div>
-    <div class="kpi"><div class="lbl">Erreur sur le déficit à 3 ans, hors crises</div><div class="val dash-skeleton" data-source="kpi_ps" data-field="t3_hors_crise" data-row="0">—</div><div class="sub">points de PIB, <span data-source="kpi_ps" data-field="n3" data-row="0" class="dash-skeleton">—</span> programmes</div></div>
-    <div class="kpi"><div class="lbl">Programmes trop optimistes à 3 ans</div><div class="val dash-skeleton" data-source="kpi_ps" data-field="part_optimistes_t3" data-row="0">—</div><div class="sub">hors crises</div></div>
-  </div>
-
-  <h2 id="mesures">1. Le coût des mesures : peu d'erreurs, et elles s'expliquent</h2>
-  <p class="sec-note">Chaque mesure compare le chiffrage annoncé avant adoption à l'évaluation après coup. Un écart positif signifie que la mesure a été meilleure que prévu pour les finances publiques (coût plus faible, ou économie plus forte).</p>
-  <div class="grid">
-    <div class="card">
-      <h3>Écart entre le réalisé et l'annoncé</h3>
-      <p class="note">En % du chiffrage initial ; vert = mieux pour le solde public, rouge = pire.</p>
-      <div class="chart" id="ch-ecarts" data-source="ecarts"></div>
-    </div>
-    <div class="card">
-      <h3>Détail par mesure</h3>
-      <p class="note">Md€ par an. La cause est celle que donnent les évaluations.</p>
-      <div class="tbl-wrap">
-        <table id="tb-cout" data-source="mesures" data-row-key="id">
-          <thead><tr>
-            <th data-field="mesure">Mesure</th>
-            <th class="num" data-field="ex_ante">Annoncé</th>
-            <th class="num" data-field="ex_post_central">Réalisé</th>
-            <th class="num" data-source="ecarts" data-field="ecart_pct">Écart</th>
-            <th data-field="cause_principale">Cause</th>
-            <th class="hide-narrow" data-field="confiance">Fiabilité</th>
-            <th class="hide-narrow" data-field="source_ex_ante">Avant</th>
-            <th class="hide-narrow" data-field="source_ex_post">Après</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <h2 id="effets">2. Les effets promis : c'est là que les annonces dérapent</h2>
-  <p class="sec-note">Les emplois, l'investissement ou les heures de travail annoncés sont rarement au rendez-vous. Les réformes des retraites sont l'exception : l'effet sur l'emploi des seniors a été plus fort que prévu.</p>
-  <div class="card">
-    <div class="tbl-wrap">
-      <table id="tb-effets" data-source="effets" data-row-key="id">
-        <thead><tr>
-          <th data-field="mesure">Mesure</th>
-          <th data-field="effet">Effet</th>
-          <th data-field="annonce">Annoncé</th>
-          <th data-field="mesure_ex_post">Mesuré</th>
-          <th data-field="verdict">Verdict</th>
-          <th class="hide-narrow" data-field="source_ex_post">Source</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <h2 id="trajectoires">3. Les trajectoires : l'erreur est dans l'agrégat</h2>
-  <p class="sec-note">Erreur des programmes de stabilité français sur le déficit public : déficit réalisé moins déficit prévu, en points de PIB. Négatif = prévision trop optimiste. Les années de crise (2009, 2010, 2020, 2021) sont grisées et exclues des moyennes.</p>
-  <div class="card">
-    <h3>Erreur par programme, à 1 an et à 3 ans</h3>
-    <p class="note">Millésime = année de rédaction du programme.</p>
-    <div class="legend"><span><i style="background: var(--cds-chart-muted)"></i>à 1 an</span><span><i id="lg-t3"></i>à 3 ans</span><span><i style="background: var(--cds-chart-grid)"></i>année cible en crise</span></div>
-    <div class="chart" id="ch-ps" data-source="erreurs_ps" style="min-height: 280px"></div>
-  </div>
-
-  <h2 id="pairs">4. Comparaison européenne</h2>
-  <p class="sec-note">Erreur moyenne des prévisions officielles de solde à 3 ans, en points de PIB (Frankel et Schreger, NBER). Ici, positif = trop optimiste.</p>
-  <div class="card">
-    <h3>Optimisme des prévisions à 3 ans, par pays</h3>
-    <p class="note">La France est proche de l'Espagne et de l'Italie ; les pays nordiques sont les plus prudents.</p>
-    <div class="chart" id="ch-pairs" data-source="pairs" style="min-height: 300px"></div>
-  </div>
-
-  <h2 id="regles">5. Règles de calibration pour lire les programmes 2027</h2>
-  <p class="sec-note">Corrections à appliquer aux chiffrages des candidats, tirées des écarts observés ci-dessus.</p>
-  <div class="card">
-    <div class="tbl-wrap">
-      <table id="tb-regles" data-source="regles" data-row-key="id">
-        <thead><tr>
-          <th data-field="categorie">Type de chiffrage</th>
-          <th data-field="correction_2027">Correction</th>
-          <th data-field="base_empirique">Base empirique</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <h2 id="elasticites">6. Élasticités : corriger un chiffrage statique</h2>
-  <p class="sec-note">Comment les contribuables, les entreprises et l'économie réagissent à une mesure, d'après des évaluations françaises et étrangères. La première table donne l'hypothèse à retenir par levier ; la seconde, chaque estimation avec sa source.</p>
-  <div class="grid">
-    <div class="card">
-      <h3>Nature des preuves</h3>
-      <p class="note">Nombre d'estimations par domaine et par méthode.</p>
-      <div class="legend" id="lg-methodes"></div>
-      <div class="chart" id="ch-methodes" data-source="elast_comptes" style="min-height: 200px"></div>
-    </div>
-    <div class="card">
-      <h3>Hypothèses par défaut, par levier</h3>
-      <p class="note">À appliquer aux chiffrages 2027 en l'absence d'étude propre à la mesure.</p>
-      <div class="tbl-wrap" style="max-height: 26rem">
-        <table id="tb-hyp" data-source="hypotheses" data-row-key="id">
-          <thead><tr>
-            <th data-field="levier">Levier</th>
-            <th data-field="hypothese">Hypothèse</th>
-            <th data-field="effet_chiffrage">Effet sur le chiffrage</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-top: var(--cds-gap-md)">
-    <h3>Toutes les estimations</h3>
-    <p class="note">Filtrer par domaine ou chercher un mot (« TVA », « SMIC », « Danemark »…).</p>
-    <div class="filters">
-      <select id="f-domaine" aria-label="Domaine"><option value="">Tous les domaines</option></select>
-      <input id="f-texte" type="search" placeholder="Rechercher" aria-label="Rechercher">
-    </div>
-    <div class="tbl-wrap">
-      <table id="tb-elast" data-source="elasticites" data-row-key="id">
-        <thead><tr>
-          <th data-field="parametre">Paramètre</th>
-          <th data-field="valeur_centrale">Valeur</th>
-          <th class="hide-narrow" data-field="fourchette">Fourchette</th>
-          <th class="hide-narrow" data-field="pays_periode">Contexte</th>
-          <th class="hide-narrow" data-field="methode">Méthode</th>
-          <th data-field="usage_2027">Usage pour 2027</th>
-          <th class="hide-narrow" data-field="source">Source</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <h2 id="application">7. Application : NFP et Ensemble aux législatives 2024</h2>
-  <p class="sec-note">Même grille pour les deux programmes. Point de départ : le chiffrage ligne par ligne de l'Institut Montaigne, seul organisme à avoir chiffré les deux mesure par mesure (orientation libérale). Une ligne qu'il n'a pas chiffrée prend la médiane des autres chiffrages indépendants. On applique ensuite les règles des sections 1 à 6, puis le biais de trajectoire commun aux deux, puisque les deux partent du programme de stabilité d'avril 2024. Le bouclage keynésien n'est pas compté : l'horizon 2027 est structurel.</p>
-  <div class="grid">
-    <div class="card">
-      <h3>Impact sur le solde public en 2027</h3>
-      <p class="note">Md€ par an ; négatif = hausse du déficit.</p>
-      <div class="legend" id="lg-app"></div>
-      <div class="chart" id="ch-app" data-source="app_totaux" style="min-height: 200px"></div>
-    </div>
-    <div class="card">
-      <h3>Déficit public 2027 qui en résulte</h3>
-      <p class="note">% du PIB : cible du programme de stabilité + biais historique à 3 ans + coût corrigé du programme. Trait : prévision actuelle du gouvernement pour 2027.</p>
-      <div class="legend" id="lg-def"></div>
-      <div class="chart" id="ch-def" data-source="app_totaux parametres" style="min-height: 200px"></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top: var(--cds-gap-md)">
-    <h3>Ligne par ligne</h3>
-    <p class="note">Impact sur le solde en Md€/an. La colonne « Corrigé » applique le facteur de la règle au chiffrage indépendant.</p>
-    <div class="filters"><select id="f-prog" aria-label="Programme"><option value="">Les deux programmes</option></select></div>
-    <div class="tbl-wrap">
-      <table id="tb-app" data-source="app_lignes" data-row-key="id">
-        <thead><tr>
-          <th data-field="ligne">Mesure</th>
-          <th class="num" data-source="application" data-field="annonce_parti">Parti</th>
-          <th class="num" data-field="independant">Indépendant</th>
-          <th class="num" data-field="corrige">Corrigé</th>
-          <th data-field="regle">Règle</th>
-          <th class="hide-narrow" data-source="application" data-field="justification">Justification</th>
-          <th class="hide-narrow" data-source="application" data-field="autres_estimations">Autres chiffrages</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <h2 id="paniers">8. Programmes à l'équilibre : financer les mesures phares</h2>
-  <p class="sec-note">On garde les mesures phares de chaque camp et on les finance avec des leviers compatibles avec son orientation : fiscalité du capital, du patrimoine et des grandes entreprises pour LFI ; économies de dépenses sans hausse d'impôts sur les ménages actifs pour Ensemble. Chaque levier est corrigé par les règles des sections 1 à 6. La référence est la loi en vigueur fin 2026 : les mesures déjà votées (plan santé 2026, contribution des collectivités, rabot des allègements, loi fraude) ne sont pas recomptées.</p>
-  <div class="card">
-    <h3>Coût des mesures phares et financement trouvé</h3>
-    <p class="note">Md€ par an, après correction. Pour la variante « LFI ajusté », la planification écologique est financée par emprunt (règle d'or) et sortie de l'équilibre.</p>
-    <div class="legend" id="lg-pan"></div>
-    <div class="chart" id="ch-pan" data-source="panier_totaux" style="min-height: 260px"></div>
-  </div>
-  <div class="card" style="margin-top: var(--cds-gap-md)">
-    <h3>Détail des paniers</h3>
-    <p class="note">Statique = chiffrage d'origine ; Corrigé = après facteur de la règle. Incertitude et payeurs pour chaque levier.</p>
-    <div class="filters"><select id="f-var" aria-label="Variante"><option value="">Toutes les variantes</option></select></div>
-    <div class="tbl-wrap">
-      <table id="tb-pan" data-source="panier_lignes" data-row-key="id">
-        <thead><tr>
-          <th data-field="ligne">Ligne</th>
-          <th data-field="role">Rôle</th>
-          <th class="num" data-source="paniers" data-field="statique">Statique</th>
-          <th class="num" data-field="corrige">Corrigé</th>
-          <th class="hide-narrow" data-source="paniers" data-field="regle">Règle</th>
-          <th class="hide-narrow" data-source="paniers" data-field="incertitude">Incertitude</th>
-          <th class="hide-narrow" data-source="paniers" data-field="qui_paie">Qui paie</th>
-          <th class="hide-narrow" data-source="paniers" data-field="source">Source</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <h2 id="incertitude">9. Incertitude et variantes de référence</h2>
-  <p class="sec-note">Le moteur tire au sort l'erreur de chaque ligne (erreur absolue médiane de 14,9 % des chiffrages d'instituts, dont la moitié commune à un même chiffreur), ainsi que les facteurs de référence et d'interaction. « Loi votée seule » retire du point de départ ce que le PLF et le PLFSS 2027 n'ont pas encore fait voter. La variante « dégel » suppose que la hausse du SMIC rend aux allègements de charges leur indexation.</p>
-  <div class="card">
-    <h3>Solde par panier : central et intervalle 10 %-90 %</h3>
-    <p class="note">Md€ par an. Trait = intervalle 10 %-90 % du Monte-Carlo ; point plein = central ; losange = loi votée seule ; carré = variante « dégel ».</p>
-    <div class="legend" id="lg-inc"></div>
-    <div class="chart" id="ch-inc" data-source="soldes" style="min-height: 180px"></div>
-  </div>
-  <div class="card" style="margin-top: var(--cds-gap-md)">
-    <h3>Composantes</h3>
-    <div class="tbl-wrap">
-      <table id="tb-inc"><thead><tr>
-        <th>Panier</th><th>Composante</th><th class="num">Central</th><th class="num">Loi votée seule</th><th class="num">P10</th><th class="num">P50</th><th class="num">P90</th>
-      </tr></thead><tbody></tbody></table>
-    </div>
-  </div>
-
-  <h2 id="sensibilite">10. Le chiffreur pèse plus que la correction</h2>
-  <p class="sec-note">On applique les mêmes règles au chiffrage de chaque organisme. « Propre » = les seules lignes qu'il a chiffrées ; « complété » = les lignes qu'il n'a pas chiffrées sont remplies par la médiane des autres chiffreurs indépendants. Asterès travaillait avec les recettes communiquées par le parti.</p>
-  <div class="card">
-    <div class="tbl-wrap">
-      <table id="tb-sens"><thead><tr>
-        <th>Programme</th><th>Chiffreur</th><th class="hide-narrow">Statut</th><th class="num">Lignes</th><th class="num">Solde publié</th><th class="num">Propre, statique</th><th class="num">Propre, corrigé</th><th class="num">Complété, statique</th><th class="num">Complété, corrigé</th>
-      </tr></thead><tbody></tbody></table>
-    </div>
-  </div>
-
-  <h2 id="projection">11. Trajectoires 2026-2032</h2>
-  <p class="sec-note">Point de départ : réalisé 2025 (Insee), puis PLF 2027 pour 2026-2027 et trajectoire communiquée au HCFP jusqu'en 2029 ; au-delà, le solde de 2029 et la croissance de 2030 sont reconduits (extrapolation, en pointillés). La référence corrigée ajoute le biais moyen des programmes de stabilité (section 3). Chaque panier part de la référence corrigée et ajoute son solde corrigé, les intérêts supplémentaires et, pour « LFI ajusté », l'investissement emprunté.</p>
-  <div class="card">
-    <div class="filters">
-      <select id="f-ind" aria-label="Indicateur"><option value="dette_pct">Dette publique (% du PIB)</option><option value="deficit_pct">Déficit public (% du PIB)</option></select>
-      <select id="f-stress" aria-label="Taux d'intérêt"><option value="">Taux d'intérêt de la référence</option><option value="1">Choc durable de +25 pb sur tous les taux</option></select>
-    </div>
-    <div class="legend" id="lg-proj"></div>
-    <div class="chart" id="ch-proj" data-source="projection" style="min-height: 300px"></div>
-    <p class="note" id="nt-proj"></p>
-  </div>
-
-  <h2 id="validation">12. La méthode a-t-elle amélioré les chiffrages passés ?</h2>
-  <p class="sec-note">Test sur les mesures passées : les règles ont été attribuées à l'aveugle par des agents séparés, les facteurs calibrés sont recalculés sans la mesure testée (leave-one-out), et seuls les réalisés observés comptent pour le statut d'une règle. Erreur = écart absolu au réalisé, en % du chiffrage initial.</p>
-  <div class="grid">
-    <div class="card">
-      <h3>Erreur avant et après correction</h3>
-      <div class="tbl-wrap">
-        <table id="tb-valr"><thead><tr>
-          <th>Groupe</th><th class="num">n</th><th class="num">Erreur médiane départ</th><th class="num">Erreur médiane corrigée</th><th class="num hide-narrow">Améliorées / dégradées</th>
-        </tr></thead><tbody></tbody></table>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Statut des règles</h3>
-      <div class="tbl-wrap">
-        <table id="tb-valg"><thead><tr>
-          <th>Règle</th><th>Statut</th><th class="num">n</th><th class="hide-narrow">Détail</th>
-        </tr></thead><tbody></tbody></table>
-      </div>
-    </div>
-  </div>
-
-  <h2 id="distributif">13. Effet sur quelques ménages types</h2>
-  <p class="sec-note">Calcul OpenFisca-France (législation 2026) sur des ménages types, mesure par mesure. Gain annuel de revenu disponible en euros ; les effets par décile demandent l'enquête ERFS (accès CASD) et ne sont pas encore calculés.</p>
-  <div class="card">
-    <div class="tbl-wrap">
-      <table id="tb-dist"><thead></thead><tbody></tbody></table>
-    </div>
-  </div>
-
-  <h2 id="methode">Méthode et limites</h2>
-  <div class="card method">
-    <p>Le coût réalisé retient une valeur centrale quand les évaluations divergent (par exemple la flat tax, entre ≈0 et 1,7 Md€). Les fourchettes sont dans les données sources.</p>
-    <p>Seules les mesures adoptées sont observables : on ne peut pas tester les programmes perdants. L'échantillon est petit, donc les règles de calibration détectent des biais grossiers, pas des paramètres précis.</p>
-    <p>Pour les retraites, les montants « réalisés » sont des réestimations (DREES, Cour des comptes) et non des économies constatées. La réforme de 2014 et la baisse de l'IS n'ont pas d'évaluation du coût après coup et sont exclues des moyennes.</p>
-    <p>Les élasticités sont des ordres de grandeur. Les estimations étrangères (Danemark, Suisse, États-Unis…) se transposent mal quand les institutions diffèrent, notamment la déclaration du patrimoine par des tiers en France. Une vérification indépendante de dix valeurs clés a conduit à corriger trois lignes.</p>
-    <p>Section 7 : le résultat dépend du chiffrage de départ. Les chiffrages indépendants du NFP vont de ≈−50 (Asterès) à −179 Md€ (Montaigne) ; ceux d'Ensemble de +4 (iFRAP, par rapport au programme de stabilité) à −21 Md€ (Montaigne). Les corrections modifient le solde de quelques milliards à une dizaine ; l'écart entre chiffreurs pèse bien plus. Le programme LFI de 2027 n'est pas encore chiffré : celui du NFP 2024 en est le plus proche.</p>
-    <p>Les déficits réalisés sont les séries Eurostat actuelles, révisées depuis leur première publication. Les comparaisons internationales viennent de Frankel et Schreger (2013), dont la période s'arrête avant la crise de la dette en zone euro.</p>
+<div class="notice" role="note">
+  <div class="wrap">
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 1 21h22L12 2Zm0 6 .9 7h-1.8L12 8Zm0 9.2a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z"/></svg>
+    <p style="margin:0"><strong>Site d'étude indépendant.</strong> Ce n'est pas un site de l'État ni d'une administration. Les résultats sont ceux d'un prototype et peuvent changer.</p>
   </div>
 </div>
 
-<script>
-const FR = d3.formatLocale({decimal: ",", thousands: " ", grouping: [3], currency: ["", " €"], minus: "−"});
-const fPct0 = v => FR.format(".0f")(v) + " %";
-const fSigned0 = v => (v > 0 ? "+" : "") + FR.format(".0f")(v) + " %";
-const fPt1 = v => FR.format(".1f")(v) + " pt";
-const fMd = v => FR.format(".1f")(v);
-const num = x => (x === "" || x == null) ? NaN : Number(x);
+<header class="header">
+  <div class="wrap">
+    <a class="brand" href="#/accueil">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+      </span>
+      <span>
+        <span class="brand-name">Chiffrages à l'épreuve</span>
+        <span class="brand-tag">Les promesses budgétaires comparées à ce qu'elles ont vraiment coûté</span>
+      </span>
+    </a>
+    <div class="tools">
+      <button class="btn-tool" type="button" id="btn-settings" aria-expanded="false" aria-controls="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5h12v2H3V5Zm16 0h2v2h-2V5Zm-4-2h2v6h-2V3ZM3 11h4v2H3v-2Zm8 0h10v2H11v-2ZM7 9h2v6H7V9Zm-4 8h12v2H3v-2Zm16 0h2v2h-2v-2Zm-4-2h2v6h-2v-6Z"/></svg>
+        Affichage
+      </button>
+    </div>
+  </div>
+</header>
 
-dash.calc("ecarts", {
-  inputs: ["mesures"],
-  title: "Écart réalisé vs annoncé",
-  description: "Pour chaque mesure, écart en % du chiffrage initial ; positif = meilleur pour le solde public.",
-  fn: (mesures) => mesures.map(m => {
-    const a = Number(m.ex_ante), p = Number(m.ex_post_central);
-    const ecart = m.sens === "cout" ? (a - p) / a * 100 : (p - a) / a * 100;
-    return {id: m.id, mesure: m.mesure, ecart_pct: ecart, cause: m.cause_principale};
-  })
-});
+<nav class="nav" id="nav" aria-label="Menu principal">
+  <div class="wrap">
+    <button class="btn-tool nav-toggle" type="button" id="btn-menu" aria-expanded="false" aria-controls="menu">Menu</button>
+    <ul id="menu">
+      <li><a href="#/accueil">Accueil</a></li>
+      <li><a href="#/hier">Les promesses d'hier</a></li>
+      <li><a href="#/programmes">Les programmes 2024</a></li>
+      <li><a href="#/equilibre">Financer les promesses</a></li>
+      <li><a href="#/foyer">Mon foyer</a></li>
+      <li><a href="#/demain">Dette et déficit</a></li>
+      <li><a href="#/methode">Méthode</a></li>
+      <li><a href="#/lexique">Lexique</a></li>
+    </ul>
+  </div>
+</nav>
 
-dash.calc("kpi_mesures", {
-  inputs: ["ecarts"],
-  title: "Précision des chiffrages",
-  description: "Médiane des écarts absolus et nombre de mesures à ±15 %.",
-  fn: (ecarts) => {
-    const abs = ecarts.map(e => Math.abs(e.ecart_pct)).sort((a, b) => a - b);
-    const n = abs.length, mid = Math.floor(n / 2);
-    const mediane = n % 2 ? abs[mid] : (abs[mid - 1] + abs[mid]) / 2;
-    return [{mediane_abs: mediane, n_15: abs.filter(v => v <= 15).length, n: n}];
-  }
-});
+<div class="wrap">
+  <section class="settings" id="settings" hidden aria-labelledby="settings-titre">
+    <h2 id="settings-titre" style="margin-top:0;font-size:1.15rem">Paramètres d'affichage</h2>
+    <fieldset>
+      <legend>Couleurs</legend>
+      <div class="opts">
+        <label class="check"><input type="radio" name="theme" value="system"> Comme mon appareil</label>
+        <label class="check"><input type="radio" name="theme" value="light"> Clair</label>
+        <label class="check"><input type="radio" name="theme" value="dark"> Sombre</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Taille du texte</legend>
+      <div class="opts">
+        <label class="check"><input type="radio" name="taille" value="normal"> Normale</label>
+        <label class="check"><input type="radio" name="taille" value="grand"> Grande</label>
+        <label class="check"><input type="radio" name="taille" value="tres-grand"> Très grande</label>
+      </div>
+    </fieldset>
+    <button class="btn-tool" type="button" id="btn-settings-close">Fermer</button>
+  </section>
+</div>
 
-dash.calc("erreurs_ps", {
-  inputs: ["ps"],
-  title: "Erreurs des programmes de stabilité",
-  description: "Déficit réalisé moins déficit prévu, à 1 et 3 ans (points de PIB) ; crise = année cible 2009, 2010, 2020 ou 2021.",
-  fn: (ps) => ps.map(r => {
-    const e1 = Number(r.real_t1) - Number(r.prev_t1);
-    const e3 = r.real_t3 === "" ? null : Number(r.real_t3) - Number(r.prev_t3);
-    return {millesime: r.millesime, annee_t1: Number(r.annee_t1), annee_t3: Number(r.annee_t3),
-      e1: e1, e3: e3, crise_t1: [2009, 2020].includes(Number(r.annee_t1)),
-      crise_t3: [2009, 2010, 2020, 2021].includes(Number(r.annee_t3))};
-  })
-});
+<main id="contenu" tabindex="-1">
+<div class="wrap">
+  <div id="chargement" class="loading" role="status">Chargement des données…</div>
 
-dash.calc("kpi_ps", {
-  inputs: ["erreurs_ps"],
-  title: "Biais moyen hors crises",
-  description: "Moyenne des erreurs hors années de crise, et part des programmes trop optimistes à 3 ans.",
-  fn: (erreurs_ps) => {
-    const t1 = erreurs_ps.filter(r => !r.crise_t1).map(r => r.e1);
-    const t3 = erreurs_ps.filter(r => r.e3 !== null && !r.crise_t3).map(r => r.e3);
-    const mean = a => a.reduce((s, v) => s + v, 0) / a.length;
-    return [{t1_hors_crise: mean(t1), t3_hors_crise: mean(t3), t3_hors_crise_abs: Math.abs(mean(t3)),
-      n3: t3.length, part_optimistes_t3: t3.filter(v => v < 0).length / t3.length * 100}];
-  }
-});
+  <!-- ==================================================================== ACCUEIL -->
+  <section class="view" id="v-accueil" data-titre="Accueil" hidden>
+    <h1 style="margin-top:2rem">Les promesses budgétaires sont-elles crédibles ?</h1>
+    <p class="lede">Avant une élection, chaque parti annonce ce que coûteront ses mesures. Ce site vérifie, sur des mesures passées, si ces annonces étaient justes. Il applique ensuite les leçons du passé aux programmes, <strong>de la même façon pour tous les partis</strong>.</p>
 
-const fmt = {
-  mediane_abs: fPct0, n_15: v => String(v), n: v => String(v),
-  t1_hors_crise: fPt1, t3_hors_crise: fPt1, t3_hors_crise_abs: v => FR.format(".1f")(v) + " point",
-  n3: v => String(v), part_optimistes_t3: fPct0
-};
+    <div class="callout">
+      <h2>Ce qu'il faut retenir</h2>
+      <ul class="big">
+        <li><strong>Le coût d'une mesure est souvent bien estimé.</strong> Sur <span data-k="mes_n"></span> mesures passées, l'erreur habituelle est d'environ <span data-k="mes_mediane"></span>.</li>
+        <li><strong>Les bénéfices promis le sont beaucoup moins.</strong> Les emplois ou investissements annoncés arrivent rarement : <span data-k="eff_rates"></span> effets promis sur <span data-k="eff_n"></span> n'ont pas été atteints.</li>
+        <li><strong>Les objectifs de déficit sont presque toujours manqués.</strong> Trois ans après, le <a class="term" href="#/lexique/deficit">déficit</a> réel dépasse l'objectif d'environ <span data-k="ps_biais"></span> de la richesse nationale, soit près de <span data-k="ps_md"></span> par an aujourd'hui.</li>
+      </ul>
+    </div>
 
-function fillMarks() {
-  document.querySelectorAll(".bt [data-row='0'][data-field]").forEach(el => {
-    const d = dash.data(el.dataset.source);
-    if (d.status === "ok" && d.data && d.data[0]) {
-      const v = d.data[0][el.dataset.field];
-      el.textContent = fmt[el.dataset.field] ? fmt[el.dataset.field](v) : String(v);
-      el.classList.remove("dash-skeleton");
-    } else if (d.status !== "loading") {
-      el.textContent = "—"; el.classList.remove("dash-skeleton");
-    }
-  });
-}
+    <h2>Que voulez-vous savoir ?</h2>
+    <ul class="tiles">
+      <li class="tile"><h3><a href="#/hier">Les promesses d'hier ont-elles été tenues ?</a></h3><p>Le coût annoncé de mesures connues (CICE, flat tax, retraites…) comparé à leur coût réel.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/programmes">Combien coûtaient vraiment les programmes de 2024 ?</a></h3><p>Les programmes du Nouveau Front populaire et d'Ensemble, recalculés avec la même méthode.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/equilibre">Peut-on financer les mesures phares ?</a></h3><p>Les principales promesses de chaque camp, et les recettes qui pourraient les payer.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/foyer">Qu'est-ce que cela change pour mon foyer ?</a></h3><p>L'effet de quelques mesures sur le revenu de foyers types : salarié, retraités, cadre, parent seul.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/demain">Où vont la dette et le déficit ?</a></h3><p>Les trajectoires possibles jusqu'en 2032, selon les choix faits.</p><span class="arrow" aria-hidden="true">→</span></li>
+      <li class="tile"><h3><a href="#/methode">Comment c'est calculé ?</a></h3><p>La méthode pas à pas, son degré de fiabilité, ses limites et toutes les données.</p><span class="arrow" aria-hidden="true">→</span></li>
+    </ul>
 
-function failBox(el) { el.textContent = ""; const f = document.createElement("div"); f.className = "fail"; f.textContent = "Failed to load"; el.appendChild(f); el.classList.remove("dash-skeleton"); }
+    <div class="callout warn">
+      <h2>À savoir avant de lire</h2>
+      <p>Ce site ne donne <strong>aucune consigne de vote</strong>. Il ne juge pas si une mesure est souhaitable, seulement si son coût annoncé est réaliste. Une mesure coûteuse peut être un choix assumé. Les programmes de la présidentielle 2027 ne sont pas encore publiés : les exemples portent sur les législatives de 2024.</p>
+      <p>Un mot vous semble obscur ? Le <a href="#/lexique">lexique</a> l'explique simplement.</p>
+    </div>
+  </section>
 
-function tip(box) {
-  let t = box.querySelector(".tip");
-  if (!t) { t = document.createElement("div"); t.className = "tip"; box.appendChild(t); }
-  return {
-    show(ev, title, line) {
-      t.textContent = "";
-      const a = document.createElement("div"); a.className = "t1"; a.textContent = title; t.appendChild(a);
-      const b = document.createElement("div"); b.textContent = line; t.appendChild(b);
-      t.style.display = "block";
-      const r = box.getBoundingClientRect();
-      let x = ev.clientX - r.left + 12, y = ev.clientY - r.top + 12;
-      const w = t.offsetWidth, h = t.offsetHeight;
-      if (x + w > r.width) x = Math.max(0, ev.clientX - r.left - w - 12);
-      if (y + h > r.height) y = Math.max(0, ev.clientY - r.top - h - 12);
-      t.style.left = x + "px"; t.style.top = y + "px";
-    },
-    hide() { t.style.display = "none"; }
-  };
-}
+  <!-- ==================================================================== HIER -->
+  <section class="view" id="v-hier" data-titre="Les promesses d'hier" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Les promesses d'hier</li></ol></nav>
+    <h1>Les promesses d'hier ont-elles été tenues ?</h1>
+    <p class="lede">On compare ce que l'État annonçait avant de voter une mesure à ce qu'elle a réellement coûté ou rapporté, d'après les évaluations faites après coup.</p>
 
-function drawEcarts() {
-  const box = document.getElementById("ch-ecarts");
-  const d = dash.data("ecarts");
-  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
-  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
-  const rows = d.data.slice().sort((a, b) => b.ecart_pct - a.ecart_pct);
-  const W = Math.max(280, box.clientWidth), rowH = 40, top = 6, H = top + rows.length * rowH + 22;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Écart réalisé vs annoncé par mesure");
-  const ext = d3.max(rows, r => Math.abs(r.ecart_pct));
-  const x = d3.scaleLinear([-ext * 1.1, ext * 1.1], [46, W - 46]);
-  const ticks = x.ticks(4);
-  svg.append("g").selectAll("line").data(ticks).join("line").attr("x1", v => x(v)).attr("x2", v => x(v)).attr("y1", top).attr("y2", H - 20).attr("stroke", "var(--cds-chart-grid)");
-  svg.append("g").selectAll("text").data(ticks).join("text").attr("x", v => x(v)).attr("y", H - 6).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(v => fSigned0(v));
-  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", top).attr("y2", H - 20).attr("stroke", "var(--cds-chart-axis)");
-  const tp = tip(box);
-  const g = svg.append("g").selectAll("g").data(rows).join("g").attr("transform", (r, i) => `translate(0,${top + i * rowH})`);
-  // Libellé au-dessus de la barre, aligné à gauche et tronqué à la largeur du graphique (texte complet dans l'infobulle)
-  g.append("text").attr("x", 0).attr("y", 12).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)")
-    .text(r => r.mesure).each(function () {
-      const el = d3.select(this), full = el.text();
-      let n = full.length;
-      while (n > 4 && this.getComputedTextLength() > W - 8) el.text(full.slice(0, --n) + "…");
-    }).append("title").text(r => r.mesure);
-  g.append("rect").attr("x", r => Math.min(x(0), x(r.ecart_pct))).attr("width", r => Math.max(2, Math.abs(x(r.ecart_pct) - x(0)))).attr("y", 18).attr("height", 14).attr("rx", 4)
-    .attr("fill", r => r.ecart_pct >= 0 ? "var(--color-ok)" : "var(--cds-chart-status-critical)")
-    .on("mousemove", (ev, r) => tp.show(ev, r.mesure, fSigned0(r.ecart_pct) + " · " + r.cause)).on("mouseleave", () => tp.hide());
-  g.append("text").attr("x", r => r.ecart_pct >= 0 ? x(r.ecart_pct) + 4 : x(r.ecart_pct) - 4).attr("y", 29).attr("text-anchor", r => r.ecart_pct >= 0 ? "start" : "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(r => fSigned0(r.ecart_pct));
-}
+    <div class="callout">
+      <h2>En bref</h2>
+      <ul>
+        <li>Le coût des mesures est en général bien prévu : <span data-k="mes_15"></span> mesures sur <span data-k="mes_n"></span> sont tombées à moins de 15 % près.</li>
+        <li>Les gros écarts viennent surtout des mesures qui dépendent du comportement des gens (placements, demande d'une aide).</li>
+        <li>Les effets promis (emplois, investissements) sont souvent bien plus faibles qu'annoncé.</li>
+        <li>Les objectifs de déficit à trois ans ont été trop optimistes <span data-k="ps_opt"></span> fois sur <span data-k="ps_n3"></span>.</li>
+      </ul>
+    </div>
 
-function link(td, url) {
-  if (url && /^https?:\/\//.test(url)) { const a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "lien"; td.appendChild(a); }
-}
+    <h2>1. Le coût des mesures : plutôt bien estimé</h2>
+    <p class="prose">Chaque carré représente une mesure passée. On regarde l'écart entre le coût annoncé et le coût réel.</p>
+    <div class="chart-block">
+      <h3>Précision des chiffrages officiels</h3>
+      <p class="how">Un carré par mesure, coloré selon l'écart entre l'annonce et la réalité.</p>
+      <ul class="legend" id="lg-waffle"></ul>
+      <div class="chart" id="ch-waffle"></div>
+    </div>
+    <div class="chart-block">
+      <h3>Écart mesure par mesure</h3>
+      <p class="how">En pourcentage du coût annoncé. <span class="pos">À droite (vert)</span> : mieux que prévu pour les finances publiques. <span class="neg">À gauche (rouge)</span> : pire que prévu.</p>
+      <div class="chart" id="ch-ecarts"></div>
+      <details class="data-toggle"><summary>Voir ces données sous forme de tableau</summary><div class="tbl-wrap tall" id="tb-ecarts"></div></details>
+    </div>
 
-function drawCoutTable() {
-  const tb = document.querySelector("#tb-cout tbody");
-  const d = dash.data("mesures"), e = dash.data("ecarts");
-  tb.textContent = "";
-  if (d.status !== "ok") return;
-  const ec = new Map((e.status === "ok" ? e.data : []).map(r => [r.id, r.ecart_pct]));
-  d.data.forEach(r => {
-    const tr = document.createElement("tr"); tr.dataset.key = r.id;
-    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
-    td(r.mesure);
-    td(fMd(num(r.ex_ante)), "num");
-    td(fMd(num(r.ex_post_central)), "num");
-    const v = ec.get(r.id);
-    td(v === undefined ? "—" : fSigned0(v), "num " + (v > 0.5 ? "pos" : v < -0.5 ? "neg" : ""));
-    td(r.cause_principale);
-    const cf = td("", "hide-narrow"); const s = document.createElement("span"); s.className = "pill"; s.textContent = r.confiance; cf.appendChild(s);
-    link(td("", "hide-narrow"), r.source_ex_ante);
-    link(td("", "hide-narrow"), r.source_ex_post);
-    tb.appendChild(tr);
-  });
-}
+    <h2>2. Les effets promis : c'est là que les annonces dérapent</h2>
+    <p class="prose">Une mesure est souvent défendue par ses bénéfices attendus : des emplois créés, des prix en baisse, des investissements. Voici ce qui a été mesuré ensuite.</p>
+    <div class="cards" id="cards-effets"></div>
 
-function drawSimpleTable(id, src, cols, linkCol) {
-  const tb = document.querySelector(`#${id} tbody`);
-  const d = dash.data(src);
-  tb.textContent = "";
-  if (d.status !== "ok") return;
-  d.data.forEach(r => {
-    const tr = document.createElement("tr"); tr.dataset.key = r.id;
-    cols.forEach(c => { const td = document.createElement("td"); td.textContent = r[c]; tr.appendChild(td); });
-    if (linkCol) { const td = document.createElement("td"); td.className = "hide-narrow"; link(td, r[linkCol]); tr.appendChild(td); }
-    tb.appendChild(tr);
-  });
-}
+    <h2>3. Les objectifs de déficit : presque toujours trop optimistes</h2>
+    <p class="prose">Chaque année, le gouvernement publie un <a class="term" href="#/lexique/pstab">programme de stabilité</a> qui fixe un objectif de déficit pour les années suivantes. Le graphique montre de combien le déficit réel a dépassé l'objectif, trois ans plus tard.</p>
+    <div class="chart-block">
+      <h3>Dépassement de l'objectif de déficit à trois ans</h3>
+      <p class="how">En points de <a class="term" href="#/lexique/pib">PIB</a>. Plus la barre est haute, plus l'objectif était optimiste. Les années de crise (en gris) sont mises à part.</p>
+      <ul class="legend" id="lg-ps"></ul>
+      <div class="chart" id="ch-ps"></div>
+      <details class="data-toggle"><summary>Voir ces données sous forme de tableau</summary><div class="tbl-wrap tall" id="tb-ps"></div></details>
+    </div>
+    <div class="chart-block">
+      <h3>Et ailleurs en Europe ?</h3>
+      <p class="how">Erreur moyenne des prévisions officielles de déficit à trois ans, en points de PIB (étude Frankel et Schreger, période antérieure à 2012). Plus la barre est longue, plus les prévisions étaient optimistes.</p>
+      <div class="chart" id="ch-pairs"></div>
+    </div>
 
-function drawPS() {
-  const box = document.getElementById("ch-ps");
-  const d = dash.data("erreurs_ps");
-  document.getElementById("lg-t3").style.background = dash.colors[0];
-  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
-  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
-  const rows = d.data;
-  const W = Math.max(280, box.clientWidth), H = 280, m = {t: 10, r: 6, b: 26, l: 36};
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Erreurs des programmes de stabilité");
-  const x = d3.scaleBand(rows.map(r => r.millesime), [m.l, W - m.r]).paddingInner(0.25).paddingOuter(0.1);
-  const xs = d3.scaleBand(["e1", "e3"], [0, x.bandwidth()]).padding(0.08);
-  const vals = rows.flatMap(r => [r.e1, r.e3]).filter(v => v !== null);
-  const y = d3.scaleLinear([Math.min(0, d3.min(vals)) * 1.05, Math.max(0, d3.max(vals)) * 1.15 + 0.2], [H - m.b, m.t]).nice();
-  const yt = y.ticks(5);
-  svg.append("g").selectAll("line").data(yt).join("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", v => y(v)).attr("y2", v => y(v)).attr("stroke", v => v === 0 ? "var(--cds-chart-axis)" : "var(--cds-chart-grid)");
-  svg.append("g").selectAll("text").data(yt).join("text").attr("x", m.l - 6).attr("y", v => y(v) + 4).attr("text-anchor", "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(v => FR.format(".0f")(v));
-  const step = W < 520 ? 3 : 2;
-  svg.append("g").selectAll("text").data(rows.filter((r, i) => i % step === 0)).join("text").attr("x", r => x(r.millesime) + x.bandwidth() / 2).attr("y", H - 8).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(r => r.millesime.slice(3, 7));
-  const tp = tip(box);
-  const bar = (key, color, crisisKey) => svg.append("g").selectAll("rect").data(rows.filter(r => r[key] !== null)).join("rect")
-    .attr("x", r => x(r.millesime) + xs(key)).attr("width", xs.bandwidth())
-    .attr("y", r => Math.min(y(0), y(r[key]))).attr("height", r => Math.max(1, Math.abs(y(r[key]) - y(0)))).attr("rx", 2)
-    .attr("fill", r => r[crisisKey] ? "var(--cds-chart-grid)" : color)
-    .on("mousemove", (ev, r) => tp.show(ev, r.millesime + (r[crisisKey] ? " (crise)" : ""), (key === "e1" ? "À 1 an (" + r.annee_t1 + ") : " : "À 3 ans (" + r.annee_t3 + ") : ") + (r[key] > 0 ? "+" : "") + fPt1(r[key])))
-    .on("mouseleave", () => tp.hide());
-  bar("e1", "var(--cds-chart-muted)", "crise_t1");
-  bar("e3", dash.colors[0], "crise_t3");
-}
+    <div class="accs">
+      <details class="acc"><summary>Pour aller plus loin : le détail des mesures et leurs sources</summary><div class="acc-body">
+        <p class="prose small muted">Montants en milliards d'euros par an. « Fiabilité » indique si la source a été lue directement (élevée), via une source secondaire (moyenne) ou si elle est fragile (faible). Les mesures exclues de la statistique principale (boucliers et chèque fioul, liés aux prix de l'énergie) sont signalées.</p>
+        <div class="tbl-wrap tall" id="tb-mesures"></div>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : l'erreur par cause</summary><div class="acc-body">
+        <div class="tbl-wrap" id="tb-causes"></div>
+      </div></details>
+    </div>
+  </section>
 
-function drawPairs() {
-  const box = document.getElementById("ch-pairs");
-  const d = dash.data("pairs");
-  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
-  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
-  const rows = d.data.map(r => ({pays: r.pays, v: Number(r.erreur_3ans), v1: Number(r.erreur_1an)})).sort((a, b) => b.v - a.v);
-  const W = Math.max(280, box.clientWidth), rowH = 26, H = rows.length * rowH + 24;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Optimisme des prévisions par pays");
-  const tmp = svg.append("text").style("font-size", "var(--cds-font-size-caption)");
-  const labW = d3.max(rows, r => { tmp.text(r.pays); return tmp.node().getComputedTextLength(); }) + 10;
-  tmp.text("+7,6"); const valW = tmp.node().getComputedTextLength() + 8; tmp.remove();
-  const x = d3.scaleLinear([Math.min(0, d3.min(rows, r => r.v)), d3.max(rows, r => r.v)], [labW, W - valW]);
-  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", 0).attr("y2", H - 20).attr("stroke", "var(--cds-chart-axis)");
-  const tp = tip(box);
-  const g = svg.append("g").selectAll("g").data(rows).join("g").attr("transform", (r, i) => `translate(0,${i * rowH})`);
-  g.append("text").attr("x", labW - 8).attr("y", 16).attr("text-anchor", "end").attr("fill", r => r.pays === "France" ? "var(--color-fg)" : "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", r => r.pays === "France" ? 600 : 400).text(r => r.pays);
-  g.append("rect").attr("x", r => Math.min(x(0), x(r.v))).attr("width", r => Math.max(2, Math.abs(x(r.v) - x(0)))).attr("y", 5).attr("height", 15).attr("rx", 4)
-    .attr("fill", r => r.pays === "France" ? dash.colors[0] : "var(--cds-chart-muted)")
-    .on("mousemove", (ev, r) => tp.show(ev, r.pays, "3 ans : " + (r.v > 0 ? "+" : "") + fPt1(r.v) + " · 1 an : " + (r.v1 > 0 ? "+" : "") + fPt1(r.v1))).on("mouseleave", () => tp.hide());
-  g.append("text").attr("x", r => x(Math.max(0, r.v)) + 4).attr("y", 17).attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(r => (r.v > 0 ? "+" : "") + FR.format(".1f")(r.v));
-}
+  <!-- ==================================================================== PROGRAMMES -->
+  <section class="view" id="v-programmes" data-titre="Les programmes 2024" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Les programmes 2024</li></ol></nav>
+    <h1>Combien coûtaient vraiment les programmes de 2024 ?</h1>
+    <p class="lede">Pour les élections législatives de 2024, on reprend les programmes du Nouveau Front populaire (NFP) et d'Ensemble. On part d'un chiffrage indépendant, puis on le corrige avec les leçons du passé.</p>
 
-dash.calc("elast_comptes", {
-  inputs: ["elasticites"],
-  title: "Estimations par domaine et méthode",
-  description: "Nombre d'estimations de la table d'élasticités, par domaine et par méthode.",
-  fn: (elasticites) => {
-    const m = new Map();
-    elasticites.forEach(r => { const k = r.domaine + "|" + r.methode; m.set(k, (m.get(k) || 0) + 1); });
-    return [...m].map(([k, n]) => ({domaine: k.split("|")[0], methode: k.split("|")[1], n: n}));
-  }
-});
+    <div class="callout">
+      <h2>En bref</h2>
+      <ul id="bref-programmes"></ul>
+    </div>
 
-const METHODES = ["Expérimentation aléatoire", "Quasi-expérience", "Méta-analyse ou revue", "Modèle", "Descriptif"];
+    <h2>1. Trois chiffrages pour chaque programme</h2>
+    <ul class="prose">
+      <li><strong>Annoncé par le parti</strong> : ce que le parti dit de son propre programme.</li>
+      <li><strong>Chiffrage indépendant</strong> : celui de l'Institut Montaigne, seul organisme à avoir chiffré les deux programmes mesure par mesure (orientation libérale).</li>
+      <li><strong>Après correction</strong> : ce même chiffrage, corrigé avec les erreurs constatées dans le passé (voir <a href="#/methode">la méthode</a>).</li>
+    </ul>
+    <div class="cards" id="cards-programmes"></div>
+    <div class="chart-block">
+      <h3>Effet sur les comptes publics en 2027</h3>
+      <p class="how">En milliards d'euros par an. Une barre vers la gauche signifie que le programme <strong>augmente le déficit</strong>.</p>
+      <ul class="legend" id="lg-app"></ul>
+      <div class="chart" id="ch-app"></div>
+    </div>
 
-function drawMethodes() {
-  const box = document.getElementById("ch-methodes");
-  const lg = document.getElementById("lg-methodes");
-  const d = dash.data("elast_comptes");
-  lg.textContent = "";
-  METHODES.forEach((mt, i) => { const s = document.createElement("span"); const sw = document.createElement("i"); sw.style.background = dash.colors[i]; s.appendChild(sw); s.appendChild(document.createTextNode(mt)); lg.appendChild(s); });
-  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
-  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
-  const doms = [...new Set(d.data.map(r => r.domaine))];
-  const tot = new Map(doms.map(dm => [dm, d3.sum(d.data.filter(r => r.domaine === dm), r => r.n)]));
-  const W = Math.max(280, box.clientWidth), rowH = 46, H = doms.length * rowH + 4;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Estimations par domaine et méthode");
-  const x = d3.scaleLinear([0, d3.max([...tot.values()])], [0, W - 30]);
-  const tp = tip(box);
-  doms.forEach((dm, i) => {
-    const g = svg.append("g").attr("transform", `translate(0,${i * rowH})`);
-    g.append("text").attr("x", 0).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").text(dm);
-    let x0 = 0;
-    METHODES.forEach((mt, j) => {
-      const r = d.data.find(q => q.domaine === dm && q.methode === mt);
-      if (!r) return;
-      const w = x(r.n);
-      g.append("rect").attr("x", x0).attr("y", 20).attr("width", Math.max(1, w - 1)).attr("height", 16).attr("fill", dash.colors[j])
-        .on("mousemove", ev => tp.show(ev, dm, mt + " : " + r.n)).on("mouseleave", () => tp.hide());
-      x0 += w;
-    });
-    g.append("text").attr("x", x0 + 6).attr("y", 33).attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(tot.get(dm));
-  });
-}
+    <h2>2. Quel déficit en 2027 ?</h2>
+    <p class="prose">Le déficit de 2027 additionne trois éléments : l'objectif officiel du gouvernement de l'époque, le dépassement habituel de cet objectif (voir <a href="#/hier">les promesses d'hier</a>) et le coût du programme.</p>
+    <div class="chart-block">
+      <h3>Déficit public en 2027, en % du PIB</h3>
+      <p class="how">Le trait pointillé montre la prévision actuelle du gouvernement pour 2027, pour comparaison.</p>
+      <ul class="legend" id="lg-def"></ul>
+      <div class="chart" id="ch-def"></div>
+    </div>
 
-let fDom = "", fTxt = "";
-(function initFilters() {
-  const sel = document.getElementById("f-domaine"), inp = document.getElementById("f-texte");
-  sel.addEventListener("change", () => { fDom = sel.value; drawElast(); });
-  inp.addEventListener("input", () => { fTxt = inp.value.trim().toLowerCase(); drawElast(); });
-})();
+    <h2>3. Le résultat dépend surtout de qui fait le calcul</h2>
+    <p class="prose">Plusieurs organismes ont chiffré ces programmes, avec des résultats très différents. Nos corrections changent le résultat de quelques milliards ; le choix du chiffrage de départ le change bien plus.</p>
+    <div class="chart-block">
+      <h3>Effet sur les comptes publics selon l'organisme, après correction</h3>
+      <p class="how">En milliards d'euros par an. Les mesures qu'un organisme n'a pas chiffrées sont complétées avec la médiane des autres.</p>
+      <div class="chart" id="ch-sens"></div>
+    </div>
 
-function drawElast() {
-  const tb = document.querySelector("#tb-elast tbody");
-  const sel = document.getElementById("f-domaine");
-  const d = dash.data("elasticites");
-  tb.textContent = "";
-  if (d.status !== "ok") return;
-  const doms = [...new Set(d.data.map(r => r.domaine))];
-  if (sel.options.length === 1) doms.forEach(dm => { const o = document.createElement("option"); o.value = dm; o.textContent = dm; sel.appendChild(o); });
-  d.data.filter(r => (!fDom || r.domaine === fDom) && (!fTxt || Object.values(r).join(" ").toLowerCase().includes(fTxt))).forEach(r => {
-    const tr = document.createElement("tr"); tr.dataset.key = r.id;
-    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
-    td(r.parametre); td(r.valeur_centrale); td(r.fourchette, "hide-narrow"); td(r.pays_periode, "hide-narrow"); td(r.methode, "hide-narrow"); td(r.usage_2027);
-    const c = document.createElement("td"); c.className = "hide-narrow";
-    if (/^https?:\/\//.test(r.url)) { const a = document.createElement("a"); a.href = r.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = r.source; c.appendChild(a); } else c.textContent = r.source;
-    tr.appendChild(c);
-    tb.appendChild(tr);
-  });
-}
+    <div class="accs">
+      <details class="acc"><summary>Pour aller plus loin : mesure par mesure</summary><div class="acc-body">
+        <p class="prose small muted">Effet sur le solde public en milliards d'euros par an (négatif = hausse du déficit). La colonne « Après correction » applique la règle indiquée au chiffrage indépendant.</p>
+        <div class="field"><label for="f-prog">Programme</label><select id="f-prog"><option value="">Les deux programmes</option></select></div>
+        <div class="tbl-wrap tall" id="tb-app"></div>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : tous les chiffreurs</summary><div class="acc-body">
+        <p class="prose small muted">« Propre » : les seules lignes chiffrées par l'organisme. « Complété » : les lignes manquantes sont remplies par la médiane des autres chiffreurs indépendants. Asterès travaillait avec les recettes communiquées par le parti.</p>
+        <div class="tbl-wrap" id="tb-sens"></div>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : quelle part des corrections est confirmée par le passé ?</summary><div class="acc-body">
+        <p class="prose small muted">Chaque correction repose sur une règle. Certaines règles ont été vérifiées sur des mesures passées (confirmées), d'autres pas encore (non testées). Montants en milliards d'euros.</p>
+        <div class="tbl-wrap" id="tb-confiance"></div>
+      </div></details>
+    </div>
+  </section>
 
-// Montant corrigé central du moteur (data/moteur_lignes.csv) ; à défaut, facteur forfaitaire de la ligne.
-function corrigeMoteur(moteur, fichier, r, col) {
-  const m = moteur.find(x => x.fichier === fichier && x.id === r.id);
-  if (m) return Number(m.corrige_central);
-  return Number(r[col]) * Number(r.facteur) * Number(r.facteur_reference || 1) * Number(r.facteur_interaction || 1);
-}
+  <!-- ==================================================================== EQUILIBRE -->
+  <section class="view" id="v-equilibre" data-titre="Financer les promesses" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Financer les promesses</li></ol></nav>
+    <h1>Peut-on financer les mesures phares ?</h1>
+    <p class="lede">Exercice : on garde les mesures les plus emblématiques de chaque camp, et on cherche à les payer avec des recettes ou des économies qui correspondent à ses idées.</p>
 
-dash.calc("app_lignes", {
-  inputs: ["application", "moteur"],
-  title: "Lignes corrigées",
-  description: "Montant corrigé par le moteur (chiffrage indépendant × facteur de la règle × part hors référence × interaction), en Md€/an d'impact sur le solde.",
-  fn: (application, moteur) => application.map(r => ({
-    id: r.id, programme: r.programme, ligne: r.ligne, regle: r.regle,
-    independant: Number(r.independant), corrige: corrigeMoteur(moteur, "application_lignes", r, "independant")
-  }))
-});
+    <div class="callout">
+      <h2>En bref</h2>
+      <ul id="bref-equilibre"></ul>
+    </div>
 
-dash.calc("app_totaux", {
-  inputs: ["app_lignes", "programmes", "parametres"],
-  title: "Solde et déficit 2027 par programme",
-  description: "Somme des lignes ; déficit 2027 = cible du programme de stabilité + biais à 3 ans − impact corrigé / PIB 2027.",
-  fn: (app_lignes, programmes, parametres) => {
-    const p = id => Number(parametres.find(x => x.id === id).valeur);
-    return programmes.map(pg => {
-      const l = app_lignes.filter(r => r.programme === pg.programme);
-      const indep = l.reduce((s, r) => s + r.independant, 0);
-      const corr = l.reduce((s, r) => s + r.corrige, 0);
-      return {programme: pg.programme, annonce: pg.solde_annonce === "" ? null : Number(pg.solde_annonce),
-        montaigne: Number(pg.solde_montaigne), independant: indep, corrige: corr,
-        deficit_pstab: p("deficit_pstab_2027"), biais: p("biais_t3"), cout_pts: -corr / p("pib_2027") * 100,
-        deficit_2027: p("deficit_pstab_2027") + p("biais_t3") - corr / p("pib_2027") * 100};
-    });
-  }
-});
+    <h2>1. Trois scénarios</h2>
+    <ul class="prose">
+      <li><strong>LFI intégral</strong> : les mesures phares telles que promises, financées par des impôts sur le capital, le patrimoine et les grandes entreprises.</li>
+      <li><strong>LFI ajusté</strong> : des mesures phares réduites, et un plan écologique payé par emprunt (hors du calcul d'équilibre, selon la <a class="term" href="#/lexique/regle-or">règle d'or</a>).</li>
+      <li><strong>Ensemble</strong> : les mesures phares financées par des économies, sans hausse d'impôts sur les actifs.</li>
+    </ul>
+    <p class="prose">Le point de départ est la loi en vigueur. Les mesures déjà votées ou déjà inscrites au budget 2027 ne sont pas comptées deux fois.</p>
+    <div class="cards" id="cards-paniers"></div>
 
-let fProg = "";
-document.getElementById("f-prog").addEventListener("change", e => { fProg = e.target.value; drawAppTable(); });
+    <h2>2. Une estimation, avec sa marge d'incertitude</h2>
+    <p class="prose">Aucun chiffrage n'est exact. On a donc refait le calcul des milliers de fois en faisant varier les erreurs possibles. Le trait montre la fourchette dans laquelle le résultat tombe <strong>8 fois sur 10</strong>.</p>
+    <div class="chart-block">
+      <h3>Solde de chaque scénario, avec sa fourchette</h3>
+      <p class="how">En milliards d'euros par an. À droite de zéro, le scénario dégage un excédent ; à gauche, il creuse le déficit.</p>
+      <ul class="legend" id="lg-inc"></ul>
+      <div class="chart" id="ch-inc"></div>
+    </div>
 
-function drawAppTable() {
-  const tb = document.querySelector("#tb-app tbody");
-  const sel = document.getElementById("f-prog");
-  const d = dash.data("app_lignes"), raw = dash.data("application");
-  tb.textContent = "";
-  if (d.status !== "ok" || raw.status !== "ok") return;
-  if (sel.options.length === 1) [...new Set(d.data.map(r => r.programme))].forEach(p => { const o = document.createElement("option"); o.value = p; o.textContent = p; sel.appendChild(o); });
-  const rm = new Map(raw.data.map(r => [r.id, r]));
-  let cur = null;
-  d.data.filter(r => !fProg || r.programme === fProg).forEach(r => {
-    if (r.programme !== cur) { cur = r.programme; const h = document.createElement("tr"); const c = document.createElement("td"); c.colSpan = 7; c.textContent = cur; c.style.fontWeight = "600"; c.style.paddingTop = "var(--cds-pad-sm)"; h.appendChild(c); tb.appendChild(h); }
-    const x = rm.get(r.id);
-    const tr = document.createElement("tr"); tr.dataset.key = r.id;
-    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
-    const sg = v => (v > 0 ? "+" : "") + FR.format(".1f")(v);
-    td(r.ligne);
-    td(x.annonce_parti === "" ? "—" : sg(Number(x.annonce_parti)), "num");
-    td(sg(r.independant), "num");
-    td(sg(r.corrige), "num " + (r.corrige - r.independant > 0.05 ? "pos" : r.corrige - r.independant < -0.05 ? "neg" : ""));
-    td(r.regle); td(x.justification, "hide-narrow"); td(x.autres_estimations, "hide-narrow");
-    tb.appendChild(tr);
-  });
-}
+    <div class="accs">
+      <details class="acc"><summary>Pour aller plus loin : chaque mesure et chaque recette</summary><div class="acc-body">
+        <p class="prose small muted">« Statique » : chiffrage d'origine. « Après correction » : après application de la règle. Milliards d'euros par an.</p>
+        <div class="field"><label for="f-var">Scénario</label><select id="f-var"><option value="">Tous les scénarios</option></select></div>
+        <div class="tbl-wrap tall" id="tb-pan"></div>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : variantes et fourchettes détaillées</summary><div class="acc-body">
+        <p class="prose small muted">« Loi votée seule » retire du point de départ ce que les projets de budget 2027 n'ont pas encore fait voter. La variante « dégel » suppose que la hausse du SMIC rend aux allègements de charges leur indexation. P10, P50 et P90 : 10 %, 50 % et 90 % des tirages sont en dessous de cette valeur.</p>
+        <div class="tbl-wrap" id="tb-inc"></div>
+      </div></details>
+    </div>
+  </section>
 
-function drawApp() {
-  const box = document.getElementById("ch-app"), lg = document.getElementById("lg-app");
-  const d = dash.data("app_totaux");
-  const series = [["annonce", "Annoncé par le parti", "var(--cds-chart-muted)"], ["montaigne", "Institut Montaigne", dash.colors[1]], ["corrige", "Corrigé (cette méthode)", dash.colors[0]]];
-  lg.textContent = "";
-  series.forEach(([, n, c]) => { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s); });
-  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
-  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
-  const W = Math.max(280, box.clientWidth), grpH = 92, H = d.data.length * grpH + 20;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Impact sur le solde par programme");
-  const mn = d3.min(d.data, r => Math.min(r.montaigne, r.corrige, r.annonce ?? 0));
-  const x = d3.scaleLinear([mn * 1.08, 0], [44, W - 8]);
-  const tp = tip(box);
-  x.ticks(4).forEach(v => {
-    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", 0).attr("y2", H - 16).attr("stroke", v === 0 ? "var(--cds-chart-axis)" : "var(--cds-chart-grid)");
-    svg.append("text").attr("x", x(v)).attr("y", H - 3).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
-  });
-  d.data.forEach((r, i) => {
-    const g = svg.append("g").attr("transform", `translate(0,${i * grpH})`);
-    g.append("text").attr("x", 0).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", 600).text(r.programme);
-    series.forEach(([k, n, c], j) => {
-      const v = r[k], y = 20 + j * 22;
-      if (v === null) { g.append("text").attr("x", x(0) - 4).attr("y", y + 12).attr("text-anchor", "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text("non chiffré"); return; }
-      g.append("rect").attr("x", x(Math.min(0, v))).attr("width", Math.max(2, Math.abs(x(v) - x(0)))).attr("y", y).attr("height", 16).attr("rx", 4).attr("fill", c)
-        .on("mousemove", ev => tp.show(ev, r.programme, n + " : " + (v > 0 ? "+" : "") + FR.format(".1f")(v) + " Md€")).on("mouseleave", () => tp.hide());
-      const lx = Math.abs(x(v) - x(0)) > 50 ? x(v) + 4 : x(Math.min(0, v)) - 4;
-      g.append("text").attr("x", lx).attr("y", y + 12).attr("text-anchor", Math.abs(x(v) - x(0)) > 50 ? "start" : "end").attr("fill", Math.abs(x(v) - x(0)) > 50 ? "var(--color-bg)" : "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(FR.format(".0f")(v));
-    });
-  });
-}
+  <!-- ==================================================================== FOYER -->
+  <section class="view" id="v-foyer" data-titre="Mon foyer" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Mon foyer</li></ol></nav>
+    <h1>Qu'est-ce que cela change pour mon foyer ?</h1>
+    <p class="lede">Quelques mesures débattues, appliquées à des foyers types. Choisissez celui qui vous ressemble le plus.</p>
 
-function drawDef() {
-  const box = document.getElementById("ch-def"), lg = document.getElementById("lg-def");
-  const d = dash.data("app_totaux"), pr = dash.data("parametres");
-  const parts = [["deficit_pstab", "Cible du programme de stabilité", "var(--cds-chart-muted)"], ["biais", "Biais historique à 3 ans", dash.colors[2]], ["cout_pts", "Coût corrigé du programme", dash.colors[0]]];
-  lg.textContent = "";
-  parts.forEach(([, n, c]) => { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s); });
-  if (d.status !== "ok" || pr.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if ([d.status, pr.status].some(s => s === "error" || s === "connect")) failBox(box); else box.classList.add("dash-skeleton"); return; }
-  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
-  const ref = Number(pr.data.find(x => x.id === "prevision_2027_actuelle").valeur);
-  const W = Math.max(280, box.clientWidth), rowH = 56, H = d.data.length * rowH + 22;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Déficit 2027 par programme");
-  const x = d3.scaleLinear([0, d3.max(d.data, r => r.deficit_2027) * 1.12], [0, W - 8]);
-  const tp = tip(box);
-  x.ticks(5).forEach(v => {
-    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", 0).attr("y2", H - 18).attr("stroke", "var(--cds-chart-grid)");
-    svg.append("text").attr("x", x(v)).attr("y", H - 4).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v) + " %");
-  });
-  d.data.forEach((r, i) => {
-    const g = svg.append("g").attr("transform", `translate(0,${i * rowH})`);
-    g.append("text").attr("x", 0).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", 600).text(r.programme + " : " + FR.format(".1f")(r.deficit_2027) + " % du PIB");
-    let x0 = 0;
-    parts.forEach(([k, n, c]) => {
-      const w = x(r[k]) - x(0);
-      g.append("rect").attr("x", x0).attr("y", 22).attr("width", Math.max(1, w - 1)).attr("height", 18).attr("fill", c)
-        .on("mousemove", ev => tp.show(ev, r.programme, n + " : " + FR.format(".1f")(r[k]) + " pt")).on("mouseleave", () => tp.hide());
-      x0 += w;
-    });
-  });
-  svg.append("line").attr("x1", x(ref)).attr("x2", x(ref)).attr("y1", 18).attr("y2", H - 18).attr("stroke", "var(--cds-chart-reference)").attr("stroke-dasharray", "4 3");
-}
+    <fieldset class="choices" id="choix-menage"><legend>Votre situation</legend></fieldset>
+    <div aria-live="polite">
+      <p class="big" id="foyer-intro"></p>
+      <div class="foyer-result" id="foyer-result"></div>
+    </div>
 
-dash.calc("panier_lignes", {
-  inputs: ["paniers", "moteur"],
-  title: "Lignes des paniers corrigées",
-  description: "Montant corrigé par le moteur (impact statique × facteur de la règle × part hors référence 2027 × interaction), Md€/an.",
-  fn: (paniers, moteur) => paniers.map(r => ({id: r.id, variante: r.variante, role: r.role, ligne: r.ligne, corrige: corrigeMoteur(moteur, "paniers", r, "statique")}))
-});
+    <div class="callout warn">
+      <h2>Limites de ce calcul</h2>
+      <p>Ces foyers sont des exemples simplifiés, calculés avec le logiciel public <a class="term" href="#/lexique/openfisca">OpenFisca</a> sur les règles de 2026. Votre situation réelle peut être différente. L'effet sur l'ensemble de la population, par niveau de revenu, n'est pas encore calculé.</p>
+    </div>
 
-dash.calc("panier_totaux", {
-  inputs: ["panier_lignes"],
-  title: "Équilibre par variante",
-  description: "Somme des mesures phares, du financement et de l'investissement hors équilibre ; solde = mesures + financement.",
-  fn: (panier_lignes) => [...new Set(panier_lignes.map(r => r.variante))].map(v => {
-    const l = panier_lignes.filter(r => r.variante === v);
-    const sum = role => l.filter(r => r.role.startsWith(role)).reduce((s, r) => s + r.corrige, 0);
-    const m = sum("Mesure"), f = sum("Financement"), inv = sum("Investissement");
-    return {variante: v, mesures: m, financement: f, investissement: inv, solde: m + f};
-  })
-});
+    <div class="accs">
+      <details class="acc"><summary>Pour aller plus loin : tous les foyers et toutes les mesures</summary><div class="acc-body">
+        <p class="prose small muted">Gain ou perte annuels de revenu disponible, en euros (entre parenthèses : en % du revenu disponible).</p>
+        <div class="tbl-wrap" id="tb-dist"></div>
+      </div></details>
+    </div>
+  </section>
 
-let fVar = "";
-document.getElementById("f-var").addEventListener("change", e => { fVar = e.target.value; drawPanTable(); });
+  <!-- ==================================================================== DEMAIN -->
+  <section class="view" id="v-demain" data-titre="Dette et déficit" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Dette et déficit</li></ol></nav>
+    <h1>Où vont la dette et le déficit d'ici 2032 ?</h1>
+    <p class="lede">On prolonge la trajectoire officielle du gouvernement, puis on la corrige de son optimisme habituel, et enfin on ajoute chacun des scénarios de financement.</p>
 
-function drawPanTable() {
-  const tb = document.querySelector("#tb-pan tbody"), sel = document.getElementById("f-var");
-  const d = dash.data("panier_lignes"), raw = dash.data("paniers");
-  tb.textContent = "";
-  if (d.status !== "ok" || raw.status !== "ok") return;
-  if (sel.options.length === 1) [...new Set(d.data.map(r => r.variante))].forEach(v => { const o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); });
-  const rm = new Map(raw.data.map(r => [r.id, r]));
-  const sg = v => (v > 0 ? "+" : "") + FR.format(".1f")(v);
-  let cur = null;
-  d.data.filter(r => !fVar || r.variante === fVar).forEach(r => {
-    if (r.variante !== cur) { cur = r.variante; const h = document.createElement("tr"); const c = document.createElement("td"); c.colSpan = 8; c.textContent = cur; c.style.fontWeight = "600"; c.style.paddingTop = "var(--cds-pad-sm)"; h.appendChild(c); tb.appendChild(h); }
-    const x = rm.get(r.id);
-    const tr = document.createElement("tr"); tr.dataset.key = r.id;
-    const td = (txt, cls) => { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
-    td(r.ligne); td(r.role);
-    td(sg(Number(x.statique)), "num"); td(sg(r.corrige), "num " + (r.corrige > 0 ? "pos" : "neg"));
-    td(x.regle, "hide-narrow"); td(x.incertitude, "hide-narrow"); td(x.qui_paie, "hide-narrow");
-    const c = td("", "hide-narrow");
-    if (/^https?:\/\//.test(x.url)) { const a = document.createElement("a"); a.href = x.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = x.source; c.appendChild(a); } else c.textContent = x.source;
-    tb.appendChild(tr);
-  });
-}
+    <div class="callout">
+      <h2>En bref</h2>
+      <ul id="bref-demain"></ul>
+    </div>
 
-function drawPan() {
-  const box = document.getElementById("ch-pan"), lg = document.getElementById("lg-pan");
-  const d = dash.data("panier_totaux");
-  const series = [["mesures", "Mesures phares", "var(--cds-chart-status-critical)"], ["financement", "Financement trouvé", "var(--color-ok)"], ["investissement", "Investissement hors équilibre", "var(--cds-chart-muted)"], ["solde", "Solde", dash.colors[0]]];
-  lg.textContent = "";
-  series.forEach(([, n, c]) => { const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s); });
-  if (d.status !== "ok") { box.querySelectorAll("svg").forEach(s => s.remove()); if (d.status === "error" || d.status === "connect") failBox(box); else box.classList.add("dash-skeleton"); return; }
-  box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove());
-  const W = Math.max(280, box.clientWidth), grpH = 112, H = d.data.length * grpH + 20;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Équilibre des paniers");
-  const lo = d3.min(d.data, r => Math.min(r.mesures, r.solde, r.investissement)), hi = d3.max(d.data, r => r.financement);
-  const x = d3.scaleLinear([lo * 1.05, hi * 1.25], [52, W - 8]);
-  const tp = tip(box);
-  x.ticks(5).forEach(v => {
-    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", 0).attr("y2", H - 16).attr("stroke", v === 0 ? "var(--cds-chart-axis)" : "var(--cds-chart-grid)");
-    svg.append("text").attr("x", x(v)).attr("y", H - 3).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
-  });
-  d.data.forEach((r, i) => {
-    const g = svg.append("g").attr("transform", `translate(0,${i * grpH})`);
-    g.append("text").attr("x", 8).attr("y", 13).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-weight", 600).text(r.variante + " — solde " + (r.solde > 0 ? "+" : "") + FR.format(".1f")(r.solde) + " Md€");
-    series.forEach(([k, n, c], j) => {
-      const v = r[k], y = 20 + j * 21;
-      g.append("rect").attr("x", x(Math.min(0, v))).attr("width", Math.max(2, Math.abs(x(v) - x(0)))).attr("y", y).attr("height", 15).attr("rx", 4).attr("fill", c)
-        .on("mousemove", ev => tp.show(ev, r.variante, n + " : " + (v > 0 ? "+" : "") + FR.format(".1f")(v) + " Md€")).on("mouseleave", () => tp.hide());
-      g.append("text").attr("x", v >= 0 ? x(v) + 4 : x(v) - 4).attr("y", y + 12).attr("text-anchor", v >= 0 ? "start" : "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(FR.format(".1f")(v));
-    });
-  });
-}
+    <div class="chart-block">
+      <h3 id="titre-proj">Dette publique, en % du PIB</h3>
+      <div class="filters">
+        <fieldset class="choices"><legend>Afficher</legend>
+          <label class="choice"><input type="radio" name="ind" value="dette_pct" checked><span>La dette</span></label>
+          <label class="choice"><input type="radio" name="ind" value="deficit_pct"><span>Le déficit</span></label>
+        </fieldset>
+        <fieldset class="choices"><legend>Taux d'intérêt</legend>
+          <label class="check"><input type="checkbox" id="f-stress"> Simuler une hausse durable des taux (+0,25 point)</label>
+        </fieldset>
+      </div>
+      <p class="how">Trait plein : années calculées à partir des budgets publiés. Pointillés : au-delà de 2029, simple prolongation des tendances.</p>
+      <ul class="legend" id="lg-proj"></ul>
+      <div class="chart" id="ch-proj"></div>
+      <p class="small muted" id="nt-proj"></p>
+      <details class="data-toggle"><summary>Voir ces données sous forme de tableau</summary><div class="tbl-wrap" id="tb-proj"></div></details>
+    </div>
 
-const sg1 = v => isNaN(v) ? "—" : (v > 0 ? "+" : "") + FR.format(".1f")(v);
-function cell(tr, txt, cls) { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; }
-function legendItems(lg, items) {
-  lg.textContent = "";
-  items.forEach(([n, c, forme]) => {
-    const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c;
-    if (forme === "rond") i.style.borderRadius = "50%";
-    if (forme === "losange") i.style.transform = "rotate(45deg) scale(.8)";
-    s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s);
-  });
-}
-function chartState(box, d) {
-  if (d.status === "ok") { box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove()); return true; }
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  if (d.status === "error") failBox(box); else box.classList.add("dash-skeleton");
-  return false;
-}
+    <div class="accs">
+      <details class="acc"><summary>Pour aller plus loin : hypothèses de la projection</summary><div class="acc-body prose">
+        <p>Point de départ : le déficit réalisé en 2025 (Insee), puis le projet de loi de finances 2027 pour 2026-2027 et la trajectoire communiquée au Haut Conseil des finances publiques jusqu'en 2029. Au-delà, le solde de 2029 et la croissance de 2030 sont reconduits.</p>
+        <p>La « référence corrigée » ajoute le dépassement moyen constaté des programmes de stabilité. Chaque scénario part de cette référence et y ajoute son solde corrigé, les intérêts supplémentaires sur la dette et, pour « LFI ajusté », l'investissement financé par emprunt.</p>
+      </div></details>
+    </div>
+  </section>
 
-dash.calc("soldes", {
-  inputs: ["moteur_totaux", "moteur_variantes"],
-  title: "Solde corrigé par panier",
-  description: "Lignes « solde » du moteur (central, loi votée seule, P10-P90) et variante « dégel » quand elle existe.",
-  fn: (totaux, variantes) => totaux.filter(r => r.composante === "solde").map(r => {
-    const v = variantes.find(x => x.groupe === r.groupe && x.variante === "degel");
-    return {groupe: r.groupe, fichier: r.fichier, central: Number(r.central), loi: Number(r.loi_votee_seule),
-      p10: Number(r.p10), p50: Number(r.p50), p90: Number(r.p90), degel: v ? Number(v.solde_central) : null};
-  })
-});
+  <!-- ==================================================================== METHODE -->
+  <section class="view" id="v-methode" data-titre="Méthode" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Méthode</li></ol></nav>
+    <h1>Comment c'est calculé ?</h1>
+    <p class="lede">Le principe : apprendre des erreurs passées pour mieux lire les promesses présentes.</p>
 
-function drawInc() {
-  const box = document.getElementById("ch-inc"), d = dash.data("soldes");
-  const cC = dash.colors[0], cL = dash.colors[1], cD = dash.colors[2];
-  legendItems(document.getElementById("lg-inc"), [["Central", cC, "rond"], ["Loi votée seule", cL, "losange"], ["Variante « dégel »", cD], ["Intervalle 10 %-90 %", "var(--cds-chart-muted)"]]);
-  if (!chartState(box, d)) return;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const rows = d.data, W = Math.max(280, box.clientWidth), rowH = 40, top = 6, H = rows.length * rowH + top + 22, L = Math.min(150, W * 0.36);
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Solde par panier avec intervalle");
-  const vals = rows.flatMap(r => [r.p10, r.p90, r.loi, r.central, r.degel ?? r.central]);
-  const x = d3.scaleLinear([Math.min(0, d3.min(vals)), Math.max(0, d3.max(vals))], [L, W - 12]).nice();
-  const tp = tip(box);
-  x.ticks(6).forEach(v => {
-    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", top).attr("y2", H - 18).attr("stroke", v === 0 ? "var(--cds-chart-axis, var(--cds-chart-muted))" : "var(--cds-chart-grid)");
-    svg.append("text").attr("x", x(v)).attr("y", H - 4).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
-  });
-  rows.forEach((r, i) => {
-    const y = top + i * rowH + rowH / 2;
-    const g = svg.append("g");
-    g.append("text").attr("x", 0).attr("y", y + 4).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").text(r.groupe);
-    g.append("line").attr("x1", x(r.p10)).attr("x2", x(r.p90)).attr("y1", y).attr("y2", y).attr("stroke", "var(--cds-chart-muted)").attr("stroke-width", 2).attr("stroke-linecap", "round");
-    if (r.degel !== null && r.degel !== r.central) g.append("rect").attr("x", x(r.degel) - 5).attr("y", y - 5).attr("width", 10).attr("height", 10).attr("rx", 2).attr("fill", cD).attr("stroke", "var(--color-panel)").attr("stroke-width", 2);
-    if (r.loi !== r.central) g.append("rect").attr("x", x(r.loi) - 5).attr("y", y - 5).attr("width", 10).attr("height", 10).attr("fill", cL).attr("stroke", "var(--color-panel)").attr("stroke-width", 2).attr("transform", `rotate(45 ${x(r.loi)} ${y})`);
-    g.append("circle").attr("cx", x(r.central)).attr("cy", y).attr("r", 6).attr("fill", cC).attr("stroke", "var(--color-panel)").attr("stroke-width", 2);
-    g.append("text").attr("x", x(r.central)).attr("y", y - 10).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(sg1(r.central));
-    g.append("rect").attr("x", L).attr("y", y - rowH / 2).attr("width", W - L).attr("height", rowH).attr("fill", "transparent")
-      .on("mousemove", ev => tp.show(ev, r.groupe, `central ${sg1(r.central)} ; loi votée seule ${sg1(r.loi)} ; P10-P90 [${sg1(r.p10)} ; ${sg1(r.p90)}]` + (r.degel !== null ? ` ; dégel ${sg1(r.degel)}` : "") + " Md€"))
-      .on("mouseleave", () => tp.hide());
-  });
-}
+    <h2>La méthode en quatre étapes</h2>
+    <ol class="steps">
+      <li><div><h3>Rassembler les chiffrages passés</h3><p>Pour des mesures votées depuis 2007, on relève le coût annoncé avant le vote, avec sa source.</p></div></li>
+      <li><div><h3>Les comparer à la réalité</h3><p>On relève ce que la mesure a réellement coûté, d'après les évaluations publiques (Cour des comptes, France Stratégie, Sénat, Insee…).</p></div></li>
+      <li><div><h3>En tirer des règles</h3><p>Les écarts répétés deviennent des règles de correction : par exemple, « diviser par trois les emplois promis ».</p></div></li>
+      <li><div><h3>Les appliquer à tous, de la même façon</h3><p>Chaque règle s'applique à toute mesure du même type, quel que soit le parti. Un contrôle automatique le vérifie.</p></div></li>
+    </ol>
 
-function drawIncTable() {
-  const tb = document.querySelector("#tb-inc tbody"), d = dash.data("moteur_totaux");
-  tb.textContent = "";
-  if (d.status !== "ok") return;
-  d.data.forEach(r => {
-    const tr = document.createElement("tr");
-    if (r.composante === "solde") tr.style.fontWeight = "600";
-    cell(tr, r.groupe); cell(tr, r.composante);
-    ["central", "loi_votee_seule", "p10", "p50", "p90"].forEach(k => cell(tr, sg1(Number(r[k])), "num"));
-    tb.appendChild(tr);
-  });
-}
+    <h2>Les règles de correction</h2>
+    <div class="tbl-wrap" id="tb-regles"></div>
 
-function drawSens() {
-  const tb = document.querySelector("#tb-sens tbody"), d = dash.data("sensibilite");
-  tb.textContent = "";
-  if (d.status !== "ok") return;
-  d.data.forEach(r => {
-    const tr = document.createElement("tr");
-    cell(tr, r.programme); cell(tr, r.chiffreur); cell(tr, r.statut, "hide-narrow");
-    cell(tr, `${r.lignes_chiffrees} / ${r.lignes_programme}`, "num");
-    ["solde_publie", "propre_statique", "propre_corrige", "complete_statique", "complete_corrige"].forEach(k => cell(tr, sg1(num(r[k])), "num"));
-    tb.appendChild(tr);
-  });
-}
+    <h2>La méthode améliore-t-elle les chiffrages ?</h2>
+    <p class="prose">Pour le savoir, on l'a testée sur les mesures passées, sans lui laisser connaître le résultat de la mesure testée.</p>
+    <div class="callout" id="bref-validation"></div>
 
-const PROJ_SERIES = ["Référence du gouvernement", "Référence corrigée du biais", "Panier LFI intégral", "Panier LFI ajusté", "Panier Ensemble"];
-let fInd = "dette_pct", fStress = "";
-document.getElementById("f-ind").addEventListener("change", e => { fInd = e.target.value; drawProj(); });
-document.getElementById("f-stress").addEventListener("change", e => { fStress = e.target.value; drawProj(); });
+    <div class="accs">
+      <details class="acc"><summary>Pour aller plus loin : résultats du test, groupe par groupe</summary><div class="acc-body">
+        <p class="prose small muted">Erreur = écart au coût réel, en % du chiffrage initial. Les règles ont été attribuées à l'aveugle par des agents séparés ; les facteurs calibrés sont recalculés sans la mesure testée.</p>
+        <div class="tbl-wrap" id="tb-valr"></div>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : statut de chaque règle</summary><div class="acc-body">
+        <div class="tbl-wrap" id="tb-valg"></div>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : hypothèses de comportement par défaut</summary><div class="acc-body">
+        <p class="prose small muted">Comment les contribuables, les entreprises et l'économie réagissent à une mesure, à utiliser en l'absence d'étude propre à la mesure.</p>
+        <div class="tbl-wrap" id="tb-hyp"></div>
+      </div></details>
+      <details class="acc"><summary>Pour aller plus loin : toutes les études de comportement (<span data-k="el_n"></span>)</summary><div class="acc-body">
+        <div class="filters">
+          <div class="field"><label for="f-domaine">Domaine</label><select id="f-domaine"><option value="">Tous les domaines</option></select></div>
+          <div class="field"><label for="f-texte">Rechercher un mot</label><input id="f-texte" type="search" placeholder="TVA, SMIC, Danemark…"></div>
+        </div>
+        <p class="small muted" id="nb-elast" aria-live="polite"></p>
+        <div class="tbl-wrap tall" id="tb-elast"></div>
+      </div></details>
+    </div>
 
-function drawProj() {
-  const box = document.getElementById("ch-proj"), d = dash.data("projection");
-  const col = i => dash.colors[i % dash.colors.length];
-  legendItems(document.getElementById("lg-proj"), PROJ_SERIES.map((n, i) => [n, col(i)]));
-  if (!chartState(box, d)) return;
-  box.querySelectorAll("svg").forEach(s => s.remove());
-  const nom = n => (fStress && n !== PROJ_SERIES[0]) ? n.replace(" du biais", "") + ", stress +25 pb" : n;
-  const series = PROJ_SERIES.map((n, i) => ({n, c: col(i), pts: d.data.filter(r => r.scenario === nom(n)).map(r => ({a: Number(r.annee), v: Number(r[fInd]), ext: r.extrapole === "1"}))}));
-  const W = Math.max(280, box.clientWidth), H = 300, m = {l: 40, r: 22, t: 10, b: 24};
-  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Trajectoires de déficit et de dette");
-  const annees = [...new Set(series.flatMap(s => s.pts.map(p => p.a)))].sort();
-  const x = d3.scalePoint(annees, [m.l, W - m.r]);
-  const all = series.flatMap(s => s.pts.map(p => p.v));
-  const y = d3.scaleLinear([d3.min(all), d3.max(all)], [H - m.b, m.t]).nice();
-  y.ticks(5).forEach(v => {
-    svg.append("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(v)).attr("y2", y(v)).attr("stroke", "var(--cds-chart-grid)");
-    svg.append("text").attr("x", m.l - 6).attr("y", y(v) + 4).attr("text-anchor", "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
-  });
-  annees.forEach(a => svg.append("text").attr("x", x(a)).attr("y", H - 6).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(a));
-  const line = d3.line().x(p => x(p.a)).y(p => y(p.v));
-  series.forEach(s => {
-    const lastObs = s.pts.findLastIndex(p => !p.ext);
-    const ext = s.pts.slice(Math.max(0, lastObs));
-    svg.append("path").attr("d", line(s.pts.slice(0, lastObs + 1))).attr("fill", "none").attr("stroke", s.c).attr("stroke-width", 2);
-    if (ext.length > 1) svg.append("path").attr("d", line(ext)).attr("fill", "none").attr("stroke", s.c).attr("stroke-width", 2).attr("stroke-dasharray", "4 3");
-  });
-  const cross = svg.append("line").attr("y1", m.t).attr("y2", H - m.b).attr("stroke", "var(--cds-chart-reference)").style("display", "none");
-  const dots = svg.append("g");
-  const tp = tip(box), unite = fInd === "dette_pct" ? "dette" : "déficit";
-  svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
-    .on("mousemove", ev => {
-      const [px] = d3.pointer(ev);
-      const a = annees.reduce((b, c) => Math.abs(x(c) - px) < Math.abs(x(b) - px) ? c : b);
-      cross.attr("x1", x(a)).attr("x2", x(a)).style("display", null);
-      dots.selectAll("*").remove();
-      const lignes = series.map(s => { const p = s.pts.find(q => q.a === a); if (p) dots.append("circle").attr("cx", x(a)).attr("cy", y(p.v)).attr("r", 4).attr("fill", s.c).attr("stroke", "var(--color-panel)").attr("stroke-width", 2); return p ? `${s.n.replace("Panier ", "")} ${FR.format(".1f")(p.v)}` : null; }).filter(Boolean);
-      tp.show(ev, `${a}, ${unite} (% du PIB)` + (series[0].pts.find(q => q.a === a)?.ext ? " — extrapolé" : ""), lignes.join(" · "));
-    })
-    .on("mouseleave", () => { tp.hide(); cross.style("display", "none"); dots.selectAll("*").remove(); });
-  const c = dash.data("projection_controle"), nt = document.getElementById("nt-proj");
-  if (c.status === "ok") nt.textContent = "Contrôle sur la trajectoire publiée (PLF 2027) : " + c.data.map(r => `${r.indicateur === "dette_pct" ? "dette" : "déficit"} ${r.annee} calculé ${FR.format(".1f")(Number(r.calcule))} % pour ${FR.format(".1f")(Number(r.plf))} % publié`).join(" ; ") + ".";
-}
+    <h2>Les limites</h2>
+    <ul class="prose">
+      <li><strong>Peu d'exemples.</strong> Seules les mesures adoptées peuvent être vérifiées, et elles sont peu nombreuses. Les règles détectent de grosses erreurs, pas des détails.</li>
+      <li><strong>Des coûts réels parfois incertains.</strong> Quand les évaluations divergent, on retient une valeur centrale. Pour les retraites, le coût « réel » est une réestimation, pas une économie constatée.</li>
+      <li><strong>Des études étrangères.</strong> Certaines réactions des contribuables sont mesurées à l'étranger (Danemark, Suisse, États-Unis) et se transposent mal en France.</li>
+      <li><strong>Le chiffreur de départ pèse lourd.</strong> Les chiffrages indépendants du NFP vont d'environ −50 à −179 milliards. Les corrections ne changent le résultat que de quelques milliards.</li>
+      <li><strong>Des déficits révisés.</strong> Les déficits réels utilisés sont les séries actuelles d'Eurostat, révisées depuis leur première publication.</li>
+    </ul>
 
-function drawVal() {
-  const STATUT = {"confirmée": "pos", "contredite": "neg"};
-  const tr1 = document.querySelector("#tb-valr tbody"), r1 = dash.data("validation_resume");
-  tr1.textContent = "";
-  if (r1.status === "ok") r1.data.forEach(r => {
-    const tr = document.createElement("tr"), sub = /^\s/.test(r.groupe);
-    const c = cell(tr, r.groupe.trim()); if (sub) c.style.paddingLeft = "1.4rem"; else tr.style.fontWeight = "600";
-    cell(tr, r.n, "num"); cell(tr, fPct0(Number(r.erreur_mediane_depart_pct)), "num");
-    const a = Number(r.erreur_mediane_depart_pct), b = Number(r.erreur_mediane_nous_pct);
-    cell(tr, fPct0(b), "num " + (b < a ? "pos" : b > a ? "neg" : ""));
-    cell(tr, `${r.ameliores} / ${r.degrades}`, "num hide-narrow");
-    tr1.appendChild(tr);
-  });
-  const tr2 = document.querySelector("#tb-valg tbody"), r2 = dash.data("validation_regles");
-  tr2.textContent = "";
-  if (r2.status === "ok") [...r2.data].sort((a, b) => Number(b.n) - Number(a.n)).forEach(r => {
-    const tr = document.createElement("tr");
-    cell(tr, r.regle);
-    const c = cell(tr, ""); const p = document.createElement("span"); p.className = "pill " + (STATUT[r.statut] || ""); p.textContent = (r.statut === "confirmée" ? "✓ " : r.statut === "contredite" ? "✗ " : "") + r.statut; c.appendChild(p);
-    cell(tr, r.n, "num"); cell(tr, r.note, "hide-narrow");
-    tr2.appendChild(tr);
-  });
-}
+    <h2>Données et sources</h2>
+    <p class="prose">Tous les chiffres viennent de fichiers ouverts, chacun avec la source de chaque valeur. Vous pouvez les télécharger et les ouvrir dans un tableur.</p>
+    <div class="tbl-wrap" id="tb-fichiers"></div>
+    <p class="prose">Les spécialistes peuvent aussi consulter <a href="complet.html">le tableau de bord complet</a>, qui présente toutes les sections sur une seule page.</p>
+  </section>
 
-function drawDist() {
-  const tbl = document.getElementById("tb-dist"), d = dash.data("distributif");
-  tbl.tHead.textContent = ""; tbl.tBodies[0].textContent = "";
-  if (d.status !== "ok") return;
-  const reformes = [...new Map(d.data.map(r => [r.reforme, r.libelle])).entries()];
-  const menages = [...new Set(d.data.map(r => r.menage))];
-  const h = document.createElement("tr");
-  const th = (t, cls) => { const c = document.createElement("th"); if (cls) c.className = cls; c.textContent = t; h.appendChild(c); };
-  th("Ménage"); th("Revenu disponible", "num"); reformes.forEach(([, l]) => th(l, "num"));
-  tbl.tHead.appendChild(h);
-  menages.forEach(mn => {
-    const tr = document.createElement("tr"), rs = d.data.filter(r => r.menage === mn);
-    cell(tr, mn); cell(tr, FR.format(",.0f")(Number(rs[0].revenu_disponible_avant)) + " €", "num");
-    reformes.forEach(([id]) => {
-      const r = rs.find(x => x.reforme === id), g = r ? Number(r.gain_annuel) : NaN;
-      cell(tr, isNaN(g) ? "—" : (g > 0 ? "+" : "") + FR.format(",.0f")(g) + " €" + (g ? ` (${(g > 0 ? "+" : "") + FR.format(".1f")(Number(r.gain_pct))} %)` : ""), "num " + (g > 0 ? "pos" : g < 0 ? "neg" : ""));
-    });
-    tbl.tBodies[0].appendChild(tr);
-  });
-}
+  <!-- ==================================================================== LEXIQUE -->
+  <section class="view" id="v-lexique" data-titre="Lexique" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Lexique</li></ol></nav>
+    <h1>Lexique</h1>
+    <p class="lede">Les mots employés sur ce site, expliqués simplement.</p>
+    <dl class="glossary">
+      <dt id="g-chiffrage">Chiffrage</dt>
+      <dd>Estimation de ce qu'une mesure va coûter ou rapporter aux finances publiques, en général en milliards d'euros par an.</dd>
+      <dt id="g-md">Milliard d'euros (Md€)</dt>
+      <dd>Mille millions d'euros. Les budgets publics se comptent en milliards.</dd>
+      <dt id="g-pib">PIB (produit intérieur brut)</dt>
+      <dd>La richesse produite en France en un an, environ <span data-k="pib"></span> en 2027. On exprime souvent le déficit et la dette en « % du PIB » pour comparer les années et les pays : 1 point de PIB représente environ <span data-k="pt_pib"></span>.</dd>
+      <dt id="g-deficit">Déficit public</dt>
+      <dd>Ce qui manque, sur une année, pour que les recettes publiques (impôts, cotisations) couvrent les dépenses publiques. Il est comblé par l'emprunt.</dd>
+      <dt id="g-solde">Solde public</dt>
+      <dd>Recettes moins dépenses. Un solde négatif est un déficit. Sur ce site, un chiffre négatif signifie qu'une mesure augmente le déficit, un chiffre positif qu'elle le réduit.</dd>
+      <dt id="g-dette">Dette publique</dt>
+      <dd>Le total de ce que les administrations publiques ont emprunté et pas encore remboursé. Chaque année de déficit l'augmente.</dd>
+      <dt id="g-pstab">Programme de stabilité</dt>
+      <dd>Document que le gouvernement envoie chaque année à la Commission européenne, avec ses prévisions de déficit et de dette pour les années suivantes.</dd>
+      <dt id="g-plf">PLF et PLFSS</dt>
+      <dd>Projet de loi de finances (budget de l'État) et projet de loi de financement de la Sécurité sociale. Ils sont présentés à l'automne et votés par le Parlement avant la fin de l'année.</dd>
+      <dt id="g-reference">Référence (ou point de départ)</dt>
+      <dd>La situation sans le programme étudié : la loi déjà votée, plus les budgets 2027 tels que proposés. Une mesure déjà dans la référence n'est pas comptée une seconde fois.</dd>
+      <dt id="g-correction">Correction</dt>
+      <dd>Ajustement d'un chiffrage d'après les erreurs constatées dans le passé sur des mesures du même type.</dd>
+      <dt id="g-elasticite">Élasticité (réaction des comportements)</dt>
+      <dd>Mesure de la façon dont les gens changent leurs choix quand une règle change. Par exemple, quand un impôt sur les dividendes augmente, les entreprises en versent moins, et l'impôt rapporte moins que prévu.</dd>
+      <dt id="g-recours">Taux de recours</dt>
+      <dd>Part des personnes qui demandent réellement une aide à laquelle elles ont droit. Il est souvent loin de 100 % : une aide coûte alors moins que si tout le monde la demandait.</dd>
+      <dt id="g-aubaine">Effet d'aubaine</dt>
+      <dd>Quand une aide profite à des personnes ou des entreprises qui auraient agi de la même façon sans elle.</dd>
+      <dt id="g-fourchette">Fourchette (P10 – P90)</dt>
+      <dd>On refait le calcul des milliers de fois en tirant au sort les erreurs possibles. La fourchette contient 8 résultats sur 10 : 1 sur 10 est en dessous (P10), 1 sur 10 au-dessus (P90).</dd>
+      <dt id="g-regle-or">Règle d'or</dt>
+      <dd>Principe selon lequel l'emprunt est réservé aux investissements (comme la transition écologique), et non aux dépenses courantes.</dd>
+      <dt id="g-pb">Point de base (pb)</dt>
+      <dd>Un centième de point de pourcentage. Une hausse de 25 points de base fait passer un taux d'intérêt de 3,00 % à 3,25 %.</dd>
+      <dt id="g-chiffreur">Chiffreur</dt>
+      <dd>Organisme qui estime le coût d'un programme : Institut Montaigne, Fondation iFRAP, OFCE, Asterès, La Grande Conversation… Chacun a ses méthodes et son orientation.</dd>
+      <dt id="g-menage">Ménage type</dt>
+      <dd>Foyer imaginaire, mais représentatif (par exemple « salarié au SMIC, célibataire »), utilisé pour illustrer l'effet d'une mesure.</dd>
+      <dt id="g-openfisca">OpenFisca</dt>
+      <dd>Logiciel libre qui reproduit les règles des impôts et des prestations sociales, utilisé notamment par des administrations françaises. Il permet de calculer le revenu d'un foyer avant et après une réforme.</dd>
+      <dt id="g-pfu">Flat tax (PFU)</dt>
+      <dd>Prélèvement forfaitaire unique sur les revenus du capital (dividendes, intérêts), créé en 2018 : un taux fixe remplace le barème de l'impôt sur le revenu.</dd>
+      <dt id="g-ifi">ISF et IFI</dt>
+      <dd>L'impôt de solidarité sur la fortune (ISF) a été remplacé en 2018 par l'impôt sur la fortune immobilière (IFI), qui ne porte plus que sur l'immobilier.</dd>
+    </dl>
+  </section>
 
-dash.onData(() => {
-  drawInc();
-  drawIncTable();
-  drawSens();
-  drawProj();
-  drawVal();
-  drawDist();
-  drawPan();
-  drawPanTable();
-  drawApp();
-  drawDef();
-  drawAppTable();
-  drawMethodes();
-  drawSimpleTable("tb-hyp", "hypotheses", ["levier", "hypothese", "effet_chiffrage"]);
-  drawElast();
-  fillMarks();
-  drawEcarts();
-  drawCoutTable();
-  drawSimpleTable("tb-effets", "effets", ["mesure", "effet", "annonce", "mesure_ex_post", "verdict"], "source_ex_post");
-  drawPS();
-  drawPairs();
-  drawSimpleTable("tb-regles", "regles", ["categorie", "correction_2027", "base_empirique"]);
-});
-</script>
+  <!-- ==================================================================== 404 -->
+  <section class="view" id="v-introuvable" data-titre="Page introuvable" hidden>
+    <h1 style="margin-top:2rem">Page introuvable</h1>
+    <p>Cette page n'existe pas. <a href="#/accueil">Revenir à l'accueil</a>.</p>
+  </section>
+</div>
+</main>
 
+<footer class="footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h2>Chiffrages à l'épreuve</h2>
+        <p class="small">Projet d'étude indépendant, sans lien avec l'État, une administration ou un parti politique.</p>
+      </div>
+      <div>
+        <h2>Explorer</h2>
+        <ul>
+          <li><a href="#/hier">Les promesses d'hier</a></li>
+          <li><a href="#/programmes">Les programmes 2024</a></li>
+          <li><a href="#/foyer">Mon foyer</a></li>
+          <li><a href="#/demain">Dette et déficit</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Comprendre</h2>
+        <ul>
+          <li><a href="#/methode">Méthode et limites</a></li>
+          <li><a href="#/lexique">Lexique</a></li>
+          <li><a href="complet.html">Tableau de bord complet (spécialistes)</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal small">Données mises à jour le 14 octobre 2026. Sources publiques citées pour chaque valeur dans les fichiers de données. Ce site n'utilise aucun cookie ; vos préférences d'affichage restent dans votre navigateur.</p>
+  </div>
+</footer>
 </body>
 </html>

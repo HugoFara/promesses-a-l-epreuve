@@ -28,7 +28,7 @@ backtest-chiffrages/
 │   ├── validation.py           indicateur de confiance : notre méthode vs chiffrages de départ, sur le passé
 │   ├── projection.py           T5 : trajectoires 2026-2032 (déficit, dette, intérêts, stress +25 pb)
 │   ├── distributif.py / .sh    T7 : ménages types sous OpenFisca-France
-│   ├── build_web.py            génère web/index.html (tableau de bord autonome)
+│   ├── build_web.py            génère web/complet.html (tableau de bord complet, autonome)
 │   ├── check_regression.py     17 valeurs de référence
 │   ├── garde_fous.py           T8 : symétrie, traçabilité, double compte
 │   └── appliquer_corrections.py  applique un fichier de corrections (format T2) avec historique
@@ -37,15 +37,16 @@ backtest-chiffrages/
 ├── sources/<tâche>/            ≈270 documents archivés (≈350 Mo), NON versionnés (.gitignore) ; URL, date et sha256 dans
 │                               recherche/*/sources.csv ; contrôle : python3 scripts/verifier_sources.py
 └── web/
+    ├── index.html, site.css, site.js   site public en vues séparées (écrit à la main, lit les CSV de data/)
     ├── dashboard_page.html     page du tableau de bord pour l'artifact claude.ai
-    └── index.html              version autonome (générée)
+    └── complet.html            tableau de bord complet, version autonome (générée)
 ```
 
 Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 erreur(s) ». Le mode strict (statut de référence obligatoire) est activé par défaut ; `STRICT_REFERENCE=0` le désactive.
 
 **Historique (règle 5).** Toute modification d'une valeur existante est inscrite dans `data/raw/historique.csv` (date, fichier, id, colonne, ancienne valeur, nouvelle, raison, source). Ce journal tient lieu de la colonne `valeur_precedente` demandée en T2. `appliquer_corrections.py` refuse une correction si la valeur actuelle ne correspond pas à l'ancienne valeur annoncée.
 
-**Tableau de bord local.** Depuis la racine : `python3 -m http.server 8000`, puis ouvrir http://localhost:8000/web/. Il couvre 13 sections : les 8 d'origine (les sections 7 et 8 lisent désormais les montants corrigés du moteur, `moteur_lignes.csv`), puis incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
+**Site local.** Depuis la racine : `python3 -m http.server 8000`, puis ouvrir http://localhost:8000/web/. Le site public répartit le contenu en vues adressables (`#/hier`, `#/programmes`, `#/equilibre`, `#/foyer`, `#/demain`, `#/methode`, `#/lexique`) : encadré « En bref » en langage courant, graphiques avec tableau de données équivalent, détail expert dans des accordéons, paramètres d'affichage (thème, taille du texte). Apparence inspirée des sites publics, sans en reprendre les signes distinctifs (ni Marianne, ni bloc-marque) ; un bandeau rappelle que le site est indépendant. Tous les chiffres viennent des CSV (`SOURCES` dans `web/site.js`). Le tableau de bord complet (http://localhost:8000/web/complet.html) couvre 13 sections : les 8 d'origine (les sections 7 et 8 lisent désormais les montants corrigés du moteur, `moteur_lignes.csv`), puis incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
 
 **OpenFisca.** `distributif.sh` utilise le clone local `../openfisca-france` (à côté du projet, version 176.1.4 rebasée sur l'upstream du 14/10/2026) et son `.venv`, recréé le 14 octobre. Si OpenFisca est absent, l'étape est sautée.
 
@@ -261,7 +262,7 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 
 ## 8. Tableau de bord publié
 
-L'artifact privé (claude.ai) n'a **pas** été mis à jour le 14 octobre (règle de l'utilisateur : pas de publication en ligne sans demande explicite). Il montre encore les données du 12 octobre. La version locale (`web/index.html`) lit les CSV à jour. Pour republier `dashboard_page.html`, il faudrait joindre à l'artifact les nouveaux CSV, y compris ceux du moteur, de la projection, de la validation et du distributif (liste `SOURCES` de `scripts/build_web.py`).
+L'artifact privé (claude.ai) n'a **pas** été mis à jour le 14 octobre (règle de l'utilisateur : pas de publication en ligne sans demande explicite). Il montre encore les données du 12 octobre. Les versions locales (`web/index.html`, `web/complet.html`) lisent les CSV à jour. Pour republier `dashboard_page.html`, il faudrait joindre à l'artifact les nouveaux CSV, y compris ceux du moteur, de la projection, de la validation et du distributif (liste `SOURCES` de `scripts/build_web.py`).
 
 ## 9. Règles à respecter
 

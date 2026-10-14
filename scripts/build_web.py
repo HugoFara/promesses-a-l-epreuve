@@ -1,4 +1,7 @@
-"""Génère web/index.html : version autonome du tableau de bord, qui lit directement les CSV de data/.
+"""Génère web/complet.html : version autonome du tableau de bord complet, qui lit directement les CSV de data/.
+
+Le site public (web/index.html, site.css, site.js) n'est pas généré : il est écrit à la main et lit lui-même les CSV.
+complet.html en reste la version « spécialistes », toutes sections sur une page, liée depuis la vue Méthode.
 
 La page d'origine (web/dashboard_page.html) attend l'environnement d'un artifact claude.ai (objet `dash`,
 variables CSS du système de design). Ce script l'enveloppe dans une page complète : variables CSS (clair/sombre),
@@ -24,7 +27,7 @@ TETE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Backtest des chiffrages</title>
+<title>Tableau de bord complet</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <style>
 /* Palette : instance de référence validée (skill dataviz, references/palette.md) */
@@ -93,8 +96,8 @@ select { font: inherit; }
 def main():
     page = (ICI / "dashboard_page.html").read_text(encoding="utf-8")
     sources = "{" + ", ".join(f'"{k}": "{v}"' for k, v in SOURCES.items()) + "}"
-    (ICI / "index.html").write_text(TETE.replace("%SOURCES%", sources) + page + "\n</body>\n</html>\n", encoding="utf-8")
-    print("web/index.html écrit")
+    (ICI / "complet.html").write_text(TETE.replace("%SOURCES%", sources) + page + "\n</body>\n</html>\n", encoding="utf-8")
+    print("web/complet.html écrit")
 
 
 if __name__ == "__main__":
