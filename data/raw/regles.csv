@@ -18,4 +18,5 @@ Taux de recours,0.65,0,nr_rsa,"Prestation à la demande : recours ≈65 % comme 
 Élasticité IS,0.94,0,is_shifting cebge_2025 ce_is_5pct_2013,"Horizon 1-2 ans, rendements observés : surtaxe 2025 à 94 % de son chiffrage, surtaxe 2013 au-dessus ; borne basse de moyen terme 0,73 (semi-élasticité 0,8 %/pt appliquée à tout l'IS)"
 Élasticité carburants,0.7,0,carbu_ct carbu_lt,"ε ≈ −0,3 (CT) à −0,65 (LT)"
 Élasticité SMIC (hypothèse : emplois perdus),1.1,0,smic,"Élasticité emploi ≈ −0,17 : coût alourdi par les emplois perdus"
-Effet emploi du SMIC,0.87,0,smic,Montant (Md€) des allocations et cotisations perdues : emplois perdus × coût d'un emploi perdu ; ligne de statique −1
+Effet emploi du SMIC,1.67,0,smic_fr smic,"Montant (Md€) des allocations et cotisations perdues : |élasticité au coût| × hausse moyenne du coût × effectif 1-1,15 SMIC × coût d'un emploi perdu ; ligne de statique −1"
+Taxe sur les rachats d'actions,0.126,0,rachats_taxe,"Rendement = taux × assiette vérifiée × (1 − part perdue 0,85) − taxe existante ; report vers les dividendes non taxés à ce niveau"

@@ -18,4 +18,5 @@ Taux de recours,fixe,taux_recours,
 Élasticité IS,fixe,facteur_is,
 Élasticité carburants,accise,eps=eps_carbu;dp=dp_niches;a=a_sur_da_niches,
 Élasticité SMIC (hypothèse : emplois perdus),smic,eps=eps_smic;hausse=hausse_smic;n=n_smic;c=cout_emploi_perdu;statique=statique_smic,Règle remplacée par « Effet emploi du SMIC » (ligne séparée) ; conservée pour l'historique
-Effet emploi du SMIC,montant,emplois=emplois_perdus_smic;c=cout_emploi_perdu,
+Effet emploi du SMIC,emploi_smic,eps=eps_smic;h=hausse_moy_smic;n=n_smic_tranche;c=cout_emploi_perdu,
+Taxe sur les rachats d'actions,assiette_reduite_nette,s=part_perdue_rachats;b=assiette_rachats_rel;r=part_taxe_rachats_existante,

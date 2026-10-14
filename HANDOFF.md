@@ -126,13 +126,13 @@ Seuls Montaigne et l'iFRAP chiffrent les deux programmes ligne à ligne. Asterè
 
 | Variante | Mesures phares | Financement | Solde central (moteur) | P10 / P50 / P90 | Loi votée seule | Variante « dégel » |
 |---|---|---|---|---|---|---|
-| LFI intégral | −110,4 | +41,6 | **−68,7** | −86 / −66 / −47 | −64,0 | −93,2 |
-| LFI ajusté (hors 30 Md€ d'investissement emprunté) | −31,2 | +41,6 | **+10,5** | +3 / +10 / +16 | +15,2 | −14,0 |
+| LFI intégral | −111,2 | +39,2 | **−72,0** | −87 / −68 / −49 | −67,3 | −96,6 |
+| LFI ajusté (hors 30 Md€ d'investissement emprunté) | −32,0 | +39,2 | **+7,2** | +2 / +8 / +14 | +11,9 | −17,3 |
 | Ensemble | −14,9 | +7,5 | **−7,2** | −11 / −7 / −4 | −1,8 | −7,2 |
 
-**Le résultat LFI dépend surtout du SMIC.** La référence 2027 contient le gel du SMIC de référence des allègements (voté pour 2026, proposé pour 2027). Par symétrie avec la décote des bandeaux d'allègements, qui invoque ce même gel, le SMIC à 1 600 € n'augmente plus les allègements : son coût statique (−19 selon Montaigne, dont −21,5 d'allègements) devient +2,3, plus une ligne d'effet emploi (−0,9). Si au contraire la hausse du SMIC s'accompagne d'un dégel (variante « dégel », `variantes_sensibilite.csv` : coût −24,7 et bandeaux à 0,715), LFI ajusté passe de +10,5 à −14,0. **Les deux lectures sont cohérentes ; le programme LFI 2027 devra dire laquelle s'applique.**
+**Le résultat LFI dépend surtout du SMIC.** La référence 2027 contient le gel du SMIC de référence des allègements (voté pour 2026, proposé pour 2027). Par symétrie avec la décote des bandeaux d'allègements, qui invoque ce même gel, le SMIC à 1 600 € n'augmente plus les allègements : son coût statique (−19 selon Montaigne, dont −21,5 d'allègements) devient +2,3, plus une ligne d'effet emploi (−1,7 : 103 500 emplois, T13). Si au contraire la hausse du SMIC s'accompagne d'un dégel (variante « dégel », `variantes_sensibilite.csv` : coût −24,7 et bandeaux à 0,715), LFI ajusté passe de +7,2 à −17,3. **Les deux lectures sont cohérentes ; le programme LFI 2027 devra dire laquelle s'applique.**
 
-Autres effets de la référence 2027 : surtaxe d'IS déjà au PLF 2027 (facteur de référence 0,286, puis 1 dès 2028 car la surtaxe de la référence n'est reconduite qu'un an) ; bandeaux d'allègements en partie rabotés (0,5, statique 11,4 après effets emploi) ; sous-indexation des pensions et abattement des retraités déjà au PLF 2027 (0) ; Zucman décoté de 35 % pour son interaction avec l'ISF, l'IR et la fin du PFU du même panier (impôt plancher, PPL 768). La variante « loi votée seule » ne décote pas les mesures seulement proposées (+3,7 pour LFI, +5,4 pour Ensemble). La taxe renforcée sur les rachats d'actions (8,4, confiance low) n'est que le calcul de l'auteur de l'amendement ; la version à 8 % a rapporté 0,5 Md€ en 2025.
+Autres effets de la référence 2027 : surtaxe d'IS déjà au PLF 2027 (facteur de référence 0,286, puis 1 dès 2028 car la surtaxe de la référence n'est reconduite qu'un an) ; bandeaux d'allègements en partie rabotés (0,5, statique 11,4 après effets emploi) ; sous-indexation des pensions et abattement des retraités déjà au PLF 2027 (0) ; Zucman décoté de 35 % pour son interaction avec l'ISF, l'IR et la fin du PFU du même panier (impôt plancher, PPL 768). La variante « loi votée seule » ne décote pas les mesures seulement proposées (+3,7 pour LFI, +5,4 pour Ensemble). La taxe renforcée sur les rachats d'actions (8,4 statiques, calcul de l'auteur de l'amendement sur les rachats du CAC 40 de 2024) reçoit depuis T13 une règle propre : 85 % de l'assiette perdue au central (report vers les dividendes, extrapolé de la taxe américaine de 1 %), moins la taxe existante de 0,2, soit **1,06 Md€** net (P10-P90 0,6-2,7 ; confiance low).
 
 ### Projection 2026-2032 (T5, `projection.csv`)
 
@@ -141,9 +141,9 @@ Trajectoire du gouvernement (PLF 2027 et trajectoire communiquée au HCFP) : dé
 | Scénario | Déficit 2027 | 2029 | 2032 | Dette 2032 |
 |---|---|---|---|---|
 | Référence du gouvernement | 5,0 | 2,8 | 2,8 | 120,3 |
-| Référence corrigée du biais | 5,6 | 4,8 | 5,1 | 130,4 |
-| Panier LFI intégral | 7,8 | 7,1 | 7,9 | 143,9 |
-| Panier LFI ajusté (dont 1,0 pt d'investissement emprunté) | 6,3 | 5,4 | 5,8 | 133,9 |
+| Référence corrigée du biais | 5,6 | 4,8 | 5,1 | 130,3 |
+| Panier LFI intégral | 7,9 | 7,2 | 7,9 | 144,2 |
+| Panier LFI ajusté (dont 1,0 pt d'investissement emprunté) | 6,3 | 5,5 | 5,9 | 134,2 |
 | Panier Ensemble | 5,8 | 5,1 | 5,4 | 131,8 |
 
 Depuis l'audit : l'emprunt « règle d'or » entre dans le déficit et la dette (colonne `dont_investissement_pct`) ; l'impact de chaque ligne suit son facteur de référence de 2028 (`corrige_2028`) ; chaque tranche refinancée garde le spread de son année. Le stress +25 pb ajoute environ 0,2 point de déficit et 0,7 point de dette en 2032. Pas de montée en charge par ligne : le coût des retraites (LFI) est donc sous-estimé après 2028. Le HCFP juge la croissance 2027 « optimiste » et le retour sous 3 % en 2029 « très peu vraisemblable ».
@@ -152,7 +152,7 @@ Depuis l'audit : l'emprunt « règle d'or » entre dans le déficit et la dette 
 
 Appliquées (détail et preuves : `recherche/audit/rapport.md`, chaque changement dans `historique.csv`) : emprunt d'investissement dans la dette (bloquant) ; traitement symétrique du gel des allègements entre `l_smic` et `l_bandeaux` (bloquant) ; formule de l'IS ; interaction Zucman ; suspension des retraites lue comme un niveau (1,9) et non un incrément (1,0) : `l_ret62` −6,4, `l_ret60` × 0,967 ; niches iFRAP à 5 ; montée en charge partielle (surtaxe 2028) ; erreur commune par chiffreur et intervalles des facteurs de référence ; recette existante des rachats d'actions déduite ; bases de prix et exclusions en couche 1 ; bandeaux à 11,4 ; règle unique « milieu de l'intervalle documenté » pour les recoupements non chiffrés (e_appr 0,67) ; variante « loi votée seule ».
 
-Non appliquées (restent ouvertes) : règle propre pour la taxe sur les rachats d'actions (pas d'élasticité sourcée) ; effectif au voisinage du SMIC (1-1,15 SMIC) ; formule accise symétrique pour la baisse d'électricité ; synchronisation de `statut_reference_2027.csv` (gardé tel que livré par T1 ; les facteurs en vigueur sont ceux de `paniers.csv`) ; montée en charge des retraites ; biais signés par cause (non corrigés, seulement signalés).
+Appliquées le 14/10 au soir (T13, `recherche/T13/rapport.md`) : règle propre pour la taxe sur les rachats d'actions ; effectif 1-1,15 SMIC et élasticité française de l'emploi au coût. Non appliquées (restent ouvertes) : formule accise symétrique pour la baisse d'électricité ; synchronisation de `statut_reference_2027.csv` (gardé tel que livré par T1 ; les facteurs en vigueur sont ceux de `paniers.csv`) ; montée en charge des retraites ; biais signés par cause (non corrigés, seulement signalés).
 
 ### Validation de la méthode (indicateur de confiance, 14 octobre au soir)
 
@@ -173,7 +173,7 @@ Question : notre chiffrage corrigé est-il plus proche du réalisé que le chiff
 
 Sur la statistique principale des chiffrages officiels (26 mesures), l'erreur médiane passe de 11,2 % à 10,2 %, mais l'erreur moyenne monte (20,2 % → 23,9 %) : la méthode ne fait pas nettement mieux que le départ : elle ne change rien aux coûts mécaniques, qui sont la majorité, et ses gains (comportement du capital, effets promis, retraites) sont compensés par les règles mitigées ou contredites.
 
-**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 29 %, Ensemble 2024 92 %, panier LFI intégral 36 %, LFI ajusté 44 %, Ensemble 0 %. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
+**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 29 %, Ensemble 2024 92 %, panier LFI intégral 37 %, LFI ajusté 8 %, Ensemble 0 %. LFI ajusté chute depuis T13 : sa principale correction confirmée (Élasticité capital sur les rachats) est remplacée par une règle propre, non testable faute de précédent. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
 
 **Limites** : l'agent connaissait l'issue de 60 cas sur 83 (le 3e agent ne connaissait pas celle des rachats) ; échantillons très petits par règle (1 à 8) ; les règles les plus influentes pour 2027 (revenus, successions, nouvelle assiette Zucman) n'ont au mieux qu'un précédent.
 
@@ -228,7 +228,7 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 
 1. **Le chiffreur de départ décide du résultat** (T6) : les corrections ne réduisent pas la dispersion.
 2. **Référence 2027 = budgets déposés.** Si le Parlement modifie le PLF (l'abattement des retraités a été supprimé en commission le 9 octobre, la séance repart du texte du gouvernement), les facteurs de référence changent. Avec la loi votée seule, les lignes « proposées » repasseraient à 1.
-3. **SMIC et gel des allègements** : résultat LFI très sensible (LFI ajusté de +9,7 à −14,9 selon le gel ou le dégel). Emplois perdus : Dube ≈54 000, Montaigne 230 000 à 380 000 (−0,9 à −6,1 Md€).
+3. **SMIC et gel des allègements** : résultat LFI très sensible (LFI ajusté de +7,2 à −17,3 selon le gel ou le dégel). Emplois perdus (T13) : 103 500 au central (élasticité française −0,6 × hausse moyenne de 6,9 % × 2,5 M de salariés entre 1 et 1,15 SMIC), de ≈29 000 (Dube) à 389 000 (diffusion complète, −0,9, 3 M) ; Montaigne 230 000 à 380 000.
 4. **Suspension des retraites** : 1,9 Md€ en 2027 retenu (lettre rectificative 1,4 + amendement 0,5) ; le 1,0 du PLFSS 2027 est un incrément d'une année sur l'autre. Le 8,3 de l'iFRAP (rendement de la réforme) n'est pas archivé.
 5. **Bases de prix** : corrigées par `deflateur_ex_ante` pour retraites 2023 et Woerth (déflateurs approchés : ≈1,75 %/an ; ≈+8 % de 2008 à 2016).
 6. **Ex post administratif** : 5 mesures (marquées `type_ex_post = administratif`) ; la statistique sur ex post observés seulement est publiée à côté (13,1 %).
@@ -252,6 +252,7 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 | T10 Backtest | **Fait** : 29 mesures ; calibration par institut (aucun biais significatif, n ≤ 8) | Recalculer à périmètre et base de prix identiques ; sortir les ex post administratifs |
 | T11 Tableau de bord (nouveau) | Fait le 14/10 : sections 9 à 13 (moteur, sensibilité, projection, validation, distributif) ; sections 7-8 sur le moteur | Déciles quand T7 sera fait ; mettre à jour l'artifact claude.ai seulement sur demande |
 | T12 Rachats d'actions et évaluations préalables (nouveau) | Fait le 14/10 : taxe sur les rachats ajoutée à la couche 1 (0,4 prévu par la LFI 2025, 0,5 encaissé) ; évaluations préalables PLF 2015, 2020, 2021 lues (`recherche/T12/rapport.md`) | Évaluation préalable PLF 2018 (IS) sans objet ; dossier de presse PLF 2008 introuvable |
+| T13 SMIC et rachats (nouveau) | Fait le 14/10 : effet emploi du SMIC recalculé (103 500 emplois, −1,67 Md€) ; règle propre des rachats d'actions (1,06 Md€ net au lieu de 3,6) (`recherche/T13/rapport.md`) | Effectif 1-1,15 SMIC à confirmer si la Dares le publie ; taux de 33 % hors de tout échantillon observé |
 
 **Calibration par institut (T10b)** : Montaigne n = 8, biais moyen −34 % (IC 95 % [−108 ; +39]) ; OFCE n = 5, +2 % [−19 ; +23] ; Fondation Concorde n = 5, +5 % [−30 ; +39]. Aucun facteur par institut n'est appliqué ; l'erreur absolue médiane (14,9 % tous instituts, 40 % pour Montaigne seul) sert d'incertitude par ligne.
 

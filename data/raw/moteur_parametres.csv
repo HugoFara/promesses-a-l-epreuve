@@ -11,7 +11,7 @@ eps_succession,0.08,0.16,0.34,élasticité au taux net,elasticite,succession_us,
 s_patrimoine,0.14,0.15,0.15,part de base perdue par point de taux à long terme,elasticite,wealth_nl wealth_dk,high,"Pays-Bas −1,4 % par 0,1 pt ; Danemark −30 % à 8 ans pour 2 %"
 s_is,,0.008,,part de base par point de taux,elasticite,is_shifting,high,
 eps_carbu,-0.4,-0.3,-0.21,élasticité-prix,elasticite,carbu_ct,high,Horizon 2027 : court terme
-eps_smic,-0.19,-0.17,,élasticité de l'emploi,elasticite,smic,high,
+eps_smic,-0.17,-0.6,-0.9,élasticité de l'emploi au coût du travail (niveau SMIC),elasticite,smic_fr smic,high,"Central −0,6 (Bozio-Wasmer ; borne basse du groupe d'experts 2025) ; haut −0,9 ; bas −0,17 (Dube, own-wage, valide jusqu'à ≈59 % du médian, la France est à 62,5 %)"
 t0_capital,,0.354,,taux marginal (PFU + CEHR 4 %),bareme,div_pfu_tmi_45 pfu_taux_2026 cehr_taux,high,"Foyer à la tranche de 45 % : PFU 31,4 % (LFSS 2026) + CEHR 4 % ; la majorité des dividendes est perçue par le top 0,1 % (div_concentration_01pct 62 %)"
 t1_capital,0.4254,0.4627,,taux marginal au barème (dividendes),bareme,div_tmi_45,high,"Barème 45 % après abattement de 40 %, CSG déductible, CEHR 4 % ; bas = CEHR assise sur 60 % (méthode France Stratégie, 44,78 %) et CEHR 3 % ; répartition des dividendes par tranche non publiée"
 delta_is,5.15,7.73,10.3,points de taux marginal,bareme,is_tmeff_2026_1_5_3md is_tmeff_2026_3md is_taux_normal,medium,"Surtaxe 2026 : 25 × 20,6 % = 5,15 pts (CA 1,5-3 Md€) et 25 × 41,2 % = 10,3 pts (> 3 Md€) ; milieu, pondération non publiée"
@@ -24,6 +24,10 @@ cout_emploi_perdu,15131,16175,17219,€ par an et par emploi perdu,bareme,cout_e
 statique_smic,17,19,21,"Md€ (coût statique, valeur absolue)",bareme,smic1600_cout_public_montaigne,high,"Montaigne : 19 (17-21), hors effets emploi"
 erreur_ligne,0.10,0.149,0.40,erreur absolue médiane d'un chiffrage de ligne,backtest,calibration_instituts mesures_cout,medium,"Central : erreur absolue médiane des chiffrages d'instituts sur les programmes Macron 2017/2022 (T10b, n = 22) ; bas : chiffrages gouvernementaux (couche 1, 10,0 % sur 25 mesures) ; haut : Institut Montaigne seul (40 %, n = 8). Bruit normal de médiane absolue égale, tronqué à ±90 %, indépendant par ligne"
 t0_is,,25.83,,"points (IS + contribution sociale 3,3 %)",bareme,is_taux_normal is_css,high,"25 × 1,033"
-emplois_perdus_smic,53856,53856,380000,emplois,calcul,smic smic_effectif smic_net_2024 smic1600_emplois_detruits_montaigne,low,"Mode : Dube 0,17 × 14,4 % × 2,2 M = 53 856 ; haut : estimation haute de Montaigne (230 000-380 000). Écart non tranché"
 part_commune_erreur,,0.5,,part de la variance d'erreur commune à un chiffreur,constante,,low,Hypothèse de modélisation (audit §3.5) : les erreurs d'un même chiffreur sont corrélées ; part non mesurée
 facteur_is,0.73,0.94,1,rendement réel / statique d'une hausse d'IS à 1-2 ans,backtest,cebge_2025 ce_is_5pct_2013 is_shifting,medium,"Central : surtaxe d'IS 2025, 7,5 encaissés pour 8,0 attendus (0,9375, Cour des comptes) ; haut : aucune réaction (la surtaxe de 5 % de 2013 a rapporté 1,5 fois la prévision, surprise d'assiette plafonnée à 1) ; bas : formule de moyen terme 1 − 0,8 %/pt × (25,83 + 7,73) = 0,73"
+n_smic_tranche,2200000,2500000,3000000,"salariés (EQTP) entre 1 et 1,15 SMIC",bareme,smic_tranche_1_115,low,Interpolation BTS 2023 (rapport Smic 2025) ; bas = bénéficiaires Acemo ; haut = Bozio-Wasmer
+hausse_moy_smic,0.069,0.069,0.1439,hausse moyenne du coût dans la tranche,bareme,smic_hausse_moy_tranche,low,Central sans diffusion aux salaires supérieurs ; haut = diffusion complète
+part_perdue_rachats,0.6,0.85,0.97,part de l'assiette perdue,elasticite,rachats_taxe,low,Jugement appuyé sur l'extrapolation des effets d'une taxe de 1 % (recherche/T13)
+assiette_rachats_rel,0.8627,1,1.3725,"assiette / 25,5 Md€",bareme,rachats_cac40_2024,medium,"22/25,5 ; 25,5/25,5 ; 35/25,5"
+part_taxe_rachats_existante,,0.0238,,"taxe existante / statique (0,2 / 8,4)",bareme,taxe_rachats_reference,high,"Recette existante remplacée, retranchée en montant fixe"

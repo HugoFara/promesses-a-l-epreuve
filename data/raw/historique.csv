@@ -237,3 +237,26 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-10-14,mesures_cout,th_20,source_ex_ante,(texte),(texte),Évaluation préalable PLF 2020 lue,recherche/T12/rapport.md
 2026-10-14,mesures_cout,th_20,note_confiance,(texte),(texte),Évaluation préalable PLF 2020 lue,recherche/T12/rapport.md
 2026-10-14,mesures_cout,cite_2015,note_confiance,(texte),(texte),Évaluation préalable PLF 2015 lue : total non trouvé,recherche/T12/rapport.md
+2026-10-14,elasticites,smic_fr,*,,(nouvelle ligne),Élasticité française au coût du travail au niveau du SMIC (audit §3.4),recherche/T13/rapport.md
+2026-10-14,parametres_bareme,smic_tranche_1_115,*,,(nouvelle ligne),"Effectif 1-1,15 SMIC (audit §3.4)",recherche/T13/rapport.md
+2026-10-14,parametres_bareme,smic_hausse_moy_tranche,*,,(nouvelle ligne),"Hausse moyenne dans la tranche (élasticité au coût, pas au SMIC)",recherche/T13/rapport.md
+2026-10-14,moteur_parametres,eps_smic,val_bas/central/haut,-0.19/-0.17/,-0.17/-0.6/-0.9,Élasticité own-wage américaine remplacée par l'élasticité française au coût (audit §3.4),recherche/T13/rapport.md
+2026-10-14,moteur_parametres,emplois_perdus_smic,*,53856/53856/380000,(supprimé),Remplacé par le calcul élasticité × hausse moyenne × effectif dans la règle,recherche/T13/rapport.md
+2026-10-14,moteur_parametres,n_smic_tranche,*,,2200000/2500000/3000000,"Effectif 1-1,15 SMIC",recherche/T13/rapport.md
+2026-10-14,moteur_parametres,hausse_moy_smic,*,,0.069/0.069/0.1439,Hausse moyenne dans la tranche,recherche/T13/rapport.md
+2026-10-14,moteur_regles,Effet emploi du SMIC,parametres,emplois=emplois_perdus_smic;c=cout_emploi_perdu,eps=eps_smic;h=hausse_moy_smic;n=n_smic_tranche;c=cout_emploi_perdu,Emplois perdus calculés dans le moteur,recherche/T13/rapport.md
+2026-10-14,paniers,l_smic_emploi,facteur,0.87,1.67,"Effet emploi recalculé : −0,6 × 6,9 % × 2,5 M = 103 500 emplois × 16 175 €",recherche/T13/rapport.md
+2026-10-14,regles,Effet emploi du SMIC,facteur,0.87,1.67,Recalcul (T13),recherche/T13/rapport.md
+2026-10-14,elasticites,rachats_taxe,*,,(nouvelle ligne),Réaction des rachats à une taxe (audit §3.3),recherche/T13/rapport.md
+2026-10-14,parametres_bareme,rachats_cac40_2024,*,,(nouvelle ligne),Assiette vérifiée (audit §3.3),recherche/T13/rapport.md
+2026-10-14,parametres_bareme,taxe_rachats_reference,*,,(nouvelle ligne),Taxe existante retranchée dans la formule,recherche/T13/rapport.md
+2026-10-14,moteur_parametres,part_perdue_rachats,*,,0.6/0.85/0.97,Règle propre des rachats d'actions,recherche/T13/rapport.md
+2026-10-14,moteur_parametres,assiette_rachats_rel,*,,0.8627/1/1.3725,Règle propre des rachats d'actions,recherche/T13/rapport.md
+2026-10-14,moteur_parametres,part_taxe_rachats_existante,*,,/0.0238/,Règle propre des rachats d'actions,recherche/T13/rapport.md
+2026-10-14,regles,Taxe sur les rachats d'actions,*,,0.126,Nouvelle règle (audit §3.3),recherche/T13/rapport.md
+2026-10-14,paniers,l_rachats,regle,Élasticité capital,Taxe sur les rachats d'actions,Règle propre (audit §3.3),recherche/T13/rapport.md
+2026-10-14,paniers,l_rachats,facteur,0.45,0.126,"(1 − 0,85) × 1 − 0,0238",recherche/T13/rapport.md
+2026-10-14,paniers,l_rachats,facteur_reference,0.976,1,"Taxe existante retranchée dans la formule (montant fixe 0,2)",recherche/T13/rapport.md
+2026-10-14,check_regression,C3 nb estimations,attendu,75,77,Ajout de smic_fr et rachats_taxe,recherche/T13/rapport.md
+2026-10-14,check_regression,Panier LFI mesures,attendu,"-110,4 / -31,2","-111,2 / -32,0","Effet emploi du SMIC recalculé (−0,87 → −1,67)",recherche/T13/rapport.md
+2026-10-14,check_regression,Paniers LFI financement,attendu,"+41,6","+38,9","Règle propre des rachats d'actions (3,7 → 1,06)",recherche/T13/rapport.md

@@ -141,7 +141,7 @@ class LignePanier(Ligne):
 
 class MoteurRegle(Ligne):
     regle: str
-    formule: Literal["fixe", "complement", "taxe_elasticite", "semi_elasticite", "semi_elasticite_taux", "accise", "smic", "montant", "ligne"]
+    formule: Literal["fixe", "complement", "taxe_elasticite", "semi_elasticite", "semi_elasticite_taux", "accise", "smic", "montant", "emploi_smic", "assiette_reduite_nette", "ligne"]
     parametres: OptStr = None; justification_ecart: OptStr = None
 
 

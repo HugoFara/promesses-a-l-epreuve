@@ -1,13 +1,13 @@
 fichier,groupe,composante,central,loi_votee_seule,p10,p50,p90
-application_lignes,NFP 2024 (LFI),solde,-160.0,-160.0,-203.2,-154.1,-104.5
-application_lignes,Ensemble 2024,solde,-25.7,-25.7,-31.0,-24.9,-18.9
-paniers,LFI intégral,Mesure phare,-110.4,-110.4,-128.2,-107.6,-87.5
-paniers,LFI intégral,Financement,41.7,46.4,36.3,41.5,46.8
-paniers,LFI intégral,solde,-68.7,-64.0,-85.7,-66.1,-46.9
-paniers,LFI ajusté,Mesure phare,-31.2,-31.2,-37.5,-31.9,-26.5
+application_lignes,NFP 2024 (LFI),solde,-160.0,-160.0,-203.5,-153.4,-104.2
+application_lignes,Ensemble 2024,solde,-25.7,-25.7,-30.9,-24.9,-18.8
+paniers,LFI intégral,Mesure phare,-111.2,-111.2,-127.4,-107.3,-87.4
+paniers,LFI intégral,Financement,39.2,43.9,34.2,39.3,44.6
+paniers,LFI intégral,solde,-72.0,-67.3,-87.0,-67.9,-49.1
+paniers,LFI ajusté,Mesure phare,-32.0,-32.0,-36.5,-31.4,-26.3
 paniers,LFI ajusté,investissement,-30.0,-30.0,-30.0,-30.0,-30.0
-paniers,LFI ajusté,Financement,41.7,46.4,36.3,41.5,46.8
-paniers,LFI ajusté,solde,10.5,15.2,3.0,9.6,16.2
+paniers,LFI ajusté,Financement,39.2,43.9,34.2,39.3,44.6
+paniers,LFI ajusté,solde,7.2,11.9,1.7,7.9,14.4
 paniers,Ensemble,Mesure phare,-14.9,-14.9,-18.2,-14.9,-11.6
-paniers,Ensemble,Financement,7.7,13.1,6.5,7.7,8.9
-paniers,Ensemble,solde,-7.2,-1.8,-10.7,-7.3,-3.8
+paniers,Ensemble,Financement,7.7,13.1,6.4,7.7,8.9
+paniers,Ensemble,solde,-7.2,-1.8,-10.7,-7.2,-3.7

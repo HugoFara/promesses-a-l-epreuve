@@ -52,6 +52,10 @@ FORMULES = {
     "smic": lambda p: 1 + abs(p["eps"]) * p["hausse"] * p["n"] * p["c"] / 1e9 / p["statique"],
     # Montant en Md€ (ligne de statique −1) : emplois perdus × coût par emploi
     "montant": lambda p: p["emplois"] * p["c"] / 1e9,
+    # Montant en Md€ : emplois perdus = |élasticité au coût| × hausse moyenne du coût × effectif concerné, × coût par emploi
+    # Taxe dont l'assiette fuit : assiette relative b × (1 − part perdue s) − recette existante remplacée r (en part du statique)
+    "assiette_reduite_nette": lambda p: (1 - p["s"]) * p["b"] - p["r"],
+    "emploi_smic": lambda p: abs(p["eps"]) * p["h"] * p["n"] * p["c"] / 1e9,
 }
 
 
