@@ -13,7 +13,11 @@ ICI = Path(__file__).resolve().parent.parent / "web"
 SOURCES = {"mesures": "mesures_cout", "effets": "mesures_effets", "ps": "programmes_stabilite_fr",
            "pairs": "pairs_frankel_schreger", "regles": "regles_calibration", "elasticites": "elasticites",
            "hypotheses": "hypotheses_defaut", "application": "application_lignes",
-           "programmes": "application_programmes", "parametres": "application_parametres", "paniers": "paniers"}
+           "programmes": "application_programmes", "parametres": "application_parametres", "paniers": "paniers",
+           "moteur": "moteur_lignes", "moteur_totaux": "moteur_totaux", "moteur_variantes": "moteur_variantes",
+           "sensibilite": "sensibilite_chiffreurs", "projection": "projection", "projection_controle": "projection_controle",
+           "validation_resume": "validation_resume", "validation_regles": "validation_regles",
+           "distributif": "distributif_menages"}
 
 TETE = """<!doctype html>
 <html lang="fr">

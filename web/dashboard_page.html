@@ -241,6 +241,74 @@
     </div>
   </div>
 
+  <h2 id="incertitude">9. Incertitude et variantes de référence</h2>
+  <p class="sec-note">Le moteur tire au sort l'erreur de chaque ligne (erreur absolue médiane de 14,9 % des chiffrages d'instituts, dont la moitié commune à un même chiffreur), ainsi que les facteurs de référence et d'interaction. « Loi votée seule » retire du point de départ ce que le PLF et le PLFSS 2027 n'ont pas encore fait voter. La variante « dégel » suppose que la hausse du SMIC rend aux allègements de charges leur indexation.</p>
+  <div class="card">
+    <h3>Solde par panier : central et intervalle 10 %-90 %</h3>
+    <p class="note">Md€ par an. Trait = intervalle 10 %-90 % du Monte-Carlo ; point plein = central ; losange = loi votée seule ; carré = variante « dégel ».</p>
+    <div class="legend" id="lg-inc"></div>
+    <div class="chart" id="ch-inc" data-source="soldes" style="min-height: 180px"></div>
+  </div>
+  <div class="card" style="margin-top: var(--cds-gap-md)">
+    <h3>Composantes</h3>
+    <div class="tbl-wrap">
+      <table id="tb-inc"><thead><tr>
+        <th>Panier</th><th>Composante</th><th class="num">Central</th><th class="num">Loi votée seule</th><th class="num">P10</th><th class="num">P50</th><th class="num">P90</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <h2 id="sensibilite">10. Le chiffreur pèse plus que la correction</h2>
+  <p class="sec-note">On applique les mêmes règles au chiffrage de chaque organisme. « Propre » = les seules lignes qu'il a chiffrées ; « complété » = les lignes qu'il n'a pas chiffrées sont remplies par la médiane des autres chiffreurs indépendants. Asterès travaillait avec les recettes communiquées par le parti.</p>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table id="tb-sens"><thead><tr>
+        <th>Programme</th><th>Chiffreur</th><th class="hide-narrow">Statut</th><th class="num">Lignes</th><th class="num">Solde publié</th><th class="num">Propre, statique</th><th class="num">Propre, corrigé</th><th class="num">Complété, statique</th><th class="num">Complété, corrigé</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <h2 id="projection">11. Trajectoires 2026-2032</h2>
+  <p class="sec-note">Point de départ : réalisé 2025 (Insee), puis PLF 2027 pour 2026-2027 et trajectoire communiquée au HCFP jusqu'en 2029 ; au-delà, le solde de 2029 et la croissance de 2030 sont reconduits (extrapolation, en pointillés). La référence corrigée ajoute le biais moyen des programmes de stabilité (section 3). Chaque panier part de la référence corrigée et ajoute son solde corrigé, les intérêts supplémentaires et, pour « LFI ajusté », l'investissement emprunté.</p>
+  <div class="card">
+    <div class="filters">
+      <select id="f-ind" aria-label="Indicateur"><option value="dette_pct">Dette publique (% du PIB)</option><option value="deficit_pct">Déficit public (% du PIB)</option></select>
+      <select id="f-stress" aria-label="Taux d'intérêt"><option value="">Taux d'intérêt de la référence</option><option value="1">Choc durable de +25 pb sur tous les taux</option></select>
+    </div>
+    <div class="legend" id="lg-proj"></div>
+    <div class="chart" id="ch-proj" data-source="projection" style="min-height: 300px"></div>
+    <p class="note" id="nt-proj"></p>
+  </div>
+
+  <h2 id="validation">12. La méthode a-t-elle amélioré les chiffrages passés ?</h2>
+  <p class="sec-note">Test sur les mesures passées : les règles ont été attribuées à l'aveugle par des agents séparés, les facteurs calibrés sont recalculés sans la mesure testée (leave-one-out), et seuls les réalisés observés comptent pour le statut d'une règle. Erreur = écart absolu au réalisé, en % du chiffrage initial.</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Erreur avant et après correction</h3>
+      <div class="tbl-wrap">
+        <table id="tb-valr"><thead><tr>
+          <th>Groupe</th><th class="num">n</th><th class="num">Erreur médiane départ</th><th class="num">Erreur médiane corrigée</th><th class="num hide-narrow">Améliorées / dégradées</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Statut des règles</h3>
+      <div class="tbl-wrap">
+        <table id="tb-valg"><thead><tr>
+          <th>Règle</th><th>Statut</th><th class="num">n</th><th class="hide-narrow">Détail</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <h2 id="distributif">13. Effet sur quelques ménages types</h2>
+  <p class="sec-note">Calcul OpenFisca-France (législation 2026) sur des ménages types, mesure par mesure. Gain annuel de revenu disponible en euros ; les effets par décile demandent l'enquête ERFS (accès CASD) et ne sont pas encore calculés.</p>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table id="tb-dist"><thead></thead><tbody></tbody></table>
+    </div>
+  </div>
+
   <h2 id="methode">Méthode et limites</h2>
   <div class="card method">
     <p>Le coût réalisé retient une valeur centrale quand les évaluations divergent (par exemple la flat tax, entre ≈0 et 1,7 Md€). Les fourchettes sont dans les données sources.</p>
@@ -542,13 +610,20 @@ function drawElast() {
   });
 }
 
+// Montant corrigé central du moteur (data/moteur_lignes.csv) ; à défaut, facteur forfaitaire de la ligne.
+function corrigeMoteur(moteur, fichier, r, col) {
+  const m = moteur.find(x => x.fichier === fichier && x.id === r.id);
+  if (m) return Number(m.corrige_central);
+  return Number(r[col]) * Number(r.facteur) * Number(r.facteur_reference || 1) * Number(r.facteur_interaction || 1);
+}
+
 dash.calc("app_lignes", {
-  inputs: ["application"],
+  inputs: ["application", "moteur"],
   title: "Lignes corrigées",
-  description: "Chiffrage indépendant × facteur de la règle × part hors référence, en Md€/an d'impact sur le solde.",
-  fn: (application) => application.map(r => ({
+  description: "Montant corrigé par le moteur (chiffrage indépendant × facteur de la règle × part hors référence × interaction), en Md€/an d'impact sur le solde.",
+  fn: (application, moteur) => application.map(r => ({
     id: r.id, programme: r.programme, ligne: r.ligne, regle: r.regle,
-    independant: Number(r.independant), corrige: Number(r.independant) * Number(r.facteur) * Number(r.facteur_reference || 1) * Number(r.facteur_interaction || 1)
+    independant: Number(r.independant), corrige: corrigeMoteur(moteur, "application_lignes", r, "independant")
   }))
 });
 
@@ -662,10 +737,10 @@ function drawDef() {
 }
 
 dash.calc("panier_lignes", {
-  inputs: ["paniers"],
+  inputs: ["paniers", "moteur"],
   title: "Lignes des paniers corrigées",
-  description: "Impact statique × facteur de la règle × part hors référence 2027, Md€/an.",
-  fn: (paniers) => paniers.map(r => ({id: r.id, variante: r.variante, role: r.role, ligne: r.ligne, corrige: Number(r.statique) * Number(r.facteur) * Number(r.facteur_reference || 1) * Number(r.facteur_interaction || 1)}))
+  description: "Montant corrigé par le moteur (impact statique × facteur de la règle × part hors référence 2027 × interaction), Md€/an.",
+  fn: (paniers, moteur) => paniers.map(r => ({id: r.id, variante: r.variante, role: r.role, ligne: r.ligne, corrige: corrigeMoteur(moteur, "paniers", r, "statique")}))
 });
 
 dash.calc("panier_totaux", {
@@ -736,7 +811,191 @@ function drawPan() {
   });
 }
 
+const sg1 = v => isNaN(v) ? "—" : (v > 0 ? "+" : "") + FR.format(".1f")(v);
+function cell(tr, txt, cls) { const c = document.createElement("td"); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; }
+function legendItems(lg, items) {
+  lg.textContent = "";
+  items.forEach(([n, c, forme]) => {
+    const s = document.createElement("span"); const i = document.createElement("i"); i.style.background = c;
+    if (forme === "rond") i.style.borderRadius = "50%";
+    if (forme === "losange") i.style.transform = "rotate(45deg) scale(.8)";
+    s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s);
+  });
+}
+function chartState(box, d) {
+  if (d.status === "ok") { box.classList.remove("dash-skeleton"); box.querySelectorAll(".fail").forEach(e => e.remove()); return true; }
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  if (d.status === "error") failBox(box); else box.classList.add("dash-skeleton");
+  return false;
+}
+
+dash.calc("soldes", {
+  inputs: ["moteur_totaux", "moteur_variantes"],
+  title: "Solde corrigé par panier",
+  description: "Lignes « solde » du moteur (central, loi votée seule, P10-P90) et variante « dégel » quand elle existe.",
+  fn: (totaux, variantes) => totaux.filter(r => r.composante === "solde").map(r => {
+    const v = variantes.find(x => x.groupe === r.groupe && x.variante === "degel");
+    return {groupe: r.groupe, fichier: r.fichier, central: Number(r.central), loi: Number(r.loi_votee_seule),
+      p10: Number(r.p10), p50: Number(r.p50), p90: Number(r.p90), degel: v ? Number(v.solde_central) : null};
+  })
+});
+
+function drawInc() {
+  const box = document.getElementById("ch-inc"), d = dash.data("soldes");
+  const cC = dash.colors[0], cL = dash.colors[1], cD = dash.colors[2];
+  legendItems(document.getElementById("lg-inc"), [["Central", cC, "rond"], ["Loi votée seule", cL, "losange"], ["Variante « dégel »", cD], ["Intervalle 10 %-90 %", "var(--cds-chart-muted)"]]);
+  if (!chartState(box, d)) return;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const rows = d.data, W = Math.max(280, box.clientWidth), rowH = 40, top = 6, H = rows.length * rowH + top + 22, L = Math.min(150, W * 0.36);
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Solde par panier avec intervalle");
+  const vals = rows.flatMap(r => [r.p10, r.p90, r.loi, r.central, r.degel ?? r.central]);
+  const x = d3.scaleLinear([Math.min(0, d3.min(vals)), Math.max(0, d3.max(vals))], [L, W - 12]).nice();
+  const tp = tip(box);
+  x.ticks(6).forEach(v => {
+    svg.append("line").attr("x1", x(v)).attr("x2", x(v)).attr("y1", top).attr("y2", H - 18).attr("stroke", v === 0 ? "var(--cds-chart-axis, var(--cds-chart-muted))" : "var(--cds-chart-grid)");
+    svg.append("text").attr("x", x(v)).attr("y", H - 4).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
+  });
+  rows.forEach((r, i) => {
+    const y = top + i * rowH + rowH / 2;
+    const g = svg.append("g");
+    g.append("text").attr("x", 0).attr("y", y + 4).attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").text(r.groupe);
+    g.append("line").attr("x1", x(r.p10)).attr("x2", x(r.p90)).attr("y1", y).attr("y2", y).attr("stroke", "var(--cds-chart-muted)").attr("stroke-width", 2).attr("stroke-linecap", "round");
+    if (r.degel !== null && r.degel !== r.central) g.append("rect").attr("x", x(r.degel) - 5).attr("y", y - 5).attr("width", 10).attr("height", 10).attr("rx", 2).attr("fill", cD).attr("stroke", "var(--color-panel)").attr("stroke-width", 2);
+    if (r.loi !== r.central) g.append("rect").attr("x", x(r.loi) - 5).attr("y", y - 5).attr("width", 10).attr("height", 10).attr("fill", cL).attr("stroke", "var(--color-panel)").attr("stroke-width", 2).attr("transform", `rotate(45 ${x(r.loi)} ${y})`);
+    g.append("circle").attr("cx", x(r.central)).attr("cy", y).attr("r", 6).attr("fill", cC).attr("stroke", "var(--color-panel)").attr("stroke-width", 2);
+    g.append("text").attr("x", x(r.central)).attr("y", y - 10).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text(sg1(r.central));
+    g.append("rect").attr("x", L).attr("y", y - rowH / 2).attr("width", W - L).attr("height", rowH).attr("fill", "transparent")
+      .on("mousemove", ev => tp.show(ev, r.groupe, `central ${sg1(r.central)} ; loi votée seule ${sg1(r.loi)} ; P10-P90 [${sg1(r.p10)} ; ${sg1(r.p90)}]` + (r.degel !== null ? ` ; dégel ${sg1(r.degel)}` : "") + " Md€"))
+      .on("mouseleave", () => tp.hide());
+  });
+}
+
+function drawIncTable() {
+  const tb = document.querySelector("#tb-inc tbody"), d = dash.data("moteur_totaux");
+  tb.textContent = "";
+  if (d.status !== "ok") return;
+  d.data.forEach(r => {
+    const tr = document.createElement("tr");
+    if (r.composante === "solde") tr.style.fontWeight = "600";
+    cell(tr, r.groupe); cell(tr, r.composante);
+    ["central", "loi_votee_seule", "p10", "p50", "p90"].forEach(k => cell(tr, sg1(Number(r[k])), "num"));
+    tb.appendChild(tr);
+  });
+}
+
+function drawSens() {
+  const tb = document.querySelector("#tb-sens tbody"), d = dash.data("sensibilite");
+  tb.textContent = "";
+  if (d.status !== "ok") return;
+  d.data.forEach(r => {
+    const tr = document.createElement("tr");
+    cell(tr, r.programme); cell(tr, r.chiffreur); cell(tr, r.statut, "hide-narrow");
+    cell(tr, `${r.lignes_chiffrees} / ${r.lignes_programme}`, "num");
+    ["solde_publie", "propre_statique", "propre_corrige", "complete_statique", "complete_corrige"].forEach(k => cell(tr, sg1(num(r[k])), "num"));
+    tb.appendChild(tr);
+  });
+}
+
+const PROJ_SERIES = ["Référence du gouvernement", "Référence corrigée du biais", "Panier LFI intégral", "Panier LFI ajusté", "Panier Ensemble"];
+let fInd = "dette_pct", fStress = "";
+document.getElementById("f-ind").addEventListener("change", e => { fInd = e.target.value; drawProj(); });
+document.getElementById("f-stress").addEventListener("change", e => { fStress = e.target.value; drawProj(); });
+
+function drawProj() {
+  const box = document.getElementById("ch-proj"), d = dash.data("projection");
+  const col = i => dash.colors[i % dash.colors.length];
+  legendItems(document.getElementById("lg-proj"), PROJ_SERIES.map((n, i) => [n, col(i)]));
+  if (!chartState(box, d)) return;
+  box.querySelectorAll("svg").forEach(s => s.remove());
+  const nom = n => (fStress && n !== PROJ_SERIES[0]) ? n.replace(" du biais", "") + ", stress +25 pb" : n;
+  const series = PROJ_SERIES.map((n, i) => ({n, c: col(i), pts: d.data.filter(r => r.scenario === nom(n)).map(r => ({a: Number(r.annee), v: Number(r[fInd]), ext: r.extrapole === "1"}))}));
+  const W = Math.max(280, box.clientWidth), H = 300, m = {l: 40, r: 22, t: 10, b: 24};
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Trajectoires de déficit et de dette");
+  const annees = [...new Set(series.flatMap(s => s.pts.map(p => p.a)))].sort();
+  const x = d3.scalePoint(annees, [m.l, W - m.r]);
+  const all = series.flatMap(s => s.pts.map(p => p.v));
+  const y = d3.scaleLinear([d3.min(all), d3.max(all)], [H - m.b, m.t]).nice();
+  y.ticks(5).forEach(v => {
+    svg.append("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(v)).attr("y2", y(v)).attr("stroke", "var(--cds-chart-grid)");
+    svg.append("text").attr("x", m.l - 6).attr("y", y(v) + 4).attr("text-anchor", "end").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(FR.format(".0f")(v));
+  });
+  annees.forEach(a => svg.append("text").attr("x", x(a)).attr("y", H - 6).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text(a));
+  const line = d3.line().x(p => x(p.a)).y(p => y(p.v));
+  series.forEach(s => {
+    const lastObs = s.pts.findLastIndex(p => !p.ext);
+    const ext = s.pts.slice(Math.max(0, lastObs));
+    svg.append("path").attr("d", line(s.pts.slice(0, lastObs + 1))).attr("fill", "none").attr("stroke", s.c).attr("stroke-width", 2);
+    if (ext.length > 1) svg.append("path").attr("d", line(ext)).attr("fill", "none").attr("stroke", s.c).attr("stroke-width", 2).attr("stroke-dasharray", "4 3");
+  });
+  const cross = svg.append("line").attr("y1", m.t).attr("y2", H - m.b).attr("stroke", "var(--cds-chart-reference)").style("display", "none");
+  const dots = svg.append("g");
+  const tp = tip(box), unite = fInd === "dette_pct" ? "dette" : "déficit";
+  svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", W - m.l - m.r).attr("height", H - m.t - m.b).attr("fill", "transparent")
+    .on("mousemove", ev => {
+      const [px] = d3.pointer(ev);
+      const a = annees.reduce((b, c) => Math.abs(x(c) - px) < Math.abs(x(b) - px) ? c : b);
+      cross.attr("x1", x(a)).attr("x2", x(a)).style("display", null);
+      dots.selectAll("*").remove();
+      const lignes = series.map(s => { const p = s.pts.find(q => q.a === a); if (p) dots.append("circle").attr("cx", x(a)).attr("cy", y(p.v)).attr("r", 4).attr("fill", s.c).attr("stroke", "var(--color-panel)").attr("stroke-width", 2); return p ? `${s.n.replace("Panier ", "")} ${FR.format(".1f")(p.v)}` : null; }).filter(Boolean);
+      tp.show(ev, `${a}, ${unite} (% du PIB)` + (series[0].pts.find(q => q.a === a)?.ext ? " — extrapolé" : ""), lignes.join(" · "));
+    })
+    .on("mouseleave", () => { tp.hide(); cross.style("display", "none"); dots.selectAll("*").remove(); });
+  const c = dash.data("projection_controle"), nt = document.getElementById("nt-proj");
+  if (c.status === "ok") nt.textContent = "Contrôle sur la trajectoire publiée (PLF 2027) : " + c.data.map(r => `${r.indicateur === "dette_pct" ? "dette" : "déficit"} ${r.annee} calculé ${FR.format(".1f")(Number(r.calcule))} % pour ${FR.format(".1f")(Number(r.plf))} % publié`).join(" ; ") + ".";
+}
+
+function drawVal() {
+  const STATUT = {"confirmée": "pos", "contredite": "neg"};
+  const tr1 = document.querySelector("#tb-valr tbody"), r1 = dash.data("validation_resume");
+  tr1.textContent = "";
+  if (r1.status === "ok") r1.data.forEach(r => {
+    const tr = document.createElement("tr"), sub = /^\s/.test(r.groupe);
+    const c = cell(tr, r.groupe.trim()); if (sub) c.style.paddingLeft = "1.4rem"; else tr.style.fontWeight = "600";
+    cell(tr, r.n, "num"); cell(tr, fPct0(Number(r.erreur_mediane_depart_pct)), "num");
+    const a = Number(r.erreur_mediane_depart_pct), b = Number(r.erreur_mediane_nous_pct);
+    cell(tr, fPct0(b), "num " + (b < a ? "pos" : b > a ? "neg" : ""));
+    cell(tr, `${r.ameliores} / ${r.degrades}`, "num hide-narrow");
+    tr1.appendChild(tr);
+  });
+  const tr2 = document.querySelector("#tb-valg tbody"), r2 = dash.data("validation_regles");
+  tr2.textContent = "";
+  if (r2.status === "ok") [...r2.data].sort((a, b) => Number(b.n) - Number(a.n)).forEach(r => {
+    const tr = document.createElement("tr");
+    cell(tr, r.regle);
+    const c = cell(tr, ""); const p = document.createElement("span"); p.className = "pill " + (STATUT[r.statut] || ""); p.textContent = (r.statut === "confirmée" ? "✓ " : r.statut === "contredite" ? "✗ " : "") + r.statut; c.appendChild(p);
+    cell(tr, r.n, "num"); cell(tr, r.note, "hide-narrow");
+    tr2.appendChild(tr);
+  });
+}
+
+function drawDist() {
+  const tbl = document.getElementById("tb-dist"), d = dash.data("distributif");
+  tbl.tHead.textContent = ""; tbl.tBodies[0].textContent = "";
+  if (d.status !== "ok") return;
+  const reformes = [...new Map(d.data.map(r => [r.reforme, r.libelle])).entries()];
+  const menages = [...new Set(d.data.map(r => r.menage))];
+  const h = document.createElement("tr");
+  const th = (t, cls) => { const c = document.createElement("th"); if (cls) c.className = cls; c.textContent = t; h.appendChild(c); };
+  th("Ménage"); th("Revenu disponible", "num"); reformes.forEach(([, l]) => th(l, "num"));
+  tbl.tHead.appendChild(h);
+  menages.forEach(mn => {
+    const tr = document.createElement("tr"), rs = d.data.filter(r => r.menage === mn);
+    cell(tr, mn); cell(tr, FR.format(",.0f")(Number(rs[0].revenu_disponible_avant)) + " €", "num");
+    reformes.forEach(([id]) => {
+      const r = rs.find(x => x.reforme === id), g = r ? Number(r.gain_annuel) : NaN;
+      cell(tr, isNaN(g) ? "—" : (g > 0 ? "+" : "") + FR.format(",.0f")(g) + " €" + (g ? ` (${(g > 0 ? "+" : "") + FR.format(".1f")(Number(r.gain_pct))} %)` : ""), "num " + (g > 0 ? "pos" : g < 0 ? "neg" : ""));
+    });
+    tbl.tBodies[0].appendChild(tr);
+  });
+}
+
 dash.onData(() => {
+  drawInc();
+  drawIncTable();
+  drawSens();
+  drawProj();
+  drawVal();
+  drawDist();
   drawPan();
   drawPanTable();
   drawApp();
