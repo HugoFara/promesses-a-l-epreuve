@@ -85,9 +85,23 @@ function table(el, cols, rows, opt = {}) {
   t.append(tb);
   el.append(t);
 }
+/** Tableaux plus larges (ou plus hauts) que leur cadre : atteignables au clavier pour les faire défiler, et nommés
+    pour les lecteurs d'écran. Les autres ne prennent pas de place dans l'ordre de tabulation. */
+function majDefilement() {
+  $$(".tbl-wrap").forEach(w => {
+    if (!w.offsetParent) return;  // masqué (vue inactive, accordéon fermé) : réglé quand il s'affiche
+    if (w.scrollWidth > w.clientWidth + 1 || w.scrollHeight > w.clientHeight + 1) {
+      const titre = w.querySelector("caption")?.textContent || w.closest("details")?.querySelector("summary")?.textContent
+        || w.closest(".chart-block, section")?.querySelector("h3, h2, h1")?.textContent || "Tableau";
+      w.setAttribute("tabindex", "0"); w.setAttribute("role", "region");
+      w.setAttribute("aria-label", "Tableau défilant : " + titre.replace(/^Pour aller plus loin : /, "").trim());
+    } else ["tabindex", "role", "aria-label"].forEach(a => w.removeAttribute(a));
+  });
+}
 function badge(txt, kind) { return h("span", {class: "badge " + (kind || "")}, txt); }
 function legend(el, items) {
   el.textContent = "";
+  el.setAttribute("aria-label", "Légende");
   items.forEach(([n, c, forme]) => el.append(h("li", {}, (() => {
     const i = h("i", {class: forme || "", "aria-hidden": "true"});
     if (forme === "dash") i.style.borderTopColor = c; else i.style.background = c;
@@ -663,7 +677,7 @@ function vueFoyer() {
     const out = $("#foyer-result"); out.textContent = "";
     rs.forEach(r => {
       const g = num(r.gain_annuel), cls = g > 0 ? "gain" : g < 0 ? "perte" : "neutre", o = origine(r.reforme);
-      out.append(h("div", {class: "foyer-row " + cls},
+      out.append(h("li", {class: "foyer-row " + cls},
         h("div", {}, h("strong", {}, ref.get(r.reforme)?.libelle || r.reforme), o ? h("div", {class: "small muted"}, "Mesure étudiée dans : " + o) : null),
         h("div", {class: "amt " + (g > 0 ? "pos" : g < 0 ? "neg" : "muted")}, g === 0 ? "Aucun effet" : sg(g, n0) + " €"),
         g !== 0 ? h("div", {class: "per"}, `par an, soit ${sg(g / 12, n0)} € par mois (${sg(num(r.gain_pct))} % du revenu)`) : null));
@@ -797,7 +811,8 @@ function btnPourquoi(fichier, id, libelle) {
   return b;
 }
 function btnTotal(fichier, groupe, txt) {
-  const b = h("button", {type: "button", class: "btn-pq big"}, txt);
+  // Nom accessible : le texte visible, puis le total concerné (sinon tous les boutons s'appellent pareil)
+  const b = h("button", {type: "button", class: "btn-pq big", "aria-label": `${txt} (total : ${groupe})`}, txt);
   b.onclick = () => pourquoiTotal(fichier, groupe);
   return b;
 }
@@ -1001,6 +1016,7 @@ function route() {
 }
 function dessiner() {
   (DESSINS[vueCourante] || []).forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
+  majDefilement();
 }
 
 /* ------------------------------------------------------------------ affichage */
@@ -1105,5 +1121,8 @@ async function init() {
   route();
   let t;
   addEventListener("resize", () => { clearTimeout(t); t = setTimeout(dessiner, 150); });
+  // Un accordéon ou un tableau filtré qui s'affiche peut devenir défilant
+  document.addEventListener("toggle", majDefilement, true);
+  $$(".view").forEach(sec => sec.addEventListener("change", () => setTimeout(majDefilement)));
 }
 document.addEventListener("DOMContentLoaded", init);

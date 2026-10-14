@@ -9,7 +9,9 @@ Ouvre chaque vue, sur écran large puis sur téléphone, et échoue si :
   - une explication « Pourquoi ce chiffre ? » est vide ou ne s'ouvre pas ;
   - le simulateur « Mon foyer » n'affiche pas le revenu et les effets de la situation choisie
     (distributif_grille.csv) ;
-  - un lien partageable (#/vue?choix=…) ne rétablit pas les choix, ou l'adresse ne suit pas les choix.
+  - un lien partageable (#/vue?choix=…) ne rétablit pas les choix, ou l'adresse ne suit pas les choix ;
+  - axe-core (scripts/vendor/, règles WCAG 2.2 A et AA et bonnes pratiques) trouve un défaut d'accessibilité,
+    dans une vue (accordéons ouverts), en thème clair et sombre, ou dans la fenêtre « Pourquoi ce chiffre ? ».
 
 Nécessite Playwright (`pip install playwright && playwright install chromium`). Sans lui, le contrôle est sauté,
 sauf si TEST_WEB_STRICT=1 (cas de la CI), où son absence est une erreur.
@@ -25,6 +27,8 @@ from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
 DATA = RACINE / "data"
+AXE = RACINE / "scripts" / "vendor" / "axe-core-4.10.3.min.js"
+AXE_REGLES = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]
 VUES = ["accueil", "hier", "programmes", "equilibre", "foyer", "demain", "methode", "lexique"]
 AVEC_GRAPHIQUES = {"hier", "programmes", "equilibre", "demain"}
 ECRANS = {"large": (1280, 900), "téléphone": (390, 844)}
@@ -38,6 +42,15 @@ def lire(nom):
 def fr(v, dec=0):
     """Format d'affichage du site : virgule décimale, signe moins typographique."""
     return f"{v:.{dec}f}".replace(".", ",").replace("-", "−")
+
+
+def accessibilite(page, lieu):
+    """Défauts relevés par axe-core sur la page telle qu'elle est affichée."""
+    if not page.evaluate("!!window.axe"):
+        page.add_script_tag(path=str(AXE))
+    v = page.evaluate("""async regles => (await axe.run(document, {runOnly: {type: "tag", values: regles}})).violations
+        .map(v => `${v.id} (${v.impact}) : ${v.help} → ${v.nodes.slice(0, 3).map(n => n.target.join(" ")).join(" ; ")}`)""", AXE_REGLES)
+    return [f"{lieu} : accessibilité, {x}" for x in v]
 
 
 class Silencieux(SimpleHTTPRequestHandler):
@@ -78,6 +91,9 @@ def main():
         nav = p.chromium.launch()
         for ecran, (w, h) in ECRANS.items():
             page = nav.new_page(viewport={"width": w, "height": h})
+            sombre = nav.new_page(viewport={"width": w, "height": h}, color_scheme="dark")
+            sombre.goto(base + "#/accueil")
+            sombre.wait_for_selector("#chargement", state="detached", timeout=15000)
             erreurs = []
             page.on("pageerror", lambda e: erreurs.append(str(e)))
             page.on("console", lambda m: erreurs.append(m.text) if m.type == "error" else None)
@@ -92,6 +108,13 @@ def main():
                 deb = page.evaluate("document.documentElement.scrollWidth - innerWidth")
                 if deb > 1:
                     echecs.append(f"[{ecran}] vue {v} : débordement horizontal de {deb} px")
+                for pg, theme in ((page, "clair"), (sombre, "sombre")):
+                    if pg is sombre:
+                        pg.evaluate(f"location.hash = '#/{v}'")
+                        pg.wait_for_selector(f"#v-{v}:not([hidden])")
+                    pg.evaluate("document.querySelectorAll('details').forEach(d => d.open = true)")
+                    pg.wait_for_timeout(100)
+                    echecs += accessibilite(pg, f"[{ecran}, {theme}] vue {v}")
             echecs += [f"[{ecran}] erreur JavaScript : {e}" for e in erreurs]
 
             if ecran == "large":
@@ -119,6 +142,7 @@ def main():
                 page.locator("#cards-programmes .btn-pq").first.click()
                 if not page.locator("#pq[open]").count() or "Après correction" not in page.locator("#pq-corps").inner_text():
                     echecs.append("pourquoi : la fenêtre du total ne s'ouvre pas")
+                echecs += accessibilite(page, "fenêtre « Pourquoi ce chiffre ? »")
                 page.keyboard.press("Escape")
                 # Simulateur « Mon foyer » : couple de retraités, deux pensions de 2 000 € bruts, sans dividendes
                 page.evaluate("location.hash = '#/foyer'")
@@ -154,13 +178,14 @@ def main():
                 if annee not in k("maj") or str(int(jour)) not in k("maj"):
                     echecs.append(f"pied de page : date « {k('maj')} », attendu {att['date']}")
             page.close()
+            sombre.close()
         nav.close()
     serveur.shutdown()
 
     if echecs:
         print("\n".join("ÉCHEC  " + e for e in echecs), file=sys.stderr)
         sys.exit(f"test web : {len(echecs)} échec(s)")
-    print(f"test web : OK ({len(VUES)} vues × {len(ECRANS)} écrans, chiffres clés conformes aux CSV)")
+    print(f"test web : OK ({len(VUES)} vues × {len(ECRANS)} écrans, chiffres clés conformes aux CSV, aucun défaut d'accessibilité relevé par axe-core)")
 
 
 if __name__ == "__main__":
