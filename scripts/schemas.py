@@ -232,6 +232,35 @@ class Historique(Ligne):
     raison: str; source: OptStr = None
 
 
+class Idee(Ligne):
+    """Idée qui revient (T16) : une carte de la page « idées ». Les montants sont dans idees_chiffres.csv."""
+    id: str; groupe: Literal["recettes", "economies", "baisses"]; ordre: int; idee: str
+    sous_theme_cahiers: OptStr = None; part_cahiers: OptFloat = None; source_cahiers: OptStr = None
+    sondage: OptStr = None; source_sondage: OptStr = None
+    statut: Literal["deja_en_vigueur", "proposee_budget_2027", "en_partie", "non_prevue", "contraire_traites"]
+    resume: str; fiable: str; qui_paie: str
+
+
+class IdeeChiffre(Ligne):
+    """Un chiffre d'une carte : sourcé ici, ou lu dans moteur_lignes.csv (ligne_moteur = fichier/id)."""
+    idee: str; ordre: int; libelle: str; principal: Literal["oui", "non"]
+    nature: Literal["officiel", "estimation", "calcul", "militant", "moteur"]
+    ligne_moteur: OptStr = None; valeur: OptFloat = None; unite: OptStr = None; annee: OptStr = None
+    url: OptStr = None; titre: OptStr = None; citation: OptStr = None; page: OptStr = None
+    confiance: Annotated[Optional[Confiance], BeforeValidator(_vide_none)] = None; note: OptStr = None
+
+    @field_validator("note")
+    @classmethod
+    def _source(cls, v, info):
+        d = info.data
+        if d.get("ligne_moteur"):
+            if d.get("nature") != "moteur":
+                raise ValueError("ligne_moteur demande nature = moteur")
+        elif d.get("valeur") is None or not d.get("url") or not d.get("citation") or not d.get("confiance"):
+            raise ValueError("chiffre sans valeur, url, citation ou confiance")
+        return v
+
+
 SCHEMAS = {
     "mesures_cout": MesureCout,
     "mesures_effets": MesureEffet,
@@ -260,5 +289,7 @@ SCHEMAS = {
     "variantes_sensibilite": VarianteSensibilite,
     "validation_attribution": AttributionValidation,
     "montee_en_charge": MonteeEnCharge,
+    "idees": Idee,
+    "idees_chiffres": IdeeChiffre,
     "historique": Historique,
 }

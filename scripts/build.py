@@ -41,13 +41,25 @@ for nom, schema in SCHEMAS.items():
         except ValidationError as e:
             for err in e.errors():
                 erreurs.append(f"{nom}.csv l.{i} ({r.get(cle)}) {'.'.join(map(str, err['loc']))} : {err['msg']}")
-        if nom not in ("historique", "chiffrages_instituts", "totaux_instituts", "statut_reference_2027", "ifrap_nfp_2024", "calibration_instituts", "variantes_sensibilite", "validation_attribution", "montee_en_charge"):
+        if nom not in ("historique", "chiffrages_instituts", "totaux_instituts", "statut_reference_2027", "ifrap_nfp_2024", "calibration_instituts", "variantes_sensibilite", "validation_attribution", "montee_en_charge", "idees_chiffres"):
             if r[cle] in vus:
                 erreurs.append(f"{nom}.csv : clé en double {r[cle]}")
             vus.add(r[cle])
     donnees[nom] = rows
 
 # Références croisées
+ids_idees = {r["id"] for r in donnees["idees"]}
+for r in donnees["idees_chiffres"]:
+    if r["idee"] not in ids_idees:
+        erreurs.append(f"idees_chiffres : idée inconnue {r['idee']}")
+    if r["ligne_moteur"]:
+        f, _, lid = r["ligne_moteur"].partition("/")
+        # les paniers publiés déclinent chaque ligne par variante (l_isf → l_isf_i, l_isf_a ; e_oper → e_oper_e)
+        brut = lid.rsplit("_", 1)[0] if f == "paniers" else lid
+        if f not in ("paniers", "application_lignes") or brut not in {x["id"] for x in donnees[f]}:
+            erreurs.append(f"idees_chiffres {r['idee']} : ligne du moteur inconnue {r['ligne_moteur']}")
+for i in ids_idees - {r["idee"] for r in donnees["idees_chiffres"] if r["principal"] == "oui"}:
+    erreurs.append(f"idees {i} : aucun chiffre principal")
 ids_elast = {r["id"] for r in donnees["elasticites"]}
 ids_backtest = {r["id"] for r in donnees["mesures_cout"]} | {r["id"] for r in donnees["mesures_effets"]} | {"calibration_instituts", "mesures_cout"}
 for r in donnees["hypotheses_defaut"]:
