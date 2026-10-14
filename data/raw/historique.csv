@@ -225,3 +225,15 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-10-14,regles,Élasticité IS,facteur,0.73,0.94,Décote faible : surtaxe 2025 à 94 % de son chiffrage (Cour des comptes),recherche/IS/rapport.md
 2026-10-14,paniers,l_surtaxe,facteur,0.73,0.94,Forfait de la règle « Élasticité IS » mis à jour,recherche/IS/rapport.md
 2026-10-14,check_regression,Paniers LFI financement,attendu,"+41,1","+41,6","Décote faible pour l'IS (0,73 → 0,94) sur la surtaxe pérenne",recherche/IS/rapport.md
+2026-10-14,mesures_cout,rachats_2025,*,,(nouvelle mesure),"Taxe sur les rachats d'actions : 0,4 prévu (LFI 2025) pour 0,5 encaissé",recherche/T12/rapport.md
+2026-10-14,validation_attribution,rachats_2025,regle,,Nouvelle assiette : risque juridique,Attribution à l'aveugle (agent 3),recherche/validation/attribution_agent_3_rachats.csv
+2026-10-14,check_regression,C1 erreur absolue médiane,attendu,"10,0","11,2",Ajout de rachats_2025 à la statistique principale,recherche/T12/rapport.md
+2026-10-14,check_regression,C1 nombre de mesures,attendu,25,26,Ajout de rachats_2025 à la statistique principale,recherche/T12/rapport.md
+2026-10-14,mesures_cout,ip_2021,source_ex_ante,(texte),(texte),Évaluation préalable PLF 2021 lue,recherche/T12/rapport.md
+2026-10-14,mesures_cout,ip_2021,note_confiance,(texte),(texte),Évaluation préalable PLF 2021 lue,recherche/T12/rapport.md
+2026-10-14,mesures_cout,ip_2021,confiance,medium,high,"Ex ante lu dans l'évaluation préalable (citation directe), ex post cité directement par la Cour",recherche/T12/rapport.md
+2026-10-14,mesures_cout,ir_baisse_2020,source_ex_ante,(texte),(texte),Évaluation préalable PLF 2020 lue,recherche/T12/rapport.md
+2026-10-14,mesures_cout,ir_baisse_2020,note_confiance,(texte),(texte),Évaluation préalable PLF 2020 lue,recherche/T12/rapport.md
+2026-10-14,mesures_cout,th_20,source_ex_ante,(texte),(texte),Évaluation préalable PLF 2020 lue,recherche/T12/rapport.md
+2026-10-14,mesures_cout,th_20,note_confiance,(texte),(texte),Évaluation préalable PLF 2020 lue,recherche/T12/rapport.md
+2026-10-14,mesures_cout,cite_2015,note_confiance,(texte),(texte),Évaluation préalable PLF 2015 lue : total non trouvé,recherche/T12/rapport.md

@@ -45,7 +45,7 @@ Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 er
 
 **Historique (règle 5).** Toute modification d'une valeur existante est inscrite dans `data/raw/historique.csv` (date, fichier, id, colonne, ancienne valeur, nouvelle, raison, source). Ce journal tient lieu de la colonne `valeur_precedente` demandée en T2. `appliquer_corrections.py` refuse une correction si la valeur actuelle ne correspond pas à l'ancienne valeur annoncée.
 
-**Tableau de bord local.** Depuis la racine : `python3 -m http.server 8000`, puis ouvrir http://localhost:8000/web/. Il couvre les 8 sections d'origine ; les résultats du moteur, de la projection, de la sensibilité et du distributif ne sont encore que dans les CSV (voir T11).
+**Tableau de bord local.** Depuis la racine : `python3 -m http.server 8000`, puis ouvrir http://localhost:8000/web/. Il couvre 13 sections : les 8 d'origine (les sections 7 et 8 lisent désormais les montants corrigés du moteur, `moteur_lignes.csv`), puis incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
 
 **OpenFisca.** `distributif.sh` utilise le clone local `../openfisca-france` (à côté du projet, version 176.1.4 rebasée sur l'upstream du 14/10/2026) et son `.venv`, recréé le 14 octobre. Si OpenFisca est absent, l'étape est sautée.
 
@@ -59,17 +59,17 @@ Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 er
 - **Confiance** : `high` = lu sur la source primaire ; `medium` = source secondaire, avec la raison dans `note_confiance` ; `low` = estimation ou source fragile.
 - **Référence 2027** = loi votée (LFI et LFSS 2026, lois antérieures) **+ PLF et PLFSS 2027 tels que déposés**. C'est la seule définition cohérente avec la cible de 5,0 % utilisée en T5 : une mesure déjà dans ces budgets est déjà dans les 5,0 %. L'application 2024 reste jugée par rapport à sa propre référence (programme de stabilité d'avril 2024) ; le statut 2027 de ses lignes est conservé dans `note_reference` pour T3.
 
-### Couche 1 : backtest mesure par mesure (28 mesures)
+### Couche 1 : backtest mesure par mesure (29 mesures)
 
-`mesures_cout.csv` : 28 mesures (11 d'origine + 14 ajoutées par T10a + 3 réalisés observés d'IS et d'IR tirés de la Cour des comptes ; 4 candidates en confiance low écartées : Pinel, MaPrimeRénov', redevance, assurance chômage 2021). Colonnes ajoutées après l'audit : `deflateur_ex_ante` (ex ante ramené à la base de prix de l'ex post : retraites 2023 × 0,901, Woerth × 1,08), `type_ex_post` (observe / administratif / reestimation), `inclus_stats` (bouclier gaz, chèque fioul et bouclier électricité exclus de la statistique principale : prix de l'énergie exogènes, ex ante déjà en exécution).
+`mesures_cout.csv` : 29 mesures (11 d'origine + 14 ajoutées par T10a + 3 réalisés observés d'IS et d'IR tirés de la Cour des comptes + la taxe sur les rachats d'actions de 2025, T12 ; 4 candidates en confiance low écartées : Pinel, MaPrimeRénov', redevance, assurance chômage 2021). Colonnes ajoutées après l'audit : `deflateur_ex_ante` (ex ante ramené à la base de prix de l'ex post : retraites 2023 × 0,901, Woerth × 1,08), `type_ex_post` (observe / administratif / reestimation), `inclus_stats` (bouclier gaz, chèque fioul et bouclier électricité exclus de la statistique principale : prix de l'énergie exogènes, ex ante déjà en exécution).
 
 | Échantillon (`couche1_stats.csv`) | n | Erreur absolue médiane | À ±15 % |
 |---|---|---|---|
-| **Principal** (`inclus_stats` = 1) | 25 | **10,0 %** | 16 |
-| Toutes les mesures | 28 | 12,1 % | 17 |
-| Ex post réellement observés (hors administratifs et réestimations) | 19 | 13,8 % | 11 |
+| **Principal** (`inclus_stats` = 1) | 26 | **11,2 %** | 16 |
+| Toutes les mesures | 29 | 12,4 % | 17 |
+| Ex post réellement observés (hors administratifs et réestimations) | 20 | 14,4 % | 11 |
 
-Les cinq ex post « administratifs » (IS, taxe d'habitation 20 %, impôts de production, pacte, heures sup. IR) sont des chiffrages à comportement constant, mécaniquement proches de l'ex ante : ils tirent la médiane vers le bas. Le chiffre honnête pour une mesure réellement évaluée est plutôt **13 %**.
+Les cinq ex post « administratifs » (IS, taxe d'habitation 20 %, impôts de production, pacte, heures sup. IR) sont des chiffrages à comportement constant, mécaniquement proches de l'ex ante : ils tirent la médiane vers le bas. Le chiffre honnête pour une mesure réellement évaluée est plutôt **14 %**.
 - **Par cause** (`couche1_par_cause.csv`) : coûts mécaniques à barème ≈2,5 % d'erreur ; comportement (PFU, CIR, CITE) ≈55 % ; énergie et conjoncture 12 à 48 % ; taux de recours dans les deux sens (prime d'activité sous-estimée ; chèques énergie et fioul surestimés).
 - **Effets promis** (`mesures_effets.csv`, 15 lignes) : CICE 0,29 ; TVA restauration 0,49 (emplois) ; TEPA, ISF et PFU sur l'investissement 0. Exception : les réformes des retraites ont plus relevé l'emploi des seniors que prévu.
 
@@ -100,10 +100,10 @@ Critère T4 rempli : toutes les valeurs centrales sont à ±10 % des forfaits, s
 
 ### Application aux programmes de 2024
 
-| | Somme indépendante | Corrigé (forfaits) | Moteur P10 / P50 / P90 |
-|---|---|---|---|
-| NFP 2024 | −150,5 | −159,5 | −204 / −154 / −104 |
-| Ensemble 2024 | −18,1 | −25,5 | −31 / −25 / −19 |
+| | Somme indépendante | Corrigé (forfaits) | Moteur central | Moteur P10 / P50 / P90 |
+|---|---|---|---|---|
+| NFP 2024 | −150,5 | −159,5 | −160,0 | −203 / −154 / −105 |
+| Ensemble 2024 | −18,1 | −25,5 | −25,7 | −31 / −25 / −19 |
 
 La médiane des niches reste à 14 : la seconde ligne de 5 du tableau iFRAP porte un astérisque (montant repris du parti) et n'est pas un chiffrage indépendant.
 
@@ -168,13 +168,14 @@ Question : notre chiffrage corrigé est-il plus proche du réalisé que le chiff
 | Élasticité patrimoine | confirmée (faiblement) | avec 0,85 : 5 dégradations sur 5 ; **affaiblie à 0,97** : 3 améliorations, 2 dégradations, erreur 3 % → 2 % (recalculé sans ISF→IFI). La règle ne corrige presque plus rien |
 | Élasticité IS | contredite (1 cas) | réalisés observés (Cour des comptes, `recherche/IS/rapport.md`) : surtaxe 2025 −6 % (8,0 → 7,5 d'acomptes), surtaxe de 5 % en 2013 +50 % (0,8 → 1,2). L'ancienne règle (0,73) prévoyait −27 %. **Remplacée par une décote faible (0,94)** calibrée sur 2025 ; recalculée sans 2025, il ne reste que 2013, qu'aucune décote ne peut rapprocher : la règle n'est pas confirmable avec deux cas |
 | Élasticité revenus | confirmée (faiblement) | un seul cas : CDHR 2025 attendue à 2,0, 0,4 encaissé (acompte) ; la règle (0,9) ne corrige que 10 points d'un écart de −80 % |
-| Successions, carburants, nouvelle assiette | non testées | aucune mesure passée comparable |
+| Nouvelle assiette : risque juridique | contredite (1 cas) | taxe sur les rachats d'actions 2025 (T12, attribution à l'aveugle par un 3e agent, issue inconnue de lui) : 0,4 prévu, 0,5 encaissé ; la décote de 0,8 donne 0,32 (erreur 25 % → 41 %). Règle appliquée à la taxe Zucman (`l_zucman`), non modifiée sur un seul cas |
+| Successions, carburants | non testées | aucune mesure passée comparable |
 
-Sur l'ensemble des chiffrages officiels, la méthode ne fait pas mieux que le départ (erreur médiane 9,6 % → 9,9 %) : elle ne change rien aux coûts mécaniques, qui sont la majorité, et ses gains (comportement du capital, effets promis, retraites) sont compensés par les règles mitigées ou contredites.
+Sur la statistique principale des chiffrages officiels (26 mesures), l'erreur médiane passe de 11,2 % à 10,2 %, mais l'erreur moyenne monte (20,2 % → 23,9 %) : la méthode ne fait pas nettement mieux que le départ : elle ne change rien aux coûts mécaniques, qui sont la majorité, et ses gains (comportement du capital, effets promis, retraites) sont compensés par les règles mitigées ou contredites.
 
-**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 31 %, Ensemble 2024 92 %, panier LFI intégral 36 %, LFI ajusté 44 %, Ensemble 0 %. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
+**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 29 %, Ensemble 2024 92 %, panier LFI intégral 36 %, LFI ajusté 44 %, Ensemble 0 %. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
 
-**Limites** : l'agent connaissait l'issue de 60 cas sur 83 ; échantillons très petits par règle (1 à 8) ; les règles les plus influentes pour 2027 (revenus, successions, nouvelle assiette Zucman) ne sont pas testables faute de précédent.
+**Limites** : l'agent connaissait l'issue de 60 cas sur 83 (le 3e agent ne connaissait pas celle des rachats) ; échantillons très petits par règle (1 à 8) ; les règles les plus influentes pour 2027 (revenus, successions, nouvelle assiette Zucman) n'ont au mieux qu'un précédent.
 
 **Décisions appliquées le 14/10** : « Taux de recours » restreinte aux chiffrages à recours complet (vérifié pour Montaigne : tous les éligibles au montant plein) ; « Élasticité patrimoine » affaiblie à 0,97. **Décision appliquée** : décote faible pour l'IS (0,94, fourchette 0,73-1). **À surveiller** : les soldes 2025 de la surtaxe et de la CDHR (déclarations de 2026), qui confirmeront ou non les acomptes.
 
@@ -221,7 +222,7 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 - **Inaccessibles en automatique** : budget.gouv.fr (Incapsula), Légifrance (téléchargement), performance-publique, cepr.org (403), Dares et DREES (pare-feu anti-robot), une partie de senat.fr. Depuis le 14 octobre au soir, ces sites sont lus avec le navigateur Chrome (`recherche/T2c/rapport.md`) : PDF lus dans la page avec pdf.js et sha256 calculé dans la page, sans contourner les protections ; fiches d'extraits datées dans `sources/T2c/` quand le document ne peut pas être téléchargé.
 - **Quota de recherche web** de la session (200 requêtes partagées) épuisé en fin de journée : non-recours APL et AAH, rapports EFB, document Lefebvre-Lehmann-Sicsic, évaluations préalables du PLF 2018 (annexe elle-même) restent à lire.
 - **Non trouvés** : chiffrage de L'Avenir en commun 2022 ; effet des heures sup. 2019 sur les heures travaillées ; évaluation officielle d'une taxe renforcée sur les rachats d'actions ; barèmes NFP de l'IR à 14 tranches et des successions ; budget vert du PLF 2027 ; dette 2028-2030 ; rendement du Dutreil restreint (LFI 2026 art. 8).
-- **Lignes encore fragiles** : `l_rachats` (low) ; `nfp_taux`, `ens_taux` (calculs, low) ; 8 lignes de paniers et 11 mesures de la couche 1 (ajouts T10a : sommes calculées ou évaluations préalables citées par l'Assemblée) en medium, raison dans `note_confiance`. Pour la couche 1, lire les évaluations préalables des PLF 2008, 2015, 2018, 2020 et 2021 sur budget.gouv.fr.
+- **Lignes encore fragiles** : `l_rachats` (low) ; `nfp_taux`, `ens_taux` (calculs, low) ; 8 lignes de paniers et 10 mesures de la couche 1 en medium, raison dans `note_confiance`. Les évaluations préalables des PLF 2015, 2020 et 2021 ont été lues le 14/10 (T12, `recherche/T12/rapport.md`) : elles confirment les ex ante repris de seconde main, `ip_2021` passe en high ; les 10 restantes le sont pour des raisons propres à l'ex post (sommes calculées, microsimulation) ou faute de document (CIR 2008 : pas d'évaluation préalable avant 2010).
 
 ### Choix méthodologiques discutables
 
@@ -240,7 +241,7 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 | Tâche | État au 14/10 | Reste à faire |
 |---|---|---|
 | T1 Référence 2027 | **Fait** : 68 lignes avec statut (aucune inconnue), `facteur_reference`, paramètres du PLF 2027 | Suivre le vote du PLF/PLFSS 2027 (abattement des retraités, surtaxe, holdings) et mettre à jour `statut_reference_2027.csv` |
-| T2 Sources primaires | **Largement fait** : couche 2 entièrement high ; 74/75 élasticités high ; sources « navigateur » lues (T2c : cepr.org, Dares, DREES, Persée, Cour des comptes, budget.gouv.fr) | 11 mesures T10a et 8 lignes de paniers en medium (section 6) |
+| T2 Sources primaires | **Largement fait** : couche 2 entièrement high ; 74/75 élasticités high ; sources « navigateur » lues (T2c : cepr.org, Dares, DREES, Persée, Cour des comptes, budget.gouv.fr) | 10 mesures de la couche 1 et 8 lignes de paniers en medium (section 6 ; T12 a lu les évaluations préalables disponibles) |
 | T3 Programmes 2027 | **Prêt** : gabarit `modeles/programme_2027.csv` ; garde-fous et sensibilité s'appliquent automatiquement | Saisir LFI 2027 dès le 6/11, puis les autres ; faire auditer par un agent indépendant |
 | T4 Moteur | **Fait** (critère rempli) | Barèmes IR et successions dès qu'un parti les publie ; distribution des dividendes par tranche (DGFiP) |
 | T5 Projection | **Fait** (critère rempli) | Montée en charge par ligne ; bouclage macro (multiplicateurs Mésange) ; trajectoire 2030+ si publiée |
@@ -248,14 +249,15 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 | T7 Distributif | **Partiel** | Déciles : accès ERFS (CASD) ou maquette publique ; reproduire un cas type publié |
 | T8 Garde-fous | **Fait** ; CI prête (dépôt git à créer) | — |
 | T9 Pipeline | **Fait** : données dans `data/raw/`, schémas pydantic, 257 sources archivées avec sha256 | — |
-| T10 Backtest | **Fait** : 28 mesures ; calibration par institut (aucun biais significatif, n ≤ 8) | Recalculer à périmètre et base de prix identiques ; sortir les ex post administratifs |
-| T11 Tableau de bord (nouveau) | Version autonome fonctionnelle | Ajouter des sections moteur, projection, sensibilité, distributif ; mettre à jour l'artifact claude.ai si souhaité |
+| T10 Backtest | **Fait** : 29 mesures ; calibration par institut (aucun biais significatif, n ≤ 8) | Recalculer à périmètre et base de prix identiques ; sortir les ex post administratifs |
+| T11 Tableau de bord (nouveau) | Fait le 14/10 : sections 9 à 13 (moteur, sensibilité, projection, validation, distributif) ; sections 7-8 sur le moteur | Déciles quand T7 sera fait ; mettre à jour l'artifact claude.ai seulement sur demande |
+| T12 Rachats d'actions et évaluations préalables (nouveau) | Fait le 14/10 : taxe sur les rachats ajoutée à la couche 1 (0,4 prévu par la LFI 2025, 0,5 encaissé) ; évaluations préalables PLF 2015, 2020, 2021 lues (`recherche/T12/rapport.md`) | Évaluation préalable PLF 2018 (IS) sans objet ; dossier de presse PLF 2008 introuvable |
 
 **Calibration par institut (T10b)** : Montaigne n = 8, biais moyen −34 % (IC 95 % [−108 ; +39]) ; OFCE n = 5, +2 % [−19 ; +23] ; Fondation Concorde n = 5, +5 % [−30 ; +39]. Aucun facteur par institut n'est appliqué ; l'erreur absolue médiane (14,9 % tous instituts, 40 % pour Montaigne seul) sert d'incertitude par ligne.
 
 ## 8. Tableau de bord publié
 
-L'artifact privé (claude.ai) n'a **pas** été mis à jour le 14 octobre (règle de l'utilisateur : pas de publication en ligne sans demande explicite). Il montre encore les données du 12 octobre. La version locale (`web/index.html`) lit les CSV à jour. `dashboard_page.html` applique désormais `facteur_reference` ; la republier avec les nouveaux CSV mettrait l'artifact à jour.
+L'artifact privé (claude.ai) n'a **pas** été mis à jour le 14 octobre (règle de l'utilisateur : pas de publication en ligne sans demande explicite). Il montre encore les données du 12 octobre. La version locale (`web/index.html`) lit les CSV à jour. Pour republier `dashboard_page.html`, il faudrait joindre à l'artifact les nouveaux CSV, y compris ceux du moteur, de la projection, de la validation et du distributif (liste `SOURCES` de `scripts/build_web.py`).
 
 ## 9. Règles à respecter
 

@@ -2,7 +2,7 @@ regle,statut,n,note
 Déjà dans la référence,non testée,0,aucune mesure passée de ce type dans le backtest
 Effet promis,confirmée,8,"6 améliorée(s), 2 dégradée(s) ; erreur médiane 61 % → 29 %"
 Médiane des estimations,non testée,0,aucune mesure passée de ce type dans le backtest
-Nouvelle assiette : risque juridique,non testée,0,aucune mesure passée de ce type dans le backtest
+Nouvelle assiette : risque juridique,contredite,1,"0 améliorée(s), 1 dégradée(s) ; erreur médiane 25 % → 41 %"
 Recette ponctuelle,non testée,0,aucune mesure passée de ce type dans le backtest
 Règle d'or,non testée,0,aucune mesure passée de ce type dans le backtest
 Réforme structurelle,mitigée,2,"1 améliorée(s), 1 dégradée(s) ; erreur médiane 78 % → 78 %"

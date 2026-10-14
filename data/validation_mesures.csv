@@ -27,6 +27,7 @@ officiel (hors statistique principale),bouclier_gaz_2023,Bouclier tarifaire gaz 
 officiel,cebge_2025,"Contribution exceptionnelle sur les bénéfices des grandes entreprises (surtaxe d'IS, 1re année)",Élasticité IS,1.0,calibration (leave-one-out),oui,8.0,8.0,7.5,-6.2,-6.2,inchangé,True
 officiel,ce_is_5pct_2013,Contribution exceptionnelle de 5 % sur l'IS des grandes entreprises (2e année),Élasticité IS,0.938,calibration (leave-one-out),non,0.8,0.75,1.2,50.0,56.2,dégradé,True
 officiel,cdhr_2025,Contribution différentielle sur les hauts revenus (imposition minimale de 20 %),Élasticité revenus,0.9,test,oui,2.0,1.8,0.4,-80.0,-70.0,amélioré,True
+officiel,rachats_2025,"Taxe sur les réductions de capital consécutives aux rachats d'actions (8 % du nominal et des primes, CA > 1 Md€), avec taxe temporaire sur mars 2024-février 2025",Nouvelle assiette : risque juridique,0.842,test,non,0.4,0.337,0.5,25.0,40.8,dégradé,True
 effet annoncé,cice_emploi,CICE — Emplois créés,Effet promis,0.0,calibration (leave-one-out),oui,1.0,0.0,0.29,-71.0,29.0,amélioré,True
 effet annoncé,cice_emploi_ofce,CICE — Emplois nets du financement (OFCE),Effet promis,0.29,calibration (leave-one-out),oui,1.0,0.29,1.1,10.0,81.0,dégradé,True
 effet annoncé,tepa_heures,Heures sup. TEPA — Heures travaillées,Effet promis,0.29,calibration (leave-one-out),oui,1.0,0.29,0.0,-100.0,-29.0,amélioré,True

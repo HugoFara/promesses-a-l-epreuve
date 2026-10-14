@@ -14,8 +14,8 @@ def ecart(r):
     a = float(r["ex_ante"]) * float(r["deflateur_ex_ante"])
     return ((a - float(r["ex_post_central"])) if r["sens"] == "cout" else (float(r["ex_post_central"]) - a)) / a * 100
 err = [ecart(r) for r in c]
-check("C1 erreur absolue médiane (%)", statistics.median(abs(e) for e in err), 10.0)
-check("C1 nombre de mesures (statistique principale)", len(c), 25, 0)
+check("C1 erreur absolue médiane (%)", statistics.median(abs(e) for e in err), 11.2)
+check("C1 nombre de mesures (statistique principale)", len(c), 26, 0)
 check("C1 mesures à ±15 %", sum(abs(e) <= 15 for e in err), 16)
 # Couche 2
 p = rows("programmes_stabilite_fr.csv")

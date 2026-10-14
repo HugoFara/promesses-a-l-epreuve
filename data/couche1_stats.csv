@@ -1,4 +1,4 @@
 echantillon,n,erreur_abs_mediane_pct,a_15pct,erreur_abs_moyenne_pct
-principal (inclus_stats = 1),25,10.0,16,20.0
-toutes,28,12.1,17,24.0
-ex post observés seulement,19,13.8,11,24.8
+principal (inclus_stats = 1),26,11.2,16,20.2
+toutes,29,12.4,17,24.0
+ex post observés seulement,20,14.4,11,24.8
