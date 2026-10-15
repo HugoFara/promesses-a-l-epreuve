@@ -17,7 +17,7 @@ Le traitement est le même que la demande vienne d'un particulier, d'un parti ou
    - `low` : estimation ou source fragile.
 
    Une valeur calculée est marquée comme telle (`source_type = calcul`, ou une note qui donne le calcul). Un chiffre introuvable s'écrit « non trouvé », jamais de mémoire.
-2. **Traitement symétrique.** Une règle de correction s'applique à toute mesure du même type, quel que soit le parti. `scripts/garde_fous.py` le vérifie. Une nouvelle application est relue par quelqu'un qui n'a pas produit le chiffrage.
+2. **Traitement symétrique.** Une règle de correction s'applique à toute mesure du même type, quel que soit le parti. Chaque ligne de programme déclare sa famille (`data/raw/familles.csv`, par exemple « accise sur l'électricité ») et reçoit la règle de cette famille, sauf écart expliqué dans `exception_symetrie`. `scripts/garde_fous.py` le vérifie. Une nouvelle application est relue par quelqu'un qui n'a pas produit le chiffrage.
 3. **Séparer les faits des préférences.** Ce qui relève d'un choix politique (par exemple un déficit voulu pour investir) est dans une colonne à part, jamais mêlé au solde.
 4. **Pas de double compte avec la référence.** Une mesure déjà votée ou déjà inscrite au budget 2027 n'est comptée que pour la part qui n'y est pas (`statut_reference`, `facteur_reference`).
 5. **Garder l'historique.** Toute modification d'une valeur existante est inscrite dans `data/raw/historique.csv` : date, fichier, ligne, colonne, ancienne valeur, nouvelle, raison, source. Utiliser `scripts/appliquer_corrections.py`, qui refuse une correction si la valeur actuelle ne correspond pas à l'ancienne annoncée. Ce fichier est publié sur le site (« Journal des corrections »).

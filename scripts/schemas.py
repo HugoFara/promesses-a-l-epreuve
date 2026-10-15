@@ -116,6 +116,8 @@ class LigneApplication(Ligne):
     facteur_interaction: OptFloat = None; facteur_interaction_bas: OptFloat = None; facteur_interaction_haut: OptFloat = None
     recours_complet_suppose: Annotated[Optional[Literal["oui", "non"]], BeforeValidator(_vide_none)] = None
     source_recours: OptStr = None
+    # Famille de mesures (familles.csv) : même famille, même règle, quel que soit le parti ; écart expliqué dans exception_symetrie
+    famille: OptStr = None; exception_symetrie: OptStr = None
 
 
 class ProgrammeApplication(Ligne):
@@ -140,6 +142,12 @@ class LignePanier(Ligne):
     facteur_interaction: OptFloat = None; facteur_interaction_bas: OptFloat = None; facteur_interaction_haut: OptFloat = None
     recours_complet_suppose: Annotated[Optional[Literal["oui", "non"]], BeforeValidator(_vide_none)] = None
     source_recours: OptStr = None
+    # Famille de mesures (familles.csv) : même famille, même règle, quel que soit le parti ; écart expliqué dans exception_symetrie
+    famille: OptStr = None; exception_symetrie: OptStr = None
+
+
+class Famille(Ligne):
+    famille: str; libelle: str; regle: str; justification: str
 
 
 class MoteurRegle(Ligne):
@@ -290,6 +298,7 @@ SCHEMAS = {
     "application_programmes": ProgrammeApplication,
     "application_parametres": Parametre,
     "paniers": LignePanier,
+    "familles": Famille,
     "moteur_regles": MoteurRegle,
     "moteur_parametres": MoteurParametre,
     "chiffrages_instituts": ChiffrageInstitut,
