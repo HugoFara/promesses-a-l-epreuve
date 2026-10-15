@@ -152,7 +152,8 @@ def main():
             tirs[(fichier, r["id"])] = (dist, f_ref_dist, f_int_dist, err)
             central = m * f_c * f_ref * f_int
             ecart = (f_c - f_forfait) / f_forfait * 100 if f_forfait else (0.0 if f_c == 0 else math.inf)
-            composante = "investissement" if role.startswith("Investissement") else (role or "total")
+            # Emprunt « règle d'or » : rôle Investissement (paniers) ou règle « Règle d'or » (programmes saisis ligne à ligne)
+            composante = "investissement" if role.startswith("Investissement") or r["regle"] == "Règle d'or" else (role or "total")
             lignes.append({
                 "fichier": fichier, "id": r["id"], "groupe": r[groupe_col], "composante": composante, "regle": r["regle"],
                 "mode": mode, "montant": m, "facteur_forfait": f_forfait, "facteur_moteur": round(f_c, 4),

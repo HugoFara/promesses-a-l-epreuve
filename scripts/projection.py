@@ -1,7 +1,8 @@
 """Projection pluriannuelle du déficit et de la dette, 2026-2032 (T5).
 
 Entrées (data/) : projection_reference.csv (trajectoire du gouvernement : croissance, déflateur, solde ; dette publiée
-                  pour contrôle ; ajustements stock-flux), projection_parametres.csv, moteur_lignes.csv, montee_en_charge.csv.
+                  pour contrôle ; ajustements stock-flux), projection_parametres.csv, moteur_lignes.csv, montee_en_charge.csv,
+                  application_programmes.csv (programmes d'une élection de 2027, projetés comme les paniers).
 Sorties (data/) : projection.csv (scénario × année), projection_controle.csv.
 
 Mécanique, par année t (Md€ ; ratios en % du PIB) :
@@ -96,7 +97,11 @@ def trajectoire(impact, choc_pb=0.0, avec_biais=True, invest=None):
 
 
 def main():
-    ml = [r for r in lire("moteur_lignes.csv") if r["fichier"] == "paniers"]
+    # Paniers, et programmes saisis ligne à ligne pour une élection de 2027 (jugés sur la même référence, le PLF 2027).
+    # Leur ligne de charge d'intérêts est exclue : la projection calcule elle-même les intérêts supplémentaires.
+    progs_2027 = {r["programme"] for r in lire("application_programmes.csv") if "2027" in r["scrutin"]}
+    ml = [r for r in lire("moteur_lignes.csv")
+          if r["fichier"] == "paniers" or (r["groupe"] in progs_2027 and r["regle"] != "Taux d'intérêt")]
     # Montée en charge (montee_en_charge.csv) : coefficient central par année, relatif au montant 2027 en % du PIB
     mec = {}
     for r in lire("montee_en_charge.csv"):
@@ -105,7 +110,7 @@ def main():
     for r in ml:
         cible = invests if r["composante"] == "investissement" else impacts
         d = cible.setdefault(r["groupe"], {t: 0.0 for t in ANNEES if t >= 2027})
-        coef = mec.get(r["id"].rsplit("_", 1)[0], {})
+        coef = mec.get(r["id"].rsplit("_", 1)[0] if r["fichier"] == "paniers" else r["id"], {})
         for t in d:
             d[t] += float(r["corrige_central" if t == 2027 else "corrige_2028"]) * coef.get(t, 1.0)
     choc = P["choc_stress_pb"]
@@ -114,7 +119,8 @@ def main():
                  ("Référence corrigée, stress +25 pb", {}, choc, True, None)]
     for g, imp in impacts.items():
         inv = invests.get(g)
-        scenarios += [(f"Panier {g}", imp, 0.0, True, inv), (f"Panier {g}, stress +25 pb", imp, choc, True, inv)]
+        nom = g if g in progs_2027 else f"Panier {g}"
+        scenarios += [(nom, imp, 0.0, True, inv), (f"{nom}, stress +25 pb", imp, choc, True, inv)]
     lignes = [{"scenario": nom, **r} for nom, imp, ch, ab, inv in scenarios for r in trajectoire(imp, ch, ab, inv)]
     with open("projection.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(lignes[0]), lineterminator="\n")

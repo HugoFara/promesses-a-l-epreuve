@@ -85,6 +85,24 @@ for r in rows("statut_reference_2027.csv"):
         if ecart and not r.get("raison_ecart"):
             erreurs.append(f"RÉFÉRENCE {r['id_ligne']} : statut ou facteur différent de T1 sans raison_ecart")
 
+# Profil pluriannuel (audit, § 4.2) : dans la projection (paniers et programmes de 2027), une famille dont une ligne a une
+# montée en charge doit en avoir une pour toutes ses lignes ; sinon le coût de l'une suit les années et pas celui de l'autre
+progs_2027 = {r["programme"] for r in rows("application_programmes.csv") if "2027" in r["scrutin"]}
+profils = {r["id"] for r in rows("montee_en_charge.csv")}
+projetees = [("paniers", r, r["id"].rsplit("_", 1)[0]) for r in rows("paniers.csv")] + \
+            [("application_lignes", r, r["id"]) for r in rows("application_lignes.csv")
+             if r["programme"] in progs_2027 and r["regle"] != "Taux d'intérêt"]
+avec_profil = {r.get("famille") for _, r, i in projetees if i in profils}
+for nom, r, i in projetees:
+    if r.get("famille") in avec_profil and i not in profils and r["regle"] not in HORS_FAMILLE:
+        if not r.get("exception_symetrie"):
+            erreurs.append(f"PROFIL {nom} {i} : famille « {r['famille']} » avec montée en charge ailleurs, aucune ici (montee_en_charge.csv)")
+        else:
+            alertes.append(f"exception de profil {nom} {i} : {r['exception_symetrie']}")
+for r in rows("application_lignes.csv"):
+    if r["id"] in profils and r["programme"] not in progs_2027:
+        alertes.append(f"PROFIL application_lignes {r['id']} : montée en charge sans effet (programme hors projection)")
+
 for nom, url_cols in (("mesures_cout", ("source_ex_ante", "source_ex_post")), ("elasticites", ("url",)),
                       ("programmes_stabilite_fr", ("source",))):
     for r in rows(f"{nom}.csv"):

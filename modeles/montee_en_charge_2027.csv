@@ -1,0 +1,2 @@
+id,annee,coef_bas,coef_central,coef_haut,source,note
+lfi27_exemple,2028,,,,recherche/<tâche>/rapport.md,"(exemple à remplacer, à copier dans data/raw/montee_en_charge.csv) Une ligne par année de 2028 à 2032 : montant de l'année rapporté au montant 2027, en % du PIB (1 = constant). Seulement si une source chiffre la montée en charge ; une ligne de la même famille qu'une ligne déjà profilée (ex. retraites_age : l_ret60, l_ret62) doit en avoir un aussi, sinon garde_fous échoue"
