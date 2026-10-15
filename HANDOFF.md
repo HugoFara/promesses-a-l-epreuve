@@ -3,7 +3,7 @@
 Backtest des chiffrages budgétaires et site public. Destinataire : agent d'implémentation. État au 15 octobre 2026. La version du 12 octobre (avant le renommage, projet alors appelé `backtest-chiffrages`) est conservée dans `../backtest-chiffrages.zip`.
 
 - Dépôt public : https://github.com/HugoFara/promesses-a-l-epreuve (branche `main`).
-- Site en ligne : https://hugofara.github.io/promesses-a-l-epreuve/web/ (section 8).
+- Site en ligne : https://hugofara.github.io/promesses-a-l-epreuve/web/ (section 9).
 
 ## 1. Objectif
 
@@ -23,6 +23,7 @@ promesses-a-l-epreuve/
 ├── requirements.txt            pandas, numpy, pydantic
 ├── requirements-web.txt        playwright (contrôle du site ; facultatif en local, requis en CI)
 ├── .github/workflows/ci.yml    contrôles (run_all.sh, Python 3.14) à chaque push, puis déploiement GitHub Pages sur main
+├── .github/ISSUE_TEMPLATE/contester-un-chiffre.yml  formulaire « Contester un chiffre » (source obligatoire)
 ├── data/
 │   ├── raw/                    SOURCE DE VÉRITÉ : seuls fichiers à éditer (CSV UTF-8, virgule, point décimal, LF)
 │   └── *.csv                   fichiers publiés et dérivés, régénérés par run_all.sh : ne pas éditer
@@ -59,13 +60,18 @@ Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 er
 
 **Site.** En local : depuis la racine, `python3 -m http.server 8000`, puis http://localhost:8000/web/. Tous les chiffres viennent des CSV (`SOURCES` dans `web/site.js`) ; aucune valeur en dur.
 
-- **Vues adressables** : `#/accueil`, `#/idees`, `#/hier`, `#/programmes`, `#/equilibre`, `#/foyer`, `#/demain`, `#/methode`, `#/lexique` (et `#/idees/<id>`, `#/hier/<graphique>` pour une partie). Encadré « En bref » en langage courant, graphiques doublés d'un tableau de données, détail expert dans des accordéons, paramètres d'affichage (thème, taille du texte). Apparence inspirée des sites publics, sans leurs signes distinctifs ; un bandeau rappelle que le site est indépendant.
+- **Vues adressables** : `#/accueil`, `#/idees`, `#/hier`, `#/programmes`, `#/equilibre`, `#/foyer`, `#/demain`, `#/methode`, `#/journal`, `#/lexique` (et `#/idees/<id>`, `#/hier/<graphique>` pour une partie). Encadré « En bref » en langage courant, graphiques doublés d'un tableau de données, détail expert dans des accordéons, paramètres d'affichage (thème, taille du texte). Apparence inspirée des sites publics, sans leurs signes distinctifs ; un bandeau rappelle que le site est indépendant.
 - **Accueil progressif** (après un test avec un novice : site jugé technique, graphiques intimidants, seul l'effet sur sa situation l'intéressait) : simulateur minimal (statut, composition, enfants, revenu net ; sans dividendes), résultat en euros par mois avec un libellé courant (`libelle_simple`) et le porteur de la mesure (`porteur`, colonnes de `distributif_reformes.csv`) ; « Affiner mon calcul » ouvre « Mon foyer » avec la même situation ; le reste est rangé sous « Pour aller plus loin ». Pas de présentation « par parti » tant que chaque grand parti n'a pas au moins deux mesures ménages sourcées et simulées (aujourd'hui : gouvernement et NFP seulement ; règle de sélection T15, `recherche/T15/regle_selection.md`).
 - **Les idées qui reviennent** (`#/idees`, T16) : 17 idées choisies par une règle externe (`recherche/T16/idees.md`) : proposition comptée au moins 5 000 fois dans la synthèse officielle des cahiers citoyens et courriers de 2019 (Roland Berger, Bluenove, Cognito ; `recherche/T16/D_rapport.md`), ou mesure testée par le sondage Elabe du 3/9/2026, et effet sur le budget. `data/raw/idees.csv` (statut, résumé, « peut-on s'y fier ? », « qui paierait ? », attestation des cahiers : proposition, mentions, page) et `idees_chiffres.csv` (65 chiffres des volets de recherche A, B et C, ou lus dans le moteur par `ligne_moteur` pour afficher annonce et correction ; `repere` = comparé au déficit 2025, seulement pour ce qu'une mesure rapporterait ou coûterait). Un tableau d'ensemble, puis une carte par idée. Les pourcentages de soutien du sondage sont dans les données mais pas affichés. Les comptes provisoires de l'association « Des cahiers pour décider et agir » ne sont ni utilisés ni publiés (ils surestimaient la taxe sur les transactions financières). La fraude sociale (recherche faite, 14 Md€ estimés) est exclue par la règle : 3 594 mentions en 2019, et non testée par le sondage.
 - **Mon foyer** : simulateur complet (statut, composition, enfants, revenu net, dividendes) ; il affiche la situation la plus proche de `distributif_grille.csv` (précalculée, rien n'est envoyé).
 - **« Pourquoi ce chiffre ? »** sur chaque montant corrigé (lignes des programmes et des paniers, totaux, cartes des idées liées au moteur) : chiffrage de départ et sa source, règle et ses références, part déjà dans la référence, recoupements, fourchette P10-P90, statut de la règle (`validation_regles.csv`), détail du moteur.
 - **Partage et impression** : les choix d'une vue s'écrivent dans l'adresse (seuls ceux qui diffèrent du défaut) ; boutons « Copier le lien de cette page » et « Imprimer » (accordéons ouverts, couleurs claires, adresse et date ajoutées).
 - **Accessibilité** : audit WCAG 2.2 AA (`recherche/audit/accessibilite.md`) ; `test_web.py` lance axe-core (`scripts/vendor/`) sur chaque vue, aux deux tailles d'écran et dans les deux thèmes. La CI tourne avec d'autres polices que la machine locale : elle a déjà révélé des débordements et des noms de tableaux en double ; ne pas se fier au seul test local.
+- **Ordre neutre** : partis, programmes, scénarios et mesures toujours rangés par ordre alphabétique (`alpha` dans `site.js`), jamais par résultat ; `test_web.py` le vérifie sur les cartes.
+- **Mesures non calculées** : sous le résultat de l'accueil et de « Mon foyer », « Ce n'est pas l'effet total » puis la liste sourcée « Aussi dans ces propositions, non calculé pour vous » (`non_chiffre_foyer.csv`, par porteur ; `build.py` refuse un porteur sans mesure simulée).
+- **Citer et contester** : en fin de chaque « Pourquoi ce chiffre ? », une citation prête à copier (chiffre, fourchette, source de départ, date des données) avec un lien permanent (`#/<vue>?pq=fichier:id` ou `?pq=total:fichier:groupe`, qui rouvre l'explication), et un lien « Contestez-le avec une source » vers le formulaire GitHub, prérempli avec la citation.
+- **Journal des corrections** (`#/journal`) : `historique.csv` publié (du plus récent au plus ancien), avec filtre par fichier et recherche ; sert aussi de fil des mises à jour.
+- **Profondeur et limites visibles tôt** : sous le simulateur de l'accueil, lien vers la méthode (mesures testées, études, journal, code) ; en tête de « Les programmes », une ligne « Bon à savoir » sur ce que la méthode ne fait pas mieux (chiffres lus dans `validation_resume.csv`).
 - **Tableau de bord complet** (`web/complet.html`, pour spécialistes) : 13 sections, dont incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
 
 **OpenFisca.** `distributif.sh` utilise le clone local `../openfisca-france` (à côté du projet, version 176.1.4 rebasée sur l'upstream du 14/10/2026) et son `.venv`, recréé le 14 octobre. Si OpenFisca est absent, l'étape est sautée.
@@ -241,7 +247,8 @@ Ménages types et grille = conventions (multiples du SMIC, montants ronds, pas d
 | `projection_reference.csv`, `projection_parametres.csv` | `annee`, `id` | T5 |
 | `distributif_reformes.csv` | `id` | Réformes simulées sous OpenFisca (T7), avec `libelle_simple` et `porteur` pour l'accueil |
 | `idees.csv`, `idees_chiffres.csv` | `id` ; (`idee`, `ordre`) | Idées qui reviennent (T16) : cartes et chiffres ; `build.py` refuse un chiffre sans source, un renvoi inconnu au moteur, une idée des cahiers sans attestation d'au moins 5 000 mentions |
-| `historique.csv` | — | Journal des modifications |
+| `non_chiffre_foyer.csv` | (`porteur`, `ordre`) | Mesures d'un porteur qui touchent les ménages mais ne sont pas simulées (accueil et « Mon foyer ») ; sources : PLF/PLFSS 2027 déjà lus (T1) et synthèse Montaigne NFP 2024 |
+| `historique.csv` | — | Journal des modifications, publié dans `data/` pour la vue « Journal des corrections » |
 
 ## 5. Règles de correction en vigueur
 
@@ -291,13 +298,44 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 
 **Calibration par institut (T10b)** : Montaigne n = 8, biais moyen −34 % (IC 95 % [−108 ; +39]) ; OFCE n = 5, +2 % [−19 ; +23] ; Fondation Concorde n = 5, +5 % [−30 ; +39]. Aucun facteur par institut n'est appliqué ; l'erreur absolue médiane (14,9 % tous instituts, 40 % pour Montaigne seul) sert d'incertitude par ligne.
 
-## 8. Site publié
+## 8. Publics visés et organisation du site (retour du 15/10)
+
+Un second retour externe (15/10) porte sur l'orientation vis-à-vis des publics. Décisions de l'utilisateur et état :
+
+**Publics, par ordre de priorité.**
+1. **Les relais** (journalistes, vérificateurs, enseignants, associations) : cible principale ; ce sont eux qui amènent l'électeur, par un lien partagé. Il leur faut un chiffre citable avec sa source.
+2. **L'électeur pressé** : la réponse en moins de 60 secondes sur mobile, sans lire de texte explicatif.
+3. **Le curieux ou l'indécis**, qui compare les partis : c'est là que l'équité de présentation compte le plus.
+4. **Le spécialiste et le contradicteur** (économistes, équipes de campagne) : à satisfaire plutôt qu'à conquérir ; il donne ou retire la crédibilité.
+
+**Trois couches, un seul chiffre.** « Ma réponse » (fiche sans terme technique ni graphique) ; « Comprendre » (détail en langage courant, un graphique au plus par écran) ; « Vérifier » (méthode, moteur, validation, sources, CSV, y compris les résultats défavorables). Règles : même chiffre au même arrondi partout, traçable en deux clics par « Pourquoi ce chiffre ? » ; la profondeur visible dès la couche 1 ; les limites affichées tôt ; aucun ordre politique implicite (parti choisi par le lecteur en premier, les autres par ordre alphabétique).
+
+**Fait le 15/10** (section 2, « Site ») : ordre alphabétique partout ; lien vers la profondeur sur l'accueil ; ligne « Bon à savoir » sur les limites de la méthode (« Les programmes ») ; liste « non calculé pour vous » ; « Citer ce chiffre » avec lien permanent ; journal des corrections ; formulaire « Contester un chiffre ». Au passage, `build.py` avait un second bloc de contrôles après la sortie en cas d'erreur, dont les erreurs n'étaient jamais affichées : supprimé (les mêmes contrôles existent avant).
+
+**Réserve sur la « part du déficit par foyer ».** Le retour proposait une fiche à deux faces : le gain direct (« +110 € par mois ») et la part moyenne du déficit corrigé par foyer (« 72 Md€ / 30 M foyers ≈ 200 € par mois »). L'idée est juste (montrer seulement le gain avantage les programmes qui dépensent), mais telle quelle elle trompe :
+- les deux faces n'ont pas le même périmètre (gain : les 4 mesures simulées ; déficit : tout le programme), et le lecteur les soustraira ;
+- une part égale par foyer contredit les programmes qui financent par l'impôt sur le capital (pour un salarié au SMIC, « 200 € par mois » serait faux dans l'autre sens) ;
+- avec les paniers actuels, ce serait notre construction qui parle (financements choisis par le site), comme les badges retirés le même jour.
+**À faire ainsi** : un indicateur du programme, sur une ligne séparée, jamais soustrait du gain personnel (« Ce programme laisse environ X Md€ par an sans financement, soit en moyenne Y € par mois et par ménage, à payer plus tard par des impôts, des économies ou de la dette »), calculé seulement à partir des financements annoncés par le parti (après T3), avec un nombre de ménages sourcé (Insee).
+
+**Reste à faire, avec T3 et T15** (la fiche « par parti » ne peut pas être équitable tant que chaque grand parti n'a pas au moins deux mesures ménages simulées) :
+- fiche « profil → parti » (couche 1) avec les deux faces ci-dessus, un indicateur de fiabilité et un lien de partage ; le parti choisi en premier ;
+- trois états visuels à la place des fourchettes en couche 1 (chiffre solide, incertain, promesse non chiffrable), selon une règle écrite d'avance et identique pour tous ; proposition : « solide » = source officielle et règle confirmée ou coût mécanique ; « non chiffrable » = aucun chiffrage sourcé ; « incertain » = le reste. Les P10/P90 restent en couches 2 et 3 ;
+- graphiques téléchargeables avec leur source intégrée, une fois les graphiques des programmes 2027 stabilisés ;
+- outil « Combler l'écart » (section 3, « Scénario LFI ajusté retiré ») ;
+- `non_chiffre_foyer.csv` à compléter pour chaque nouveau porteur.
+
+**Tests utilisateurs (à organiser par l'utilisateur)** : 2 ou 3 personnes par profil, avec une tâche chacune. Pressé : « Combien le parti X vous ferait-il gagner ? » ; curieux : « Pourquoi les deux partis donnent-ils des résultats différents pour vous ? » ; relais : « Trouvez un chiffre à citer et sa source » ; spécialiste : « Trouvez la faiblesse principale de la méthode ». Si le spécialiste ne trouve pas lui-même la limite principale, la transparence est insuffisante ; si le pressé lit un paragraphe avant d'avoir sa réponse, la couche 1 est trop chargée.
+
+**Contestations** : les tickets « Contester un chiffre » (étiquette `contestation`, à créer sur GitHub si elle n'existe pas) se traitent comme toute correction : relire la source, puis `appliquer_corrections.py` (inscription dans `historique.csv`, donc dans le journal public). Indiquer dans la réponse si la demande vient d'un parti ou d'une équipe de campagne (champ du formulaire).
+
+## 9. Site publié
 
 Le site est publié par GitHub Pages : https://hugofara.github.io/promesses-a-l-epreuve/web/ (dépôt public https://github.com/HugoFara/promesses-a-l-epreuve). Le job `deploiement` de `.github/workflows/ci.yml` publie `web/` et les CSV de `data/` (sans `data/raw/`) après la réussite du job `controles` sur `main` ; la racine redirige vers `web/`. L'ancien artifact claude.ai (données du 12 octobre) n'est plus tenu à jour.
 
 **Pousser sur `main`, c'est publier** : chaque push dont les contrôles passent met le site en ligne. Ne pousser que sur demande de l'utilisateur. Actions utilisées : `checkout` v7, `setup-python` v7, `upload-pages-artifact` v5, `deploy-pages` v5 (versions vérifiées sur GitHub le 15/10).
 
-## 9. Règles à respecter
+## 10. Règles à respecter
 
 1. **Aucun chiffre sans source lue.** URL et niveau de confiance pour chaque valeur ; une valeur dérivée est marquée comme telle (`note`, `justification`, `source_type = calcul`).
 2. **Traitement symétrique.** Une règle s'applique à toute mesure du même type, quel que soit le parti (`garde_fous.py` le vérifie). Faire auditer chaque nouvelle application par un agent qui n'a pas produit le chiffrage.
