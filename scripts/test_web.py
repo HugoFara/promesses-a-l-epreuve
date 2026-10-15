@@ -23,6 +23,7 @@ import re
 import sys
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
@@ -40,8 +41,10 @@ def lire(nom):
 
 
 def fr(v, dec=0):
-    """Format d'affichage du site : virgule décimale, signe moins typographique."""
-    return f"{v:.{dec}f}".replace(".", ",").replace("-", "−")
+    """Format d'affichage du site : virgule décimale, signe moins typographique. Arrondi comme d3-format (toFixed sur la
+    valeur absolue : demi éloigné de zéro, sur la valeur binaire exacte), et non au pair comme le format de Python."""
+    q = Decimal(abs(v)).quantize(Decimal(1).scaleb(-dec), rounding=ROUND_HALF_UP)
+    return ("−" if v < 0 and q else "") + f"{q:f}".replace(".", ",")
 
 
 def accessibilite(page, lieu):

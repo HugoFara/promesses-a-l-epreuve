@@ -114,8 +114,8 @@ for r in donnees["non_chiffre_foyer"]:
         erreurs.append(f"non_chiffre_foyer : porteur sans mesure simulée « {r['porteur']} » (distributif_reformes.csv)")
 ids_paniers = {r["id"] for r in donnees["paniers"]}
 for r in donnees["montee_en_charge"]:
-    if r["id"] not in ids_paniers:
-        erreurs.append(f"montee_en_charge : ligne de panier inconnue {r['id']}")
+    if r["id"] not in ids_paniers | ids_app:
+        erreurs.append(f"montee_en_charge : ligne inconnue {r['id']} (ni panier ni ligne de programme)")
 for r in donnees["paniers"]:
     for v in filter(None, r["variantes"].split(";")):
         if v not in VARIANTE_SUFFIXE:
