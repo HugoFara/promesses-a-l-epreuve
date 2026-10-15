@@ -2,7 +2,7 @@ name: contrôles
 on: [push, pull_request]
 jobs:
   controles:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       TEST_WEB_STRICT: "1"
     steps:
@@ -35,7 +35,7 @@ jobs:
   deploiement:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: controles
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       pages: write
       id-token: write
