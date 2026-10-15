@@ -15,6 +15,9 @@ def rows(f):
 
 erreurs, alertes = [], []
 regles = {r["regle"]: r for r in rows("regles.csv")}
+familles = {r["famille"]: r for r in rows("familles.csv")}
+# Règles qui tiennent à la référence ou à un choix de financement, pas à la nature de la mesure
+HORS_FAMILLE = {"Déjà dans la référence", "Déjà en partie dans la référence", "Règle d'or"}
 
 for nom in ("application_lignes", "paniers"):
     for r in rows(f"{nom}.csv"):
@@ -31,6 +34,16 @@ for nom in ("application_lignes", "paniers"):
                 alertes.append(f"exception de symétrie {lid} : {r['exception_symetrie']}")
         if regle["variable"] == "1" and not (r.get("source_reference") or r.get("justification")):
             erreurs.append(f"SYMÉTRIE {lid} : facteur variable sans justification")
+
+        # Symétrie par famille (audit, § 1.8) : deux mesures de même nature reçoivent la même règle, quel que soit le parti
+        famille = familles.get(r.get("famille") or "")
+        if not famille:
+            erreurs.append(f"FAMILLE {lid} : famille absente ou inconnue (familles.csv)")
+        elif r["regle"] not in HORS_FAMILLE and r["regle"] != famille["regle"]:
+            if not r.get("exception_symetrie"):
+                erreurs.append(f"FAMILLE {lid} : règle « {r['regle']} », famille « {famille['famille']} » = « {famille['regle']} »")
+            else:
+                alertes.append(f"exception de famille {lid} : {r['exception_symetrie']}")
 
         # Taux de recours : seulement si le chiffrage de départ suppose un recours complet (validation du 14/10/2026)
         if r["regle"] == "Taux de recours" and not (r.get("recours_complet_suppose") == "oui" and r.get("source_recours")):

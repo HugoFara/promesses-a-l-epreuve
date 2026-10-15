@@ -28,7 +28,7 @@ check("C2 n t+3 hors crises", len(e3), 15)
 check("C3 nb estimations", len(rows("elasticites.csv")), 78)
 # Application 2024
 a = rows("application_lignes.csv")
-for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -150.5, -159.5), ("Ensemble 2024", -18.1, -25.5)]:
+for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -150.5, -159.5), ("Ensemble 2024", -18.1, -25.3), ("RN 2024", -63.8, -60.2)]:
     l = [r for r in a if r["programme"] == prog]
     check(f"App {prog} indépendant", sum(float(r["independant"]) for r in l), exp_i, 0.1)
     check(f"App {prog} corrigé", sum(float(r["independant"]) * float(r["facteur"]) * float(r["facteur_reference"]) for r in l), exp_c, 0.1)

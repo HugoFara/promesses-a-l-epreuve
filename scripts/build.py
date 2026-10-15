@@ -72,10 +72,16 @@ for r in donnees["regles"]:
     for x in (r["references"] or "").split():
         if x not in ids_elast | ids_backtest:
             erreurs.append(f"regles « {r['regle']} » : référence inconnue {x}")
+familles = {r["famille"] for r in donnees["familles"]}
+for r in donnees["familles"]:
+    if r["regle"] not in regles:
+        erreurs.append(f"familles {r['famille']} : règle absente de regles.csv « {r['regle']} »")
 for nom in ("application_lignes", "paniers"):
     for r in donnees[nom]:
         if r["regle"] not in regles:
             erreurs.append(f"{nom} {r['id']} : règle absente de regles.csv « {r['regle']} »")
+        if r["famille"] and r["famille"] not in familles:
+            erreurs.append(f"{nom} {r['id']} : famille absente de familles.csv « {r['famille']} »")
 ids_param = {r["id"] for r in donnees["application_parametres"]}
 progs = {r["programme"] for r in donnees["application_programmes"]}
 for r in donnees["application_programmes"]:

@@ -279,3 +279,36 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-10-15,statut_reference_2027,e_vers_e,raison_ecart,,(texte),"Relecture externe du 15/10 : alerte des garde-fous (absente avec montant de référence 0,43) levée explicitement ; statut absente maintenu, le montant porte sur des gels voisins, pas sur la mesure",recherche/T1
 2026-10-15,paniers,*,variantes,"LFI intégral;LFI ajusté (14 lignes) ; LFI ajusté (l_ret62, l_point5, l_eco_rg)",LFI intégral ; vide (hors scénario),"Scénario « LFI ajusté » retiré : une version « corrigée » d'un programme laisse croire que le site fait mieux que le parti ; les 3 mesures propres à la variante restent sourcées, hors scénario",HANDOFF.md
 2026-10-15,statut_reference_2027,*_a,(lignes),13 lignes en double de la variante LFI ajusté,(supprimées),"Doublons des lignes _i (même statut et facteur) ; l_ret62_a, l_point5_a et l_eco_rg_a gardées pour les mesures hors scénario",HANDOFF.md
+2026-10-15,application_lignes,ens_elec,regle,Aucune,Élasticité électricité,"Valeur corrigée (familles) : Symétrie par famille (accise_electricite) : même règle que e_elec dans les paniers depuis le 14/10 (audit, point 15), qui n'avait pas été reportée sur l'application 2024",recherche/T14/rapport.md
+2026-10-15,application_lignes,ens_elec,facteur,1,0.92,Valeur corrigée (familles) : 1 + ε·dp·(1 + a) : même facteur que e_elec,recherche/T14/rapport.md
+2026-10-15,application_lignes,ens_elec,justification,Coût mécanique,Baisse d'accise : la consommation supplémentaire est taxée au tarif réduit ; même formule que les hausses d'accise,Valeur corrigée (familles) : Justification alignée sur e_elec,recherche/T14/rapport.md
+2026-10-15,application_lignes,*,famille,,(nouvelle colonne),"Famille de mesures (familles.csv) : garde_fous vérifie que deux mesures de même nature reçoivent la même règle, quel que soit le parti (audit, § 1.8). Colonne exception_symetrie ajoutée, vide.",recherche/audit/rapport.md
+2026-10-15,paniers,*,famille,,(nouvelle colonne),Idem,recherche/audit/rapport.md
+2026-10-15,application_lignes,rn24_retraites,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_tva_carburants,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_tva_elec_gaz,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_tva_pn,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_production,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_part_fiscale,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_donations,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_medecins,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_salaires,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_autres_dep,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_preference_nationale,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_audiovisuel,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_ame,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_agences,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_autres_eco,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_chomage,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_fraude,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_armateurs,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_rente_infra,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_ue,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_iff,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_lignes,rn24_taux,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,application_programmes,rn24,*,,(nouvelle ligne),Programme RN 2024 (T17),recherche/T17/rapport.md
+2026-10-15,chiffrages_instituts,rn24_*,*,,(45 nouvelles lignes),Chiffrages du programme RN 2024 par institut (T17) ; TVA énergie répartie entre carburants et électricité-gaz,recherche/T17/chiffrages_par_institut.csv
+2026-10-15,totaux_instituts,RN 2024,*,,(2 nouvelles lignes),"Soldes publiés de Montaigne (−71) et de l'iFRAP (−14,5, version du 26/06) ; Asterès (−101,8 = programme 2022) et versions antérieures de l'iFRAP laissés dans recherche/T17",recherche/T17/totaux_par_institut.csv
+2026-10-15,statut_reference_2027,rn24_*,*,,(22 nouvelles lignes),"Statut des lignes RN 2024 par rapport à la référence 2027 (T17, d'après T1)",recherche/T17/statut_reference.csv
+2026-10-15,familles,*,famille,accise_carburants ; accise_electricite,taxe_carburants ; taxe_electricite_gaz,"Familles élargies à la TVA sur l'énergie (RN 2024) ; familles contribution_ue, impots_production et tva_produits ajoutées",recherche/T17/rapport.md
+2026-10-15,chiffrages_instituts,rn24_chomage,note,"Symétrique de ens_chomage (+4,5 chez Montaigne).",(note complétée),"Écart documenté entre la ligne du site (−4,5) et la comparaison par organisme (0)",recherche/T17/rapport.md
