@@ -2,7 +2,8 @@
 
 Entrées (data/) : moteur_regles.csv, moteur_parametres.csv, application_lignes.csv, paniers.csv.
 Sorties (data/) : moteur_lignes.csv (facteur forfaitaire vs moteur, P10/P90 par ligne),
-                  moteur_totaux.csv (P10/P50/P90 par programme et par variante de panier).
+                  moteur_totaux.csv (P10/P50/P90 par programme et par variante de panier),
+                  moteur_variantes.csv (variantes de sensibilité : solde central et P10/P50/P90).
 
 Montant corrigé d'une ligne = statique × facteur de la règle × facteur de référence × facteur d'interaction.
 - Facteur de la règle : formule de moteur_regles.csv ; si un paramètre manque, facteur forfaitaire (mode = forfait).
@@ -121,7 +122,7 @@ def main():
             refs[cle] = tri(rng, lo, c, hi, N_SIM)
         return refs[cle]
 
-    lignes, totaux = [], {}
+    lignes, totaux, tirs = [], {}, {}
     for fichier, groupe_col, montant_col in (("application_lignes", "programme", "independant"), ("paniers", "variante", "statique")):
         for r in lire(f"{fichier}.csv"):
             m = float(r[montant_col])
@@ -148,6 +149,7 @@ def main():
             # Montant choisi par le parti (investissement) : pas d'erreur d'estimation
             err = 1.0 if role.startswith("Investissement") else bruit((fichier, base_id), chiffreur(r))
             sim = m * dist * f_ref_dist * f_int_dist * err
+            tirs[(fichier, r["id"])] = (dist, f_ref_dist, f_int_dist, err)
             central = m * f_c * f_ref * f_int
             ecart = (f_c - f_forfait) / f_forfait * 100 if f_forfait else (0.0 if f_c == 0 else math.inf)
             composante = "investissement" if role.startswith("Investissement") else (role or "total")
@@ -187,34 +189,48 @@ def main():
         w = csv.DictWriter(fh, list(out[0]), lineterminator="\n")
         w.writeheader()
         w.writerows(out)
-    # Variantes de sensibilité (valeurs centrales) : surcharge de colonnes de lignes de panier
+    # Variantes de sensibilité : surcharge de colonnes de lignes de panier. Les tirages (règle, erreur, référence,
+    # interaction) sont ceux du scénario central ; un facteur dont l'intervalle est surchargé est retiré dans son
+    # nouvel intervalle (générateur dédié, pour ne pas décaler les tirages du central).
+    rng_var = np.random.default_rng(GRAINE + 1)
     variantes = {}
     for v in lire("variantes_sensibilite.csv"):
         variantes.setdefault((v["variante"], v["libelle"]), []).append(v)
     sorties_var = []
     for (vid, lib), surcharges in variantes.items():
         for fichier, groupe_col, montant_col in (("paniers", "variante", "statique"),):
-            soldes = {}
+            soldes, sims_var = {}, {}
             for r in lire(f"{fichier}.csv"):
                 if r.get("role", "").startswith("Investissement"):
                     continue
                 base_id = r["id"].rsplit("_", 1)[0]
+                cols = set()
                 for s_ in surcharges:
                     if s_["id"] == base_id:
                         r[s_["colonne"]] = s_["valeur"]
+                        cols.add(s_["colonne"])
                 l = next(x for x in lignes if x["fichier"] == fichier and x["id"] == r["id"])
+                dist, f_ref_dist, f_int_dist, err = tirs[(fichier, r["id"])]
                 f_ref = num(r.get("facteur_reference"))
                 f_ref = 1.0 if f_ref is None else f_ref
-                soldes[r[groupe_col]] = soldes.get(r[groupe_col], 0.0) + float(r[montant_col]) * l["facteur_moteur"] * f_ref * l["facteur_interaction"]
+                if cols & {"facteur_reference", "facteur_reference_bas", "facteur_reference_haut"}:
+                    f_ref_dist = tri(rng_var, num(r.get("facteur_reference_bas")), f_ref, num(r.get("facteur_reference_haut")), N_SIM)
+                m = float(r[montant_col])
+                g = r[groupe_col]
+                soldes[g] = soldes.get(g, 0.0) + m * l["facteur_moteur"] * f_ref * l["facteur_interaction"]
+                sims_var[g] = sims_var.get(g, 0.0) + m * dist * f_ref_dist * f_int_dist * err
             for g, v in soldes.items():
-                sorties_var.append({"variante": vid, "libelle": lib, "groupe": g, "solde_central": round(v, 1)})
+                p10, p50, p90 = np.percentile(sims_var[g], [10, 50, 90])
+                sorties_var.append({"variante": vid, "libelle": lib, "groupe": g, "solde_central": round(v, 1),
+                                    "p10": round(p10, 1), "p50": round(p50, 1), "p90": round(p90, 1)})
     if sorties_var:
         with open("moteur_variantes.csv", "w", newline="", encoding="utf-8") as fh:
             w = csv.DictWriter(fh, list(sorties_var[0]), lineterminator="\n")
             w.writeheader()
             w.writerows(sorties_var)
         for s_ in sorties_var:
-            print(f"variante {s_['variante']:<8} {s_['groupe']:<16} solde central {s_['solde_central']:>7}")
+            print(f"variante {s_['variante']:<8} {s_['groupe']:<16} solde central {s_['solde_central']:>7}  "
+                  f"P10 {s_['p10']:>7}  P50 {s_['p50']:>7}  P90 {s_['p90']:>7}")
     for o in out:
         print(f"{o['groupe']:<16} {o['composante']:<15} central {o['central']:>7}  loi votée {o['loi_votee_seule']:>7}  "
               f"P10 {o['p10']:>7}  P50 {o['p50']:>7}  P90 {o['p90']:>7}")

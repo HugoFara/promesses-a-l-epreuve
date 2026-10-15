@@ -54,14 +54,16 @@ for nom in ("application_lignes", "paniers"):
         if not statut:
             (erreurs if STRICT else alertes).append(f"RÉFÉRENCE {lid} : statut inconnu")
 
-# Audit n° 19 : une ligne « absente » ne devrait pas avoir de montant de référence 2027 non nul (statut_reference_2027.csv)
+# Audit n° 19 : une ligne « absente » ne devrait pas avoir de montant de référence 2027 non nul (statut_reference_2027.csv),
+# sauf exception expliquée dans raison_ecart (montant qui porte sur une mesure voisine, pas sur la ligne)
 actuel = {(f, r["id"]): r for f in ("application_lignes", "paniers") for r in rows(f"{f}.csv")}
 for r in rows("statut_reference_2027.csv"):
     ligne = actuel.get((r["fichier"], r["id_ligne"]), {})
     deja_traitee = ligne.get("statut_reference") != "absente" or float(ligne.get("facteur_reference") or 1) < 1
     if r["fichier"] == "application_lignes":
         deja_traitee = True  # l'application 2024 est jugée par rapport au PStab 2024, pas à la référence 2027
-    if not deja_traitee and r["statut_reference"] == "absente" and r["montant_reference_2027"] not in ("", "0", "0.0"):
+    if (not deja_traitee and r["statut_reference"] == "absente" and r["montant_reference_2027"] not in ("", "0", "0.0")
+            and not r.get("raison_ecart")):
         alertes.append(f"RÉFÉRENCE {r['fichier']} {r['id_ligne']} : statut absente mais montant de référence {r['montant_reference_2027']}")
     # Synchronisation : un statut ou un facteur des paniers différent de celui proposé par T1 doit être expliqué
     if r["fichier"] == "paniers" and ligne:

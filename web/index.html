@@ -301,25 +301,39 @@
     <h1>Peut-on financer les mesures phares ?</h1>
     <p class="lede">Exercice : on garde les mesures les plus emblématiques de chaque camp, et on cherche à les payer avec des recettes ou des économies qui correspondent à ses idées.</p>
 
+    <div class="callout warn">
+      <h2>Scénarios construits par ce site, pas les programmes des partis</h2>
+      <p>Les mesures phares viennent des programmes de 2024. Les recettes et économies qui les financent ont été <strong>choisies par ce site</strong> parmi des mesures proches des idées de chaque camp : ce ne sont pas des propositions des partis. Le résultat dépend donc beaucoup de nos choix de construction (voir « Ce que ces scénarios ne disent pas »).</p>
+    </div>
+
     <div class="callout">
       <h2>En bref</h2>
       <ul id="bref-equilibre"></ul>
     </div>
 
-    <h2>1. Trois scénarios</h2>
+    <h2>1. Deux scénarios</h2>
     <ul class="prose">
-      <li><strong>LFI intégral</strong> : les mesures phares telles que promises, financées par des impôts sur le capital, le patrimoine et les grandes entreprises.</li>
-      <li><strong>LFI ajusté</strong> : des mesures phares réduites, et un plan écologique payé par emprunt (hors du calcul d'équilibre, selon la <a class="term" href="#/lexique/regle-or">règle d'or</a>).</li>
-      <li><strong>Ensemble</strong> : les mesures phares financées par des économies, sans hausse d'impôts sur les actifs.</li>
+      <li><strong>LFI intégral</strong> : les mesures phares telles que promises, financées par des impôts sur le capital, le patrimoine et les grandes entreprises, choisis par ce site.</li>
+      <li><strong>Ensemble</strong> : les mesures phares financées par des économies choisies par ce site, sans hausse d'impôts sur les actifs.</li>
     </ul>
     <p class="prose">Le point de départ est la loi en vigueur. Les mesures déjà votées ou déjà inscrites au budget 2027 ne sont pas comptées deux fois.</p>
+    <p class="prose">Chaque carte donne le solde estimé et sa fourchette. Quand une hypothèse que les programmes ne tranchent pas change le résultat, les deux lectures sont affichées côte à côte. La « part confirmée » indique quelle part des corrections repose sur une règle que le test sur le passé a confirmée (<a href="#/methode">Méthode</a>).</p>
     <div class="cards" id="cards-paniers"></div>
+
+    <h3>Ce que ces scénarios ne disent pas</h3>
+    <ul class="prose">
+      <li><strong>Les financements sont nos choix.</strong> Un autre choix de recettes ou d'économies, tout aussi fidèle aux idées d'un camp, donnerait un autre solde.</li>
+      <li><strong>Pas de version « corrigée » des programmes.</strong> On pourrait réduire une mesure ou ajouter une recette pour améliorer un solde, mais ce ne serait qu'un choix parmi beaucoup d'autres, et il reviendrait aux partis et aux électeurs, pas à ce site.</li>
+      <li><strong>Ensemble disposait de peu de leviers.</strong> Ses principales économies (sous-indexation des pensions, abattement des retraités…) sont déjà dans le budget 2027 et ne peuvent pas être comptées une seconde fois. Son solde reflète donc le point de départ autant que ses idées.</li>
+      <li><strong>Le SMIC change fortement le résultat.</strong> Le budget 2027 gèle le SMIC qui sert au calcul des allègements de charges. Si la hausse du SMIC voulue par LFI s'accompagnait d'un dégel, le solde se dégraderait <span data-k="degel_ecart"></span>. Les programmes ne disent pas encore laquelle des deux lectures s'applique.</li>
+      <li><strong>Peu de corrections sont confirmées.</strong> La plupart des règles appliquées ici n'ont pas pu être vérifiées sur le passé, faute de mesure comparable.</li>
+    </ul>
 
     <h2>2. Une estimation, avec sa marge d'incertitude</h2>
     <p class="prose">Aucun chiffrage n'est exact. On a donc refait le calcul des milliers de fois en faisant varier les erreurs possibles. Le trait montre la fourchette dans laquelle le résultat tombe <strong>8 fois sur 10</strong>.</p>
     <div class="chart-block">
       <h3>Solde de chaque scénario, avec sa fourchette</h3>
-      <p class="how">En milliards d'euros par an. À droite de zéro, le scénario dégage un excédent ; à gauche, il creuse le déficit.</p>
+      <p class="how">En milliards d'euros par an. À droite de zéro, le scénario dégage un excédent ; à gauche, il creuse le déficit. Quand l'hypothèse sur les allègements de charges change le résultat, les deux lectures ont chacune leur ligne.</p>
       <ul class="legend" id="lg-inc"></ul>
       <div class="chart" id="ch-inc"></div>
     </div>
@@ -424,7 +438,7 @@
     <div class="accs">
       <details class="acc"><summary>Pour aller plus loin : hypothèses de la projection</summary><div class="acc-body prose">
         <p>Point de départ : le déficit réalisé en 2025 (Insee), puis le projet de loi de finances 2027 pour 2026-2027 et la trajectoire communiquée au Haut Conseil des finances publiques jusqu'en 2029. Au-delà, le solde de 2029 et la croissance de 2030 sont reconduits.</p>
-        <p>La « référence corrigée » ajoute le dépassement moyen constaté des programmes de stabilité. Chaque scénario part de cette référence et y ajoute son solde corrigé, les intérêts supplémentaires sur la dette et, pour « LFI ajusté », l'investissement financé par emprunt.</p>
+        <p>La « référence corrigée » ajoute le dépassement moyen constaté des programmes de stabilité. Chaque scénario part de cette référence et y ajoute son solde corrigé et les intérêts supplémentaires sur la dette.</p>
       </div></details>
     </div>
   </section>
@@ -447,12 +461,12 @@
     <div class="tbl-wrap" id="tb-regles"></div>
 
     <h2>La méthode améliore-t-elle les chiffrages ?</h2>
-    <p class="prose">Pour le savoir, on l'a testée sur les mesures passées, sans lui laisser connaître le résultat de la mesure testée.</p>
+    <p class="prose">Pour le savoir, on l'a testée sur les mesures passées : les règles de correction sont recalculées sans la mesure testée, puis on compare le chiffrage corrigé au coût réel. <strong>Ce test n'est pas en aveugle</strong> : <span data-k="val_connus"></span></p>
     <div class="callout" id="bref-validation"></div>
 
     <div class="accs">
       <details class="acc"><summary>Pour aller plus loin : résultats du test, groupe par groupe</summary><div class="acc-body">
-        <p class="prose small muted">Erreur = écart au coût réel, en % du chiffrage initial. Les règles ont été attribuées à l'aveugle par des agents séparés ; les facteurs calibrés sont recalculés sans la mesure testée.</p>
+        <p class="prose small muted">Erreur = écart au coût réel, en % du chiffrage initial. « Médiane » : l'erreur d'un cas typique ; « moyenne » : tient compte des gros ratés. Les règles ont été attribuées par des agents séparés, qui connaissaient souvent l'issue (voir plus haut) ; les facteurs calibrés sont recalculés sans la mesure testée.</p>
         <div class="tbl-wrap" id="tb-valr"></div>
       </div></details>
       <details class="acc"><summary>Pour aller plus loin : statut de chaque règle</summary><div class="acc-body">
@@ -477,7 +491,7 @@
       <li><strong>Peu d'exemples.</strong> Seules les mesures adoptées peuvent être vérifiées, et elles sont peu nombreuses. Les règles détectent de grosses erreurs, pas des détails.</li>
       <li><strong>Des coûts réels parfois incertains.</strong> Quand les évaluations divergent, on retient une valeur centrale. Pour les retraites, le coût « réel » est une réestimation, pas une économie constatée.</li>
       <li><strong>Des études étrangères.</strong> Certaines réactions des contribuables sont mesurées à l'étranger (Danemark, Suisse, États-Unis) et se transposent mal en France.</li>
-      <li><strong>Le chiffreur de départ pèse lourd.</strong> <span data-k="lim_chiffreurs"></span> Les corrections ne changent le résultat que de quelques milliards.</li>
+      <li><strong>Le chiffreur de départ pèse lourd.</strong> <span data-k="lim_chiffreurs"></span> Les corrections ne changent le résultat que de quelques milliards et <strong>ne réduisent pas l'écart entre chiffreurs</strong> : <span data-k="lim_ecart"></span> C'est le chiffrage de départ qui détermine le résultat.</li>
       <li><strong>Des déficits révisés.</strong> Les déficits réels utilisés sont les séries actuelles d'Eurostat, révisées depuis leur première publication.</li>
     </ul>
 

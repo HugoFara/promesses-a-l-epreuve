@@ -12,7 +12,7 @@ const SOURCES = {
   parametres: "application_parametres", paniers: "paniers", moteur: "moteur_lignes", totaux: "moteur_totaux",
   variantes: "moteur_variantes", sensibilite: "sensibilite_chiffreurs", confiance: "confiance_programmes",
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
-  validation_regles: "validation_regles", distributif: "distributif_menages", grille: "distributif_grille", reformes: "distributif_reformes",
+  validation_regles: "validation_regles", validation_attribution: "validation_attribution", distributif: "distributif_menages", grille: "distributif_grille", reformes: "distributif_reformes",
   idees: "idees", idees_chiffres: "idees_chiffres", projref: "projection_reference",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
 };
@@ -177,6 +177,14 @@ function calculer() {
     return {p, lo: d3.min(v), hi: d3.max(v)};
   }).filter(e => e.lo !== undefined).sort((a, b) => (b.hi - b.lo) - (a.hi - a.lo));
   if (ecarts.length) K.lim_chiffreurs = `Pour ${ecarts[0].p}, les chiffrages publiés vont de ${sg(ecarts[0].lo, n0)} à ${sg(ecarts[0].hi, n0)} milliards d'euros.`;
+  // … et les corrections ne réduisent pas cet écart (chiffreurs indépendants, lignes complétées, avant et après correction)
+  const etendue = (rs, c) => d3.max(rs, r => num(r[c])) - d3.min(rs, r => num(r[c]));
+  K.lim_ecart = [...new Set(D.sensibilite.map(r => r.programme))].map(p => {
+    const rs = D.sensibilite.filter(r => r.programme === p && r.statut === "indépendant");
+    return rs.length < 2 ? null : `pour ${p}, ${n1(etendue(rs, "complete_statique"))} milliards d'euros d'écart avant correction, ${n1(etendue(rs, "complete_corrige"))} après`;
+  }).filter(Boolean).join(" ; ") + ".";
+  const att = D.validation_attribution, connus = att.filter(r => r.issue_connue === "oui").length;
+  K.val_connus = `l'agent qui a choisi la règle à appliquer à chaque mesure connaissait déjà le coût réel de ${connus} cas sur ${att.length}. Le résultat est donc probablement un peu flatteur pour la méthode.`;
   D.pan = D.paniers.map(r => ({...r, corrige: num(mot.get("paniers|" + r.id)?.corrige_central)}));
 
   // Scénarios d'équilibre
@@ -187,10 +195,15 @@ function calculer() {
     const s = t("solde");
     return {nom: g, mesures: num(t("Mesure phare")?.central), financement: num(t("Financement")?.central),
       investissement: t("investissement") ? num(t("investissement").central) : 0,
-      solde: num(s.central), p10: num(s.p10), p90: num(s.p90), loi: num(s.loi_votee_seule), degel: v ? num(v.solde_central) : null,
+      solde: num(s.central), p10: num(s.p10), p90: num(s.p90), loi: num(s.loi_votee_seule),
+      // Variante « dégel » : affichée au même niveau que le central quand elle change le résultat
+      degel: v && num(v.solde_central) !== num(s.central) ? {solde: num(v.solde_central), p10: num(v.p10), p90: num(v.p90)} : null,
+      confirmee: num(D.confiance.find(r => r.fichier === "paniers" && r.groupe === g)?.part_confirmee_pct),
       lignes: D.pan.filter(r => r.variante === g)};
   });
 
+  const dg = D.scen.filter(s => s.degel).map(s => s.solde - s.degel.solde);
+  if (dg.length) K.degel_ecart = "d'environ " + md(d3.max(dg));
   K.el_n = D.elasticites.length;
   const dd = D.meta.find(r => r.cle === "date_donnees")?.valeur;
   if (dd) K.maj = new Date(dd + "T12:00:00").toLocaleDateString("fr-FR", {day: "numeric", month: "long", year: "numeric"});
@@ -414,7 +427,8 @@ function drawSens() {
 function drawInc() {
   const box = $("#ch-inc"), fs = FS() * .875;
   legend($("#lg-inc"), [["Estimation centrale", css("--s1")], ["Fourchette (8 chances sur 10)", css("--s5"), "line"]]);
-  const rows = D.scen, rowH = fs * 4.2, H = rows.length * rowH + fs * 2;
+  const rows = D.scen.flatMap(s => s.degel ? [{...s, nom: s.nom + ", allègements gelés"}, {nom: s.nom + ", allègements dégelés", ...s.degel}] : [s]);
+  const rowH = fs * 4.2, H = rows.length * rowH + fs * 2;
   const {svg, W} = svgIn(box, H, "Solde des scénarios : " + rows.map(r => `${r.nom} ${sg(r.solde, n0)} Md€ (de ${sg(r.p10, n0)} à ${sg(r.p90, n0)})`).join(", "));
   const x = d3.scaleLinear([Math.min(0, d3.min(rows, r => r.p10)), Math.max(0, d3.max(rows, r => r.p90))], [12, W - 12]).nice();
   const yEnd = H - fs * 1.6;
@@ -630,21 +644,27 @@ function liste(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ")
 
 function vueEquilibre() {
   const bref = $("#bref-equilibre"); bref.textContent = "";
-  D.scen.forEach(s => bref.append(h("li", {}, h("strong", {}, s.nom), s.solde >= 0
-    ? ` : les recettes couvrent les mesures phares, avec un excédent d'environ ${md(s.solde)} par an` + (s.investissement ? `, hors investissement emprunté (${md(s.investissement)}).` : ".")
-    : ` : il manque environ ${md(s.solde)} par an pour financer les mesures phares.`)));
-  bref.append(h("li", {}, "Ces montants sont des estimations : la fourchette ci-dessous montre leur marge d'incertitude."));
+  const fourch = o => `${sg(o.solde, n0)} Md€ par an (fourchette de ${sg(o.p10, n0)} à ${sg(o.p90, n0)})`;
+  D.scen.forEach(s => bref.append(h("li", {}, h("strong", {}, s.nom), s.degel
+    ? ` : solde estimé de ${fourch(s)} si les allègements de charges restent gelés, de ${fourch(s.degel)} s'ils sont dégelés.`
+    : ` : solde estimé de ${fourch(s)}.`)));
+  const bascule = D.scen.filter(s => s.degel && Math.sign(s.solde) !== Math.sign(s.degel.solde));
+  if (bascule.length) bref.append(h("li", {}, `Pour ${liste(bascule.map(s => s.nom))}, le signe du solde dépend d'une hypothèse que le programme ne tranche pas encore : le site ne dit donc pas si ce scénario est financé.`));
+  bref.append(h("li", {}, "Ces soldes dépendent autant de nos choix de construction que des programmes : les financements sont choisis par ce site, et peu de corrections reposent sur une règle confirmée."));
 
   const box = $("#cards-paniers"); box.textContent = "";
+  const solde = (lib, o) => [h("dt", {class: "total"}, lib), h("dd", {class: "total " + signCls(o.solde)}, sg(o.solde, n0) + " Md€"),
+    h("dt", {class: "small"}, "Fourchette (8 chances sur 10)"), h("dd", {class: "small"}, `${sg(o.p10, n0)} à ${sg(o.p90, n0)}`)];
   D.scen.forEach(s => {
     const fin = s.lignes.filter(r => r.role === "Financement").sort((a, b) => b.corrige - a.corrige);
     box.append(h("article", {class: "card"}, h("h3", {}, s.nom),
       h("dl", {},
         h("dt", {}, "Coût des mesures phares"), h("dd", {class: "neg"}, sg(s.mesures, n0) + " Md€"),
-        h("dt", {}, "Recettes et économies"), h("dd", {class: "pos"}, sg(s.financement, n0) + " Md€"),
+        h("dt", {}, "Recettes et économies choisies par ce site"), h("dd", {class: "pos"}, sg(s.financement, n0) + " Md€"),
         s.investissement ? [h("dt", {}, "Investissement emprunté (hors équilibre)"), h("dd", {}, sg(s.investissement, n0) + " Md€")] : null,
-        h("dt", {class: "total"}, "Solde"), h("dd", {class: "total " + signCls(s.solde)}, sg(s.solde, n0) + " Md€")),
-      h("p", {class: "verdict"}, s.solde >= 0 ? badge("Financé", "ok") : badge("Non financé", "bad"), " ", btnTotal("paniers", s.nom, "Pourquoi ce chiffre ?")),
+        s.degel ? [...solde("Solde, allègements gelés", s), ...solde("Solde, allègements dégelés", s.degel)] : solde("Solde", s)),
+      h("p", {class: "verdict small"}, isNaN(s.confirmee) ? null : `Part des corrections reposant sur une règle confirmée : ${pc(s.confirmee)}. `,
+        btnTotal("paniers", s.nom, "Pourquoi ce chiffre ?")),
       h("details", {class: "data-toggle"}, h("summary", {}, "Qui paierait ?"),
         h("ul", {class: "small", style: "padding-left:1.1rem"}, fin.map(r => h("li", {}, `${r.qui_paie} : ${sg(r.corrige)} Md€ (${r.ligne})`))))));
   });
@@ -660,7 +680,7 @@ function vueEquilibre() {
   ], D.pan.filter(r => !sel.value || r.variante === sel.value), {group: r => r.variante});
   sel.onchange = drawTb; drawTb();
 
-  const deg = new Map(D.scen.map(s => [s.nom, s.degel]));
+  const deg = new Map(D.scen.map(s => [s.nom, s.degel?.solde ?? s.solde]));
   table($("#tb-inc"), [
     {t: "Composante", f: r => r.composante}, {t: "Central", num: true, f: r => sg(num(r.central))},
     {t: "Loi votée seule", num: true, f: r => sg(num(r.loi_votee_seule))},
@@ -675,10 +695,10 @@ const uniqNum = (rs, c) => [...new Set(rs.map(r => r[c]))].sort((x, y) => num(x)
 function origineReforme(id) {
   const ref = D.reformes.find(r => r.id === id);
   const [f, lid] = (ref?.ligne_liee || "").split(" ");
-  // ligne_liee nomme une ligne (« nfp_flat ») ou un préfixe commun aux variantes d'une ligne (« l_smic » → l_smic_i, l_smic_a)
+  // ligne_liee nomme une ligne (« nfp_flat ») ou un préfixe commun aux variantes d'une ligne (« l_smic » → l_smic_i)
   const ok = r => r.id === lid || r.id.startsWith(lid + "_");
   const src = !lid ? "" : f === "paniers" ? D.paniers.find(ok)?.variante : D.application.find(ok)?.programme;
-  return src ? src.replace(/ (intégral|ajusté)$/, "") : "";
+  return src ? src.replace(/ intégral$/, "") : "";
 }
 // Formulaire → situations de la grille ; reconstruit la liste des revenus (libellés en euros nets, recalculés
 // pour la situation, car la CSG des pensions dépend du foyer). Retourne les lignes du niveau choisi.
@@ -909,14 +929,20 @@ function vueMethode() {
   box.append(h("h3", {}, "En bref"));
   box.append(h("ul", {}, lignes.map(([k, lib]) => {
     const r = g(k), a = num(r.erreur_mediane_depart_pct), b = num(r.erreur_mediane_nous_pct);
-    const verdict = b < a * .75 ? "nette amélioration" : b < a ? "légère amélioration" : b > a ? "pas d'amélioration" : "aucun changement";
-    return h("li", {}, h("strong", {}, `Pour ${lib} : ${verdict}.`), ` L'erreur habituelle passe de ${pc(a)} à ${pc(b)} (${r.n} cas).`);
+    const ma = num(r.erreur_moyenne_depart_pct), mb = num(r.erreur_moyenne_nous_pct), am = num(r.ameliores), de = num(r.degrades);
+    // Amélioration nette seulement si la médiane ET la moyenne baissent et si les cas améliorés l'emportent
+    const verdict = b < a * .75 && mb < ma && am > de ? "nette amélioration" : b < a && mb < ma && am >= de ? "légère amélioration"
+      : b === a && mb === ma ? "aucun changement" : "pas d'amélioration nette";
+    return h("li", {}, h("strong", {}, `Pour ${lib} : ${verdict}.`),
+      ` L'erreur d'un cas typique passe de ${pc(a)} à ${pc(b)}, l'erreur moyenne de ${pc(ma)} à ${pc(mb)} ; ${am} cas améliorés, ${de} dégradés (${r.n} cas).`);
   })));
-  box.append(h("p", {style: "margin-top:.75rem"}, "La méthode est donc surtout utile pour repérer les promesses d'effets trop optimistes ; sur le coût direct des mesures, les chiffrages officiels sont déjà assez bons."));
+  box.append(h("p", {style: "margin-top:.75rem"}, "La méthode ne fait donc pas nettement mieux que les chiffrages de départ, sauf pour repérer les promesses d'effets trop optimistes. Sur le coût direct des mesures, les chiffrages officiels sont déjà assez bons, et les corrections ajoutent parfois de gros écarts."));
 
   table($("#tb-valr"), [{t: "Groupe", f: r => r.groupe.trim(), cls: r => /^\s/.test(r.groupe) ? "sub" : ""},
-    {t: "Cas", num: true, f: r => r.n}, {t: "Erreur avant", num: true, f: r => pc(num(r.erreur_mediane_depart_pct))},
-    {t: "Erreur après", num: true, f: r => pc(num(r.erreur_mediane_nous_pct)), cls: r => signCls(num(r.erreur_mediane_depart_pct) - num(r.erreur_mediane_nous_pct))},
+    {t: "Cas", num: true, f: r => r.n}, {t: "Médiane avant", num: true, f: r => pc(num(r.erreur_mediane_depart_pct))},
+    {t: "Médiane après", num: true, f: r => pc(num(r.erreur_mediane_nous_pct)), cls: r => signCls(num(r.erreur_mediane_depart_pct) - num(r.erreur_mediane_nous_pct))},
+    {t: "Moyenne avant", num: true, f: r => pc(num(r.erreur_moyenne_depart_pct))},
+    {t: "Moyenne après", num: true, f: r => pc(num(r.erreur_moyenne_nous_pct)), cls: r => signCls(num(r.erreur_moyenne_depart_pct) - num(r.erreur_moyenne_nous_pct))},
     {t: "Améliorées / dégradées", num: true, f: r => `${r.ameliores} / ${r.degrades}`}], D.validation_resume, {rowCls: r => /^\s/.test(r.groupe) ? null : "strong"});
 
   const ST = {"confirmée": "ok", "contredite": "bad", "mitigée": "warn"};

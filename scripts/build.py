@@ -14,7 +14,8 @@ from pydantic import ValidationError
 from schemas import SCHEMAS
 
 RAW = Path("raw")
-VARIANTE_SUFFIXE = {"LFI intégral": "i", "LFI ajusté": "a", "Ensemble": "e"}
+# variantes vide : mesure sourcée gardée hors scénario (non publiée), par exemple les mesures de l'ancien « LFI ajusté »
+VARIANTE_SUFFIXE = {"LFI intégral": "i", "Ensemble": "e"}
 
 
 def lire(nom):
@@ -54,7 +55,7 @@ for r in donnees["idees_chiffres"]:
         erreurs.append(f"idees_chiffres : idée inconnue {r['idee']}")
     if r["ligne_moteur"]:
         f, _, lid = r["ligne_moteur"].partition("/")
-        # les paniers publiés déclinent chaque ligne par variante (l_isf → l_isf_i, l_isf_a ; e_oper → e_oper_e)
+        # les paniers publiés déclinent chaque ligne par variante (l_isf → l_isf_i ; e_oper → e_oper_e)
         brut = lid.rsplit("_", 1)[0] if f == "paniers" else lid
         if f not in ("paniers", "application_lignes") or brut not in {x["id"] for x in donnees[f]}:
             erreurs.append(f"idees_chiffres {r['idee']} : ligne du moteur inconnue {r['ligne_moteur']}")
@@ -106,7 +107,7 @@ for r in donnees["montee_en_charge"]:
     if r["id"] not in ids_paniers:
         erreurs.append(f"montee_en_charge : ligne de panier inconnue {r['id']}")
 for r in donnees["paniers"]:
-    for v in r["variantes"].split(";"):
+    for v in filter(None, r["variantes"].split(";")):
         if v not in VARIANTE_SUFFIXE:
             erreurs.append(f"paniers {r['id']} : variante inconnue « {v} »")
 
@@ -143,7 +144,7 @@ for r in donnees["montee_en_charge"]:
     if r["id"] not in ids_paniers:
         erreurs.append(f"montee_en_charge : ligne de panier inconnue {r['id']}")
 for r in donnees["paniers"]:
-    for v in r["variantes"].split(";"):
+    for v in filter(None, r["variantes"].split(";")):
         paniers.append({**r, "id": f"{r['id']}_{VARIANTE_SUFFIXE[v]}", "variante": v})
 cols = ["id", "variante"] + [c for c in donnees["paniers"][0] if c not in ("id", "variantes")]
 ecrire("paniers", paniers, cols)

@@ -34,7 +34,7 @@ for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -150.5, -159.5), ("Ensemble 2024",
     check(f"App {prog} corrigé", sum(float(r["independant"]) * float(r["facteur"]) * float(r["facteur_reference"]) for r in l), exp_c, 0.1)
 # Paniers
 k = rows("paniers.csv")
-for v, em, ef in [("LFI intégral", -111.2, 38.9), ("LFI ajusté", -32.0, 38.9), ("Ensemble", -14.7, 7.5)]:
+for v, em, ef in [("LFI intégral", -111.2, 38.9), ("Ensemble", -14.7, 7.5)]:
     l = [r for r in k if r["variante"] == v]
     s = lambda role: sum(float(r["statique"]) * float(r["facteur"]) * float(r["facteur_reference"]) * float(r["facteur_interaction"] or 1) for r in l if r["role"].startswith(role))
     check(f"Panier {v} mesures", s("Mesure"), em, 0.1)

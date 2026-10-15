@@ -216,7 +216,7 @@
   <p class="sec-note">On garde les mesures phares de chaque camp et on les finance avec des leviers compatibles avec son orientation : fiscalité du capital, du patrimoine et des grandes entreprises pour LFI ; économies de dépenses sans hausse d'impôts sur les ménages actifs pour Ensemble. Chaque levier est corrigé par les règles des sections 1 à 6. La référence est la loi en vigueur fin 2026 : les mesures déjà votées (plan santé 2026, contribution des collectivités, rabot des allègements, loi fraude) ne sont pas recomptées.</p>
   <div class="card">
     <h3>Coût des mesures phares et financement trouvé</h3>
-    <p class="note">Md€ par an, après correction. Pour la variante « LFI ajusté », la planification écologique est financée par emprunt (règle d'or) et sortie de l'équilibre.</p>
+    <p class="note">Md€ par an, après correction.</p>
     <div class="legend" id="lg-pan"></div>
     <div class="chart" id="ch-pan" data-source="panier_totaux" style="min-height: 260px"></div>
   </div>
@@ -269,7 +269,7 @@
   </div>
 
   <h2 id="projection">11. Trajectoires 2026-2032</h2>
-  <p class="sec-note">Point de départ : réalisé 2025 (Insee), puis PLF 2027 pour 2026-2027 et trajectoire communiquée au HCFP jusqu'en 2029 ; au-delà, le solde de 2029 et la croissance de 2030 sont reconduits (extrapolation, en pointillés). La référence corrigée ajoute le biais moyen des programmes de stabilité (section 3). Chaque panier part de la référence corrigée et ajoute son solde corrigé, les intérêts supplémentaires et, pour « LFI ajusté », l'investissement emprunté.</p>
+  <p class="sec-note">Point de départ : réalisé 2025 (Insee), puis PLF 2027 pour 2026-2027 et trajectoire communiquée au HCFP jusqu'en 2029 ; au-delà, le solde de 2029 et la croissance de 2030 sont reconduits (extrapolation, en pointillés). La référence corrigée ajoute le biais moyen des programmes de stabilité (section 3). Chaque panier part de la référence corrigée et ajoute son solde corrigé et les intérêts supplémentaires.</p>
   <div class="card">
     <div class="filters">
       <select id="f-ind" aria-label="Indicateur"><option value="dette_pct">Dette publique (% du PIB)</option><option value="deficit_pct">Déficit public (% du PIB)</option></select>
@@ -896,7 +896,7 @@ function drawSens() {
   });
 }
 
-const PROJ_SERIES = ["Référence du gouvernement", "Référence corrigée du biais", "Panier LFI intégral", "Panier LFI ajusté", "Panier Ensemble"];
+const PROJ_SERIES = ["Référence du gouvernement", "Référence corrigée du biais", "Panier LFI intégral", "Panier Ensemble"];
 let fInd = "dette_pct", fStress = "";
 document.getElementById("f-ind").addEventListener("change", e => { fInd = e.target.value; drawProj(); });
 document.getElementById("f-stress").addEventListener("change", e => { fStress = e.target.value; drawProj(); });
