@@ -8,7 +8,7 @@ Sorties : data/distributif_menages.csv (gain ou perte de revenu disponible, €/
 
 Les ménages types sont des conventions (multiples du SMIC, montants ronds), pas des données : ils servent à
 montrer qui gagne et qui perd, pas à chiffrer un coût agrégé. Les effets par décile demandent une
-microsimulation sur données d'enquête (ERFS, accessible via le CASD) : hors de portée ici (voir HANDOFF).
+microsimulation sur données d'enquête (ERFS, accessible via le CASD) : hors de portée ici.
 """
 import csv
 import warnings

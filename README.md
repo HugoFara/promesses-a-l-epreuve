@@ -18,7 +18,7 @@ puis ouvrir http://localhost:8000/web/. Les pages :
 
 - **Accueil** : ce que les mesures en débat changent pour votre foyer, en euros par mois ;
 - **Les idées qui reviennent** : combien rapportent vraiment les idées des cahiers citoyens de 2019 et des sondages de 2026 ;
-- **Les promesses d'hier**, **Les programmes**, **Financer les promesses**, **Mon foyer**, **Dette et déficit**, **Méthode**, **Lexique**.
+- **Les promesses d'hier**, **Les programmes**, **Financer les promesses**, **Mon foyer**, **Dette et déficit**, **Méthode**, **Journal des corrections**, **Lexique**.
 
 Tous les chiffres affichés viennent des CSV de `data/` ; chaque montant corrigé a un bouton « Pourquoi ce chiffre ? ».
 
@@ -39,7 +39,7 @@ bash scripts/run_all.sh
 
 L'étape distributive (simulateur « Mon foyer ») demande un clone d'[OpenFisca-France](https://github.com/openfisca/openfisca-france) à côté du projet (voir `scripts/distributif.sh`) ; sans lui, elle est sautée et les fichiers déjà publiés sont gardés.
 
-`HANDOFF.md` décrit en détail la méthode, les résultats, les limites et l'état des travaux.
+La méthode, ses résultats et ses limites sont expliqués sur le site (page « Méthode », boutons « Pourquoi ce chiffre ? ») ; le détail des recherches est dans `recherche/`, et chaque valeur modifiée est inscrite dans `data/raw/historique.csv` (page « Journal des corrections »).
 
 ## Méthode de travail
 
@@ -48,5 +48,5 @@ Le projet a été réalisé avec l'assistance d'une IA (Claude, d'Anthropic) : r
 ## Licence
 
 - Code (`scripts/`, `web/`) : licence MIT, voir `LICENSE`.
-- Données et textes (`data/`, `recherche/`, `HANDOFF.md`) : [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.fr). Les chiffres viennent de sources publiques citées ligne par ligne ; les courtes citations restent la propriété de leurs auteurs.
+- Données et textes (`data/`, `recherche/`) : [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.fr). Les chiffres viennent de sources publiques citées ligne par ligne ; les courtes citations restent la propriété de leurs auteurs.
 - Bibliothèques incluses : d3 (`web/vendor/d3-LICENSE`) et axe-core (`scripts/vendor/axe-core-LICENSE.txt`).
