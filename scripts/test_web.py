@@ -29,7 +29,7 @@ RACINE = Path(__file__).resolve().parent.parent
 DATA = RACINE / "data"
 AXE = RACINE / "scripts" / "vendor" / "axe-core-4.10.3.min.js"
 AXE_REGLES = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]
-VUES = ["accueil", "idees", "hier", "programmes", "equilibre", "foyer", "demain", "methode", "lexique"]
+VUES = ["accueil", "idees", "hier", "programmes", "equilibre", "foyer", "demain", "methode", "journal", "lexique"]
 AVEC_GRAPHIQUES = {"hier", "programmes", "equilibre", "demain"}
 ECRANS = {"large": (1280, 900), "téléphone": (390, 844)}
 
@@ -70,7 +70,7 @@ def attendus():
     date = next(r["valeur"] for r in lire("meta") if r["cle"] == "date_donnees")
     return {"mes_n": st["n"], "mes_mediane": fr(float(st["erreur_abs_mediane_pct"])) + " %", "soldes": soldes, "date": date,
             "foyer": [r for r in lire("distributif_grille") if r["id"] == "retraite_couple_2_0_2000_0"],
-            "idees": lire("idees"), "isf": next(r for r in lire("moteur_lignes") if r["fichier"] == "paniers" and r["id"] == "l_isf_i")}
+            "idees": lire("idees"), "journal": len(lire("historique")), "isf": next(r for r in lire("moteur_lignes") if r["fichier"] == "paniers" and r["id"] == "l_isf_i")}
 
 
 def main():
@@ -106,6 +106,8 @@ def main():
                 page.wait_for_timeout(150)
                 if v in AVEC_GRAPHIQUES and page.locator(f"#v-{v} svg").count() == 0:
                     echecs.append(f"[{ecran}] vue {v} : aucun graphique tracé")
+                if "[object " in page.locator(f"#v-{v}").text_content():
+                    echecs.append(f"[{ecran}] vue {v} : un élément affiché comme « [object …] » (tableau imbriqué non aplati)")
                 deb = page.evaluate("document.documentElement.scrollWidth - innerWidth")
                 if deb > 1:
                     echecs.append(f"[{ecran}] vue {v} : débordement horizontal de {deb} px")
@@ -206,7 +208,27 @@ def main():
                 autre.wait_for_timeout(200)
                 if not autre.locator("#f-stress").is_checked() or "Déficit" not in autre.locator("#titre-proj").inner_text():
                     echecs.append("partage : le lien ne rétablit pas les choix de la vue Dette et déficit")
+                # Lien permanent d'un chiffre (« Citer ce chiffre ») : rouvre son explication, avec la citation
+                autre.goto(base + "#/equilibre?pq=" + "paniers:l_isf_i")
+                autre.wait_for_selector("#pq[open]", timeout=5000)
+                if "Citer ou contester ce chiffre" not in autre.locator("#pq-corps").inner_text():
+                    echecs.append("citer : le lien permanent n'ouvre pas l'explication avec sa citation")
                 autre.close()
+                # Ordre neutre (alphabétique) des programmes et des scénarios
+                for sel in ("#cards-programmes .card h3", "#cards-paniers .card h3"):
+                    noms = page.locator(sel).all_inner_texts()
+                    if noms != sorted(noms, key=str.casefold):
+                        echecs.append(f"ordre : {sel} n'est pas alphabétique ({noms})")
+                # « Non calculé pour vous » et journal des corrections
+                page.evaluate("location.hash = '#/accueil'")
+                nc = page.locator("#acc-nonchiffre").inner_text() + page.locator("#acc-nonchiffre details").text_content()
+                if "Ce n'est pas l'effet total" not in nc or "[object" in nc:
+                    echecs.append("accueil : la liste des mesures non calculées manque")
+                page.evaluate("location.hash = '#/journal'")
+                page.wait_for_selector("#v-journal:not([hidden])")
+                n_j = page.locator("#tb-journal tbody tr").count()
+                if n_j != att["journal"]:
+                    echecs.append(f"journal : {n_j} lignes affichées, {att['journal']} attendues")
                 annee, mois, jour = att["date"].split("-")
                 if annee not in k("maj") or str(int(jour)) not in k("maj"):
                     echecs.append(f"pied de page : date « {k('maj')} », attendu {att['date']}")

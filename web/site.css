@@ -218,9 +218,9 @@ details.acc > .acc-body { padding: 0 0 1.5rem; }
 .choice input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
 .check { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; cursor: pointer; }
 .check input { width: 1.2rem; height: 1.2rem; accent-color: var(--primary); }
-.field { display: flex; flex-direction: column; gap: .3rem; margin-bottom: 1rem; }
+.field { display: flex; flex-direction: column; gap: .3rem; margin-bottom: 1rem; min-width: 0; max-width: 100%; }
 .field label { font-weight: 700; }
-.field input, .field select { font: inherit; padding: .55rem .75rem; border: 1px solid var(--border-strong); border-bottom: 2px solid var(--text); border-radius: var(--radius) var(--radius) 0 0; background: var(--bg-alt); color: var(--text); max-width: 26rem; min-height: 44px; }
+.field input, .field select { font: inherit; padding: .55rem .75rem; border: 1px solid var(--border-strong); border-bottom: 2px solid var(--text); border-radius: var(--radius) var(--radius) 0 0; background: var(--bg-alt); color: var(--text); max-width: min(26rem, 100%); min-height: 44px; text-overflow: ellipsis; }
 .filters { display: flex; flex-wrap: wrap; gap: 0 1.5rem; }
 
 /* Tableaux */
@@ -377,3 +377,6 @@ a.term:hover { color: var(--primary); }
 /* Un badge long (« Impossible sans changer les règles européennes ») passe à la ligne dans une carte étroite */
 .card.idee .badge, #tb-idees .badge { white-space: normal; }
 .card.idee { min-width: 0; overflow-wrap: anywhere; }
+
+/* Citer un chiffre (« Pourquoi ce chiffre ? ») */
+.citation { margin: .5rem 0; padding: .6rem .9rem; border-left: 3px solid var(--border-strong); background: var(--bg-alt); overflow-wrap: anywhere; }

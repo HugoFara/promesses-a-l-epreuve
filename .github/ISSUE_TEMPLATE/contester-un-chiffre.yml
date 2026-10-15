@@ -1,0 +1,57 @@
+name: Contester un chiffre
+description: Signaler un chiffre du site qui vous semble faux, avec une source à l'appui.
+title: "Contestation : "
+labels: ["contestation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de vérifier nos chiffres. Une contestation n'est retenue qu'avec une **source lue** (document officiel, étude, chiffrage publié), que nous relisons nous-mêmes. Si la correction est acceptée, elle est inscrite dans le [journal des corrections](https://hugofara.github.io/promesses-a-l-epreuve/web/#/journal), avec l'ancienne valeur, la nouvelle et votre source.
+
+        Le plus simple : ouvrez « Pourquoi ce chiffre ? » à côté du chiffre sur le site, puis « Contestez-le avec une source ». Le champ ci-dessous est alors déjà rempli.
+  - type: textarea
+    id: chiffre
+    attributes:
+      label: Le chiffre contesté
+      description: La citation et le lien permanent du chiffre (« Citer ce chiffre » sur le site).
+    validations:
+      required: true
+  - type: input
+    id: valeur
+    attributes:
+      label: La valeur que vous proposez
+      description: Avec son unité, par exemple « 3,2 milliards d'euros par an en 2027 ».
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Votre source (adresse web)
+      description: Un lien vers le document. Les sources primaires (texte de loi, rapport officiel, étude publiée) sont préférées.
+      placeholder: https://
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page, tableau ou passage
+      description: Où trouver la valeur dans le document, pour que nous puissions la relire.
+    validations:
+      required: true
+  - type: textarea
+    id: explication
+    attributes:
+      label: Pourquoi notre chiffre est faux
+      description: Erreur de lecture, source dépassée, hypothèse discutable… Une ou deux phrases suffisent.
+    validations:
+      required: false
+  - type: dropdown
+    id: lien_parti
+    attributes:
+      label: Écrivez-vous au nom d'un parti, d'une équipe de campagne ou d'une organisation ?
+      description: Cela ne change pas le traitement de votre demande ; nous l'indiquons seulement pour la transparence.
+      options:
+        - Non, à titre personnel
+        - Oui (précisez lequel ou laquelle dans l'explication)
+    validations:
+      required: true

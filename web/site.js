@@ -14,6 +14,7 @@ const SOURCES = {
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
   validation_regles: "validation_regles", validation_attribution: "validation_attribution", distributif: "distributif_menages", grille: "distributif_grille", reformes: "distributif_reformes",
   idees: "idees", idees_chiffres: "idees_chiffres", projref: "projection_reference",
+  non_chiffre: "non_chiffre_foyer", journal: "historique",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
 };
 
@@ -33,7 +34,12 @@ const FICHIERS = [
   ["validation_resume", "Test de la méthode sur le passé"],
   ["distributif_menages", "Effet sur les foyers types"],
   ["distributif_grille", "Effet sur toutes les situations du simulateur « Mon foyer »"],
+  ["non_chiffre_foyer", "Mesures qui touchent les ménages mais ne sont pas encore calculées"],
+  ["historique", "Journal des corrections : chaque valeur modifiée, avec sa raison et sa source"],
 ];
+
+// Dépôt public : code, données et formulaire « Contester un chiffre » (.github/ISSUE_TEMPLATE)
+const DEPOT = "https://github.com/HugoFara/promesses-a-l-epreuve";
 
 const CRISES_T3 = [2009, 2010, 2020, 2021];
 
@@ -49,6 +55,8 @@ const eur = v => n0(v) + " €";
 const num = x => (x === "" || x == null) ? NaN : Number(x);
 const sum = (a, f) => a.reduce((s, r) => s + f(r), 0);
 const mean = a => a.reduce((s, v) => s + v, 0) / a.length;
+// Ordre neutre : partis, programmes et scénarios toujours rangés par ordre alphabétique, jamais par résultat
+const alpha = (a, b) => (a || "").localeCompare(b || "", "fr");
 
 /* ------------------------------------------------------------------ DOM */
 const $ = (s, el = document) => el.querySelector(s);
@@ -169,6 +177,12 @@ function calculer() {
       biais, biaisLib: (desc(p.biais_reference).match(/à \d ans?/) || [""])[0],
       deficit: ref + biais - c / pib * 100};
   });
+  D.progs.sort((a, b) => alpha(a.nom, b.nom));
+  D.app.sort((a, b) => alpha(a.programme, b.programme));
+  D.totaux.sort((a, b) => alpha(a.fichier, b.fichier) || alpha(a.groupe, b.groupe));
+  D.sensibilite.sort((a, b) => alpha(a.programme, b.programme));
+  D.confiance.sort((a, b) => alpha(a.fichier, b.fichier) || alpha(a.groupe, b.groupe));
+  D.reformes.sort((a, b) => alpha(a.porteur, b.porteur));
   D.scrutins = [...new Set(D.progs.map(p => p.scrutin))].sort((a, b) => num(b.match(/\d{4}/)) - num(a.match(/\d{4}/)));
 
   // Limites : l'écart entre chiffreurs publiés, sur le programme où il est le plus grand
@@ -185,10 +199,10 @@ function calculer() {
   }).filter(Boolean).join(" ; ") + ".";
   const att = D.validation_attribution, connus = att.filter(r => r.issue_connue === "oui").length;
   K.val_connus = `l'agent qui a choisi la règle à appliquer à chaque mesure connaissait déjà le coût réel de ${connus} cas sur ${att.length}. Le résultat est donc probablement un peu flatteur pour la méthode.`;
-  D.pan = D.paniers.map(r => ({...r, corrige: num(mot.get("paniers|" + r.id)?.corrige_central)}));
+  D.pan = D.paniers.map(r => ({...r, corrige: num(mot.get("paniers|" + r.id)?.corrige_central)})).sort((a, b) => alpha(a.variante, b.variante));
 
   // Scénarios d'équilibre
-  const groupes = [...new Set(D.paniers.map(r => r.variante))];
+  const groupes = [...new Set(D.paniers.map(r => r.variante))].sort(alpha);
   D.scen = groupes.map(g => {
     const t = comp => D.totaux.find(r => r.fichier === "paniers" && r.groupe === g && r.composante === comp);
     const v = D.variantes.find(x => x.groupe === g && x.variante === "degel");
@@ -205,6 +219,16 @@ function calculer() {
   const dg = D.scen.filter(s => s.degel).map(s => s.solde - s.degel.solde);
   if (dg.length) K.degel_ecart = "d'environ " + md(d3.max(dg));
   K.el_n = D.elasticites.length;
+  // Limite de la méthode, dite tôt (vue Programmes) : chiffres du test sur le passé
+  const vr = n => D.validation_resume.find(r => r.groupe.trim().startsWith(n));
+  const vo = vr("Chiffrages officiels, statistique principale"), ve = vr("Effets annoncés");
+  if (vo && ve) {
+    const mieux = num(vo.erreur_moyenne_nous_pct) < num(vo.erreur_moyenne_depart_pct) && num(vo.erreur_mediane_nous_pct) < num(vo.erreur_mediane_depart_pct);
+    K.limite_methode = `${mieux ? "Notre méthode prédit à peine mieux" : "Notre méthode ne prédit pas mieux"} que les chiffrages existants : ` +
+      `sur le coût de ${vo.n} mesures passées, l'erreur d'un cas typique passe de ${pc(num(vo.erreur_mediane_depart_pct))} à ${pc(num(vo.erreur_mediane_nous_pct))}, ` +
+      `mais l'erreur moyenne de ${pc(num(vo.erreur_moyenne_depart_pct))} à ${pc(num(vo.erreur_moyenne_nous_pct))}. ` +
+      `Elle corrige surtout les promesses d'effets (emplois, investissements) : l'erreur typique y passe de ${pc(num(ve.erreur_mediane_depart_pct))} à ${pc(num(ve.erreur_mediane_nous_pct))}.`;
+  }
   const dd = D.meta.find(r => r.cle === "date_donnees")?.valeur;
   if (dd) K.maj = new Date(dd + "T12:00:00").toLocaleDateString("fr-FR", {day: "numeric", month: "long", year: "numeric"});
 }
@@ -449,7 +473,8 @@ function drawInc() {
 function PROJ() {
   const pal = ["--s2", "--s4", "--s3", "--s6", "--s1"];
   let i = 0;
-  return [...new Set(D.projection.map(r => r.scenario))].filter(n => !/, stress /.test(n)).map(n =>
+  const refs = n => /^Référence/.test(n) ? 0 : 1;
+  return [...new Set(D.projection.map(r => r.scenario))].filter(n => !/, stress /.test(n)).sort((a, b) => refs(a) - refs(b) || alpha(a, b)).map(n =>
     n === "Référence du gouvernement" ? {n, c: css("--s5"), court: "Gouvernement", leg: "Prévision du gouvernement"}
     : n === "Référence corrigée du biais" ? {n, c: css("--text"), court: "Gouvernement corrigé", leg: "Prévision corrigée de l'optimisme habituel"}
     : {n, c: css(pal[i++ % pal.length]), court: n.replace(/^Panier /, ""), leg: "Scénario " + n.replace(/^Panier /, "")});
@@ -748,13 +773,32 @@ function vueAccueil() {
 
   // Les mesures calculées et leurs porteurs, lus dans les données
   const porteurs = [...new Set(D.reformes.map(r => r.porteur))];
+  nonChiffre($("#acc-nonchiffre"), porteurs);
+  const pf = $("#acc-profondeur"); pf.textContent = "";
+  pf.append("Ce résultat repose sur une méthode publique : ", h("a", {href: "#/methode"}, `${D.mesures.length} mesures passées testées, ${D.elasticites.length} études de comportement`),
+    ", ", h("a", {href: "#/journal"}, "un journal de chaque correction"), " et ", lien(DEPOT, "le code et les données ouverts"), ".");
   $("#acc-limites").textContent = `Seules ${D.reformes.length} mesures sont calculées pour l'instant. Elles viennent de : ${liste(porteurs)}. ` +
     `Celles des autres partis ne le sont pas encore. Calcul simplifié avec le logiciel public OpenFisca, sur les règles de 2026, ` +
     `pour un foyer sans revenus du capital ni aide au logement. Chaque mesure est calculée seule : les effets ne s'additionnent pas.`;
 }
 
+/** « Aussi dans ces propositions, non calculé pour vous » : mesures des mêmes porteurs qui touchent les ménages mais
+    ne sont pas simulées (non_chiffre_foyer.csv). Une phrase visible, puis la liste détaillée et sourcée. */
+function nonChiffre(box, porteurs) {
+  box.textContent = "";
+  const rs = D.non_chiffre.filter(r => porteurs.includes(r.porteur));
+  if (!rs.length) return;
+  const ex = porteurs.map(p => rs.find(r => r.porteur === p)?.mesure).filter(Boolean).map(t => t[0].toLowerCase() + t.slice(1));
+  box.append(h("p", {}, h("strong", {}, "Ce n'est pas l'effet total. "),
+    `${rs.length} autres mesures de ces propositions vous concernent peut-être mais ne sont pas calculées (${liste(ex)}…).`),
+    h("details", {class: "data-toggle"}, h("summary", {}, "Aussi dans ces propositions, non calculé pour vous"),
+      porteurs.filter(p => rs.some(r => r.porteur === p)).map(p => [h("h3", {class: "small"}, p),
+        h("ul", {class: "small"}, rs.filter(r => r.porteur === p).sort((a, b) => num(a.ordre) - num(b.ordre)).map(r =>
+          h("li", {}, h("strong", {}, r.mesure), ` (${r.qui.toLowerCase()}). ${r.raison}. `, lien(r.url, "Source"))))]).flat()));
+}
+
 function vueFoyer() {
-  const ref = new Map(D.reformes.map(r => [r.id, r]));
+  const ref = new Map(D.reformes.map(r => [r.id, r])), rang = new Map(D.reformes.map((r, i) => [r.id, i]));
   const origine = origineReforme;
   const lignes = rs => {
     const out = $("#foyer-result"); out.textContent = "";
@@ -778,13 +822,14 @@ function vueFoyer() {
     if (!choix.length) return;
     const rev = num(choix[0].revenu_disponible_avant);
     $("#foyer-intro").textContent = `Revenu disponible actuel du foyer (après impôts et prestations) : ${eur(rev)} par an, soit environ ${eur(rev / 12)} par mois.`;
-    lignes(choix);
+    lignes([...choix].sort((a, b) => rang.get(a.reforme) - rang.get(b.reforme)));
   };
   f.onchange = show; f.onsubmit = e => e.preventDefault(); show();
 
   // En bref : qui est touché, dans toute la grille
   const ids = [...new Set(G.map(r => r.id))].length, bref = $("#bref-foyer"); bref.textContent = "";
-  [...new Set(G.map(r => r.reforme))].forEach(id => {
+  nonChiffre($("#foyer-nonchiffre"), [...new Set(D.reformes.map(r => r.porteur))]);
+  D.reformes.map(r => r.id).filter(id => G.some(r => r.reforme === id)).forEach(id => {
     const gs = G.filter(r => r.reforme === id).map(r => num(r.gain_annuel)), pos = gs.filter(g => g > 0), neg = gs.filter(g => g < 0);
     const part = (a, verbe) => {
       if (!a.length) return "";
@@ -801,7 +846,7 @@ function vueFoyer() {
     origine(r.id) ? `Mesure étudiée dans : ${origine(r.id)}. ` : "", lien(r.url, "Source"))));
 
   const menages = [...new Set(D.distributif.map(r => r.menage))];
-  const reformes = [...new Map(D.distributif.map(r => [r.reforme, r.libelle]))];
+  const reformes = [...new Map(D.distributif.map(r => [r.reforme, r.libelle]))].sort((a, b) => (rang.get(a[0]) ?? 99) - (rang.get(b[0]) ?? 99));
   table($("#tb-dist"), [{t: "Foyer", f: m => m}, {t: "Revenu disponible", num: true, f: m => eur(num(D.distributif.find(r => r.menage === m).revenu_disponible_avant))},
     ...reformes.map(([id, l]) => ({t: l, num: true, f: m => {
       const r = D.distributif.find(x => x.menage === m && x.reforme === id), g = r ? num(r.gain_annuel) : NaN;
@@ -966,6 +1011,29 @@ function vueMethode() {
   table($("#tb-fichiers"), [{t: "Contenu", f: r => r[1]}, {t: "Fichier", f: r => h("a", {href: `../data/${r[0]}.csv`, download: ""}, r[0] + ".csv")}], FICHIERS);
 }
 
+/* Journal des corrections : historique.csv publié (le plus récent d'abord). Sert aussi de fil des mises à jour. */
+const NOMS_FICHIERS = Object.fromEntries(FICHIERS);
+function vueJournal() {
+  const J = D.journal, dates = [...new Set(J.map(r => r.date))].sort().reverse();
+  const jour = d => new Date(d + "T12:00:00").toLocaleDateString("fr-FR", {day: "numeric", month: "long", year: "numeric"});
+  const bref = $("#bref-journal"); bref.textContent = "";
+  bref.append(h("li", {}, `${J.length} modifications inscrites depuis le ${jour(dates[dates.length - 1])}, la dernière le ${jour(dates[0])}.`),
+    h("li", {}, `Le ${jour(dates[0])} : ${J.filter(r => r.date === dates[0]).length} modification${J.filter(r => r.date === dates[0]).length > 1 ? "s" : ""}.`),
+    h("li", {}, "Une valeur n'est jamais remplacée sans laisser de trace : l'ancienne valeur, la nouvelle, la raison et la source sont gardées."));
+  const sf = $("#f-jfichier"), st = $("#f-jtexte");
+  if (sf.options.length === 1) [...new Set(J.map(r => r.fichier))].sort(alpha).forEach(f => sf.append(h("option", {value: f}, NOMS_FICHIERS[f] ? `${NOMS_FICHIERS[f]} (${f})` : f)));
+  const court = v => (v || "").length > 80 ? v.slice(0, 77) + "…" : (v || "—");
+  const draw = () => {
+    const q = st.value.trim().toLowerCase();
+    const rows = J.filter(r => (!sf.value || r.fichier === sf.value) && (!q || Object.values(r).join(" ").toLowerCase().includes(q)));
+    $("#nb-journal").textContent = `${rows.length} modification${rows.length > 1 ? "s" : ""} affichée${rows.length > 1 ? "s" : ""}.`;
+    table($("#tb-journal"), [{t: "Date", f: r => jour(r.date)}, {t: "Fichier", f: r => r.fichier}, {t: "Ligne", f: r => r.id},
+      {t: "Ce qui change", f: r => [h("span", {class: "muted"}, r.colonne + " : "), court(r.ancienne), " → ", court(r.nouvelle)]},
+      {t: "Raison", f: r => r.raison}, {t: "Source", f: r => /^https?:/.test(r.source) ? lien(r.source, "source") : (r.source || "—")}], rows);
+  };
+  sf.onchange = draw; st.oninput = draw; draw();
+}
+
 /* ------------------------------------------------------------------ « Pourquoi ce chiffre ? »
    Pour chaque montant corrigé : chiffrage de départ et sa source, règle appliquée et ce qui la fonde, part déjà
    dans la référence, recoupements, résultat et fourchette, et ce que le test sur le passé dit de la règle.
@@ -993,6 +1061,32 @@ function ouvrir(titre, ...corps) {
   if (!dlg.open) dlg.showModal();
   c.scrollTop = 0; dlg.scrollTop = 0;
   $("#pq-fermer").focus();
+}
+
+/** Copie un texte ; si le presse-papiers est refusé, l'affiche sélectionné pour une copie à la main. */
+async function copierTexte(texte, etat, ok, nomChamp) {
+  etat.textContent = "";
+  try { await navigator.clipboard.writeText(texte); etat.textContent = ok; }
+  catch (e) {
+    const champ = h("input", {type: "text", readonly: "", value: texte, "aria-label": nomChamp, class: "outils-lien"});
+    etat.append("Copiez ce texte : ", champ); champ.select();
+  }
+}
+/** « Citer ce chiffre » et « Contester ce chiffre », en fin de « Pourquoi ce chiffre ? ». cle : fichier:id (une ligne)
+    ou total:fichier:groupe ; le lien permanent rouvre cette explication (#/vue?pq=…). */
+function citerContester(cle, citation) {
+  const url = location.origin + location.pathname + "#/" + (vueCourante || "accueil") + "?pq=" + encodeURIComponent(cle);
+  const texte = `${citation} Source : Promesses à l'épreuve, données du ${K.maj || "—"}, ${url}`;
+  const etat = h("p", {class: "small muted", role: "status"});
+  const btn = h("button", {type: "button", class: "btn-tool"}, "Copier la citation");
+  btn.onclick = () => copierTexte(texte, etat, "Citation copiée, avec le lien permanent.", "Citation de ce chiffre");
+  const conteste = DEPOT + "/issues/new?template=contester-un-chiffre.yml&title=" + encodeURIComponent("Contestation : " + citation.split(" : ")[0]) +
+    "&chiffre=" + encodeURIComponent(texte);
+  return [h("h3", {}, "Citer ou contester ce chiffre"),
+    h("blockquote", {class: "citation small"}, texte),
+    h("p", {}, btn), etat,
+    h("p", {class: "small"}, "Un chiffre vous semble faux ? ", lien(conteste, "Contestez-le avec une source"),
+      " (compte GitHub nécessaire). Chaque correction acceptée est inscrite dans le ", h("a", {href: "#/journal"}, "journal des corrections"), ".")];
 }
 
 /** Sources d'une règle : ids de regles.csv (élasticités ou mesures du backtest) rendus en liens lisibles. */
@@ -1060,7 +1154,9 @@ function pourquoi(fichier, id) {
          ["Statut de référence", l.statut_reference || "—"], ["Fiabilité de la référence", l.confiance_reference || "—"],
          ["Autres chiffrages", l.autres_estimations || "—"], ["Qui paie", l.qui_paie || "—"], ["Incertitude", l.incertitude || "—"]]
           .filter(([, v]) => v && v !== "—").map(([k, v]) => [h("dt", {}, k), h("dd", {}, v)])),
-      paramsRegle(m.regle)));
+      paramsRegle(m.regle)),
+    citerContester(fichier + ":" + id, `${l.ligne} (${m.groupe}) : ${sg(c)} milliards d'euros par an après correction ` +
+      `(chiffrage de départ ${sg(dep)}, ${src} ; entre ${sg(num(m.p10))} et ${sg(num(m.p90))} dans 8 cas sur 10).`));
 }
 
 /** Paramètres de la formule d'une règle (moteur_regles → moteur_parametres), avec leur provenance. */
@@ -1093,7 +1189,9 @@ function pourquoiTotal(fichier, groupe) {
     h("p", {}, `Ce total additionne ${L.length} mesures. Chacune part d'un chiffrage indépendant, puis reçoit, si besoin, une correction tirée des erreurs passées. Les corrections qui changent le plus le résultat :`),
     corrigees.length ? listeMesures(corrigees.slice(0, 8)) : h("p", {class: "muted"}, "Aucune mesure n'est corrigée."),
     h("details", {class: "data-toggle"}, h("summary", {}, `Toutes les mesures (${L.length})`), listeMesures(parCorr)),
-    h("p", {class: "small muted"}, "Cliquez sur une mesure pour voir le détail de son calcul."));
+    h("p", {class: "small muted"}, "Cliquez sur une mesure pour voir le détail de son calcul."),
+    (t => citerContester("total:" + fichier + ":" + groupe, `${groupe} : solde de ${sg(c)} milliards d'euros par an après correction` +
+      (t ? ` (entre ${sg(num(t.p10))} et ${sg(num(t.p90))} dans 8 cas sur 10).` : ".")))(D.totaux.find(r => r.fichier === fichier && r.groupe === groupe && r.composante === "solde")));
 }
 
 /* ------------------------------------------------------------------ vues et navigation */
@@ -1174,6 +1272,11 @@ function route() {
   if (vue && params.size) appliquerEtat(vue, params);
   ecrireEtat();
   dessiner();
+  const pq = params.get("pq");
+  if (pq) {
+    const [a, b, ...c] = pq.split(":");
+    if (a === "total") pourquoiTotal(b, c.join(":")); else pourquoi(a, [b, ...c].join(":"));
+  }
   if (sub) {
     const t = $("#g-" + sub) || $("#idee-" + sub);  // graphique, ou carte d'une idée (#/idees/isf)
     if (t) { t.scrollIntoView(); t.setAttribute("tabindex", "-1"); t.focus({preventScroll: true}); }
@@ -1281,7 +1384,7 @@ async function init() {
   }
   calculer();
   remplirK();
-  [vueAccueil, vueIdees, vueHier, vueProgrammes, vueEquilibre, vueFoyer, vueDemain, vueMethode].forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
+  [vueAccueil, vueIdees, vueHier, vueProgrammes, vueEquilibre, vueFoyer, vueDemain, vueMethode, vueJournal].forEach(f => { try { f(); } catch (e) { console.error(f.name, e); } });
   $("#chargement").remove();
   // Choix par défaut de chaque vue, avant d'appliquer ceux de l'adresse
   $$(".view").forEach(sec => { DEFAUTS[sec.id.slice(2)] = lireEtat(sec); });

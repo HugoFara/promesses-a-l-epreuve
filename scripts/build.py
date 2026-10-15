@@ -42,7 +42,7 @@ for nom, schema in SCHEMAS.items():
         except ValidationError as e:
             for err in e.errors():
                 erreurs.append(f"{nom}.csv l.{i} ({r.get(cle)}) {'.'.join(map(str, err['loc']))} : {err['msg']}")
-        if nom not in ("historique", "chiffrages_instituts", "totaux_instituts", "statut_reference_2027", "ifrap_nfp_2024", "calibration_instituts", "variantes_sensibilite", "validation_attribution", "montee_en_charge", "idees_chiffres"):
+        if nom not in ("historique", "chiffrages_instituts", "totaux_instituts", "statut_reference_2027", "ifrap_nfp_2024", "calibration_instituts", "variantes_sensibilite", "validation_attribution", "montee_en_charge", "idees_chiffres", "non_chiffre_foyer"):
             if r[cle] in vus:
                 erreurs.append(f"{nom}.csv : clé en double {r[cle]}")
             vus.add(r[cle])
@@ -102,6 +102,10 @@ for r in donnees["moteur_parametres"]:
                 erreurs.append(f"moteur_parametres {r['id']} : référence inconnue {x}")
     elif r["source_type"] == "url" and not (r["source_ref"] or "").startswith("http"):
         erreurs.append(f"moteur_parametres {r['id']} : URL manquante")
+porteurs = {r["porteur"] for r in donnees["distributif_reformes"]}
+for r in donnees["non_chiffre_foyer"]:
+    if r["porteur"] not in porteurs:
+        erreurs.append(f"non_chiffre_foyer : porteur sans mesure simulée « {r['porteur']} » (distributif_reformes.csv)")
 ids_paniers = {r["id"] for r in donnees["paniers"]}
 for r in donnees["montee_en_charge"]:
     if r["id"] not in ids_paniers:
@@ -115,34 +119,15 @@ if erreurs:
     print("\n".join(erreurs), file=sys.stderr)
     sys.exit(f"{len(erreurs)} erreur(s) de validation dans data/raw/")
 
-# Publication : copie à l'identique, sauf paniers (une ligne par variante)
+# Publication : copie à l'identique, sauf paniers (une ligne par variante) ; historique publié pour le journal
+# des corrections du site, du plus récent au plus ancien
 for nom, rows in donnees.items():
+    if nom == "historique":
+        ecrire(nom, sorted(rows, key=lambda r: r["date"], reverse=True), list(rows[0]))
     if nom in ("paniers", "historique"):
         continue
     ecrire(nom, rows, list(rows[0]))
 paniers = []
-ids_app = {r["id"] for r in donnees["application_lignes"]}
-for r in donnees["chiffrages_instituts"]:
-    if r["usage"] != "hors_lignes" and r["id_ligne"] not in ids_app:
-        erreurs.append(f"chiffrages_instituts : ligne inconnue {r['id_ligne']} ({r['chiffreur']})")
-for r in donnees["validation_attribution"]:
-    if r["regle"] not in regles:
-        erreurs.append(f"validation_attribution {r['id']} : règle inconnue « {r['regle']} »")
-mregles = {r["regle"] for r in donnees["moteur_regles"]}
-for x in set(regles) ^ mregles:
-    erreurs.append(f"règle « {x} » présente dans un seul des fichiers regles.csv / moteur_regles.csv")
-ids_bareme = {r["id"] for r in donnees["parametres_bareme"]}
-for r in donnees["moteur_parametres"]:
-    if r["source_type"] in ("elasticite", "backtest", "bareme", "calcul"):
-        for x in (r["source_ref"] or "").split():
-            if x not in ids_elast | ids_backtest | ids_bareme:
-                erreurs.append(f"moteur_parametres {r['id']} : référence inconnue {x}")
-    elif r["source_type"] == "url" and not (r["source_ref"] or "").startswith("http"):
-        erreurs.append(f"moteur_parametres {r['id']} : URL manquante")
-ids_paniers = {r["id"] for r in donnees["paniers"]}
-for r in donnees["montee_en_charge"]:
-    if r["id"] not in ids_paniers:
-        erreurs.append(f"montee_en_charge : ligne de panier inconnue {r['id']}")
 for r in donnees["paniers"]:
     for v in filter(None, r["variantes"].split(";")):
         paniers.append({**r, "id": f"{r['id']}_{VARIANTE_SUFFIXE[v]}", "variante": v})

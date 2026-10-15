@@ -227,6 +227,11 @@ class MonteeEnCharge(Ligne):
     id: str; annee: int; coef_bas: float; coef_central: float; coef_haut: float; source: str; note: OptStr = None
 
 
+class NonChiffreFoyer(Ligne):
+    """Mesure d'un porteur qui touche les ménages mais n'est pas simulée (« Aussi dans ce programme, non chiffré pour vous »)."""
+    porteur: str; ordre: int; mesure: str; qui: str; raison: str; source: str; url: Url; page: OptStr = None; confiance: Confiance
+
+
 class Historique(Ligne):
     date: str; fichier: str; id: str; colonne: str; ancienne: OptStr = None; nouvelle: OptStr = None
     raison: str; source: OptStr = None
@@ -302,5 +307,6 @@ SCHEMAS = {
     "montee_en_charge": MonteeEnCharge,
     "idees": Idee,
     "idees_chiffres": IdeeChiffre,
+    "non_chiffre_foyer": NonChiffreFoyer,
     "historique": Historique,
 }

@@ -122,9 +122,11 @@
       <h2>Votre résultat</h2>
       <ul class="foyer-result" id="acc-result" aria-label="Mesures qui changent votre revenu"></ul>
       <p id="acc-neutre"></p>
+      <div id="acc-nonchiffre"></div>
     </div>
     <p class="small" id="acc-limites"></p>
     <p><a class="cta" id="acc-affiner" href="#/foyer">Affiner mon calcul et voir le détail →</a></p>
+    <p class="small muted" id="acc-profondeur"></p>
 
     <h2>Pour aller plus loin</h2>
     <ul class="tiles">
@@ -246,6 +248,7 @@
       <h2>En bref</h2>
       <ul id="bref-programmes"></ul>
     </div>
+    <p class="prose"><strong>Bon à savoir.</strong> <span data-k="limite_methode"></span> <a href="#/methode">Voir le test de la méthode</a>.</p>
 
     <h2>1. Trois chiffrages pour chaque programme</h2>
     <ul class="prose">
@@ -388,6 +391,7 @@
     <div aria-live="polite">
       <p class="big" id="foyer-intro"></p>
       <ul class="foyer-result" id="foyer-result" aria-label="Effet de chaque mesure"></ul>
+      <div id="foyer-nonchiffre"></div>
     </div>
 
     <div class="callout warn">
@@ -498,7 +502,29 @@
     <h2>Données et sources</h2>
     <p class="prose">Tous les chiffres viennent de fichiers ouverts, chacun avec la source de chaque valeur. Vous pouvez les télécharger et les ouvrir dans un tableur.</p>
     <div class="tbl-wrap" id="tb-fichiers"></div>
-    <p class="prose">Les spécialistes peuvent aussi consulter <a href="complet.html">le tableau de bord complet</a>, qui présente toutes les sections sur une seule page.</p>
+    <p class="prose">Les spécialistes peuvent aussi consulter <a href="complet.html">le tableau de bord complet</a>, qui présente toutes les sections sur une seule page, et <a href="#/journal">le journal des corrections</a>.</p>
+  </section>
+
+  <!-- ==================================================================== JOURNAL -->
+  <section class="view" id="v-journal" data-titre="Journal des corrections" hidden>
+    <nav class="crumb" aria-label="Vous êtes ici"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Journal des corrections</li></ol></nav>
+    <h1>Journal des corrections</h1>
+    <p class="lede">Chaque valeur modifiée depuis le début du projet : ce qui a changé, pourquoi, et sur quelle source.</p>
+
+    <div class="callout">
+      <h2>En bref</h2>
+      <ul id="bref-journal"></ul>
+    </div>
+
+    <p class="prose">Un chiffre vous semble faux ? Ouvrez « Pourquoi ce chiffre ? » à côté de lui, puis « Contestez-le avec une source ». Une contestation n'est acceptée qu'avec une source lue, et chaque correction acceptée apparaît ici.</p>
+
+    <div class="filters">
+      <div class="field"><label for="f-jfichier">Fichier de données</label><select id="f-jfichier"><option value="">Tous les fichiers</option></select></div>
+      <div class="field"><label for="f-jtexte">Rechercher un mot</label><input id="f-jtexte" type="search" placeholder="SMIC, Zucman, audit…"></div>
+    </div>
+    <p class="small muted" id="nb-journal" aria-live="polite"></p>
+    <div class="tbl-wrap tall" id="tb-journal"></div>
+    <p class="prose small"><a href="../data/historique.csv" download>Télécharger le journal (historique.csv)</a></p>
   </section>
 
   <!-- ==================================================================== LEXIQUE -->
@@ -591,6 +617,7 @@
         <ul>
           <li><a href="#/methode">Méthode et limites</a></li>
           <li><a href="#/lexique">Lexique</a></li>
+          <li><a href="#/journal">Journal des corrections</a></li>
           <li><a href="complet.html">Tableau de bord complet (spécialistes)</a></li>
         </ul>
       </div>
