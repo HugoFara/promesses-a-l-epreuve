@@ -41,6 +41,10 @@ L'étape distributive (simulateur « Mon foyer ») demande un clone d'[OpenFisca
 
 La méthode, ses résultats et ses limites sont expliqués sur le site (page « Méthode », boutons « Pourquoi ce chiffre ? ») ; le détail des recherches est dans `recherche/`, et chaque valeur modifiée est inscrite dans `data/raw/historique.csv` (page « Journal des corrections »).
 
+## Contribuer
+
+Les règles du projet (aucun chiffre sans source lue, traitement identique pour tous les partis, historique de chaque correction, présentation neutre) et la façon de contester un chiffre sont dans `CONTRIBUTING.md`. Les agents d'IA suivent en plus `AGENTS.md`.
+
 ## Méthode de travail
 
 Le projet a été réalisé avec l'assistance d'une IA (Claude, d'Anthropic) : recherche documentaire par des agents qui suivent `recherche/CONSIGNES.md` (aucun chiffre sans source lue et archivée), écriture du code et des textes, relus et validés par l'auteur. Les contrôles automatiques (`scripts/garde_fous.py`, `scripts/test_web.py`) vérifient la cohérence des chiffres et l'accessibilité du site.

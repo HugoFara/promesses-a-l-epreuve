@@ -1,6 +1,6 @@
 # Consignes communes aux agents de recherche
 
-Projet : la racine de ce dépôt. Lire d'abord `README.md` et la page « Méthode » du site.
+Projet : la racine de ce dépôt. Lire d'abord `README.md`, `CONTRIBUTING.md` et la page « Méthode » du site.
 
 ## Règles
 
