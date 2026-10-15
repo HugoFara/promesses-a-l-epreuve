@@ -1,6 +1,9 @@
-# Backtest des chiffrages budgétaires : document de passation
+# Promesses à l'épreuve : document de passation
 
-Destinataire : agent d'implémentation. État au 14 octobre 2026. La version du 12 octobre est conservée dans `../backtest-chiffrages.zip`.
+Backtest des chiffrages budgétaires et site public. Destinataire : agent d'implémentation. État au 15 octobre 2026. La version du 12 octobre (avant le renommage, projet alors appelé `backtest-chiffrages`) est conservée dans `../backtest-chiffrages.zip`.
+
+- Dépôt public : https://github.com/HugoFara/promesses-a-l-epreuve (branche `main`).
+- Site en ligne : https://hugofara.github.io/promesses-a-l-epreuve/web/ (section 8).
 
 ## 1. Objectif
 
@@ -8,14 +11,18 @@ Construire une méthode reproductible pour évaluer la crédibilité budgétaire
 
 Le 14 octobre, les tâches T1, T2, T4, T5, T6, T8, T9 et T10 ont été traitées (section 7), puis un audit indépendant (`recherche/audit/rapport.md`) a relu l'ensemble : les 2 problèmes bloquants et 8 des 10 importants ont été corrigés le jour même (section 3, « Corrections de l'audit »). T3 attend la publication des programmes (LFI le 6 novembre 2026). T7 est partiel : ménages types et grille de 468 situations (simulateur « Mon foyer ») oui, déciles non.
 
+Le 14 et le 15 octobre, le site a été rendu accessible au grand public : « Pourquoi ce chiffre ? », simulateur « Mon foyer », liens partageables, audit d'accessibilité WCAG 2.2, accueil progressif centré sur le foyer (après un test avec un novice), page « Les idées qui reviennent » (T16). Le dépôt a été nettoyé (chemin local, lien privé, comptes provisoires de l'association retirés de tout l'historique), publié sur GitHub et renommé « Promesses à l'épreuve ». Le site est déployé par GitHub Pages après chaque passage réussi de la CI.
+
 ## 2. Contenu du paquet
 
 ```
 promesses-a-l-epreuve/
 ├── HANDOFF.md
+├── README.md                   présentation, lancement, méthode de travail (assistance par IA), licences
+├── LICENSE                     MIT (code) ; données et textes sous CC BY 4.0 (README)
 ├── requirements.txt            pandas, numpy, pydantic
 ├── requirements-web.txt        playwright (contrôle du site ; facultatif en local, requis en CI)
-├── .github/workflows/ci.yml    lance run_all.sh à chaque push
+├── .github/workflows/ci.yml    contrôles (run_all.sh, Python 3.14) à chaque push, puis déploiement GitHub Pages sur main
 ├── data/
 │   ├── raw/                    SOURCE DE VÉRITÉ : seuls fichiers à éditer (CSV UTF-8, virgule, point décimal, LF)
 │   └── *.csv                   fichiers publiés et dérivés, régénérés par run_all.sh : ne pas éditer
@@ -31,7 +38,7 @@ promesses-a-l-epreuve/
 │   ├── distributif.py / .sh    T7 : ménages types et grille du simulateur sous OpenFisca-France
 │   ├── build_web.py            génère web/complet.html (tableau de bord complet, autonome)
 │   ├── test_web.py             ouvre chaque vue du site dans Chromium (2 écrans) : erreurs JS, débordement, chiffres clés vs CSV
-│   ├── check_regression.py     17 valeurs de référence
+│   ├── check_regression.py     15 valeurs de référence
 │   ├── garde_fous.py           T8 : symétrie, traçabilité, double compte
 │   └── appliquer_corrections.py  applique un fichier de corrections (format T2) avec historique
 ├── modeles/programme_2027.csv  gabarit de saisie T3 (lignes, à ajouter à data/raw/application_lignes.csv)
@@ -42,7 +49,7 @@ promesses-a-l-epreuve/
 └── web/
     ├── index.html, site.css, site.js   site public en vues séparées (écrit à la main, lit les CSV de data/)
     ├── vendor/                 d3 7.9.0 en copie locale (intégrité vérifiée sur le registre npm), avec sa licence
-    ├── dashboard_page.html     page du tableau de bord pour l'artifact claude.ai
+    ├── dashboard_page.html     source du tableau de bord complet (ancien artifact claude.ai ; non publié)
     └── complet.html            tableau de bord complet, version autonome (générée)
 ```
 
@@ -50,7 +57,16 @@ Lancer `bash scripts/run_all.sh` : tout doit afficher OK et « garde-fous : 0 er
 
 **Historique (règle 5).** Toute modification d'une valeur existante est inscrite dans `data/raw/historique.csv` (date, fichier, id, colonne, ancienne valeur, nouvelle, raison, source). Ce journal tient lieu de la colonne `valeur_precedente` demandée en T2. `appliquer_corrections.py` refuse une correction si la valeur actuelle ne correspond pas à l'ancienne valeur annoncée.
 
-**Site local.** Depuis la racine : `python3 -m http.server 8000`, puis ouvrir http://localhost:8000/web/. Le site public répartit le contenu en vues adressables (`#/hier`, `#/programmes`, `#/equilibre`, `#/foyer`, `#/demain`, `#/methode`, `#/lexique`) : encadré « En bref » en langage courant, graphiques avec tableau de données équivalent, détail expert dans des accordéons, paramètres d'affichage (thème, taille du texte). Apparence inspirée des sites publics, sans en reprendre les signes distinctifs (ni Marianne, ni bloc-marque) ; un bandeau rappelle que le site est indépendant. Tous les chiffres viennent des CSV (`SOURCES` dans `web/site.js`). Accessibilité : audit WCAG 2.2 AA du 14/10 (`recherche/audit/accessibilite.md`) ; `test_web.py` lance axe-core (`scripts/vendor/`) sur chaque vue, aux deux tailles d'écran et dans les deux thèmes. Les choix faits dans une vue s'écrivent dans l'adresse (`#/foyer?statut=retraite&composition=couple_2`, seuls ceux qui diffèrent du défaut) : chaque vue a les boutons « Copier le lien de cette page » et « Imprimer » ; un lien rétablit les choix. L'impression ouvre les accordéons, passe en couleurs claires, masque navigation et boutons, et ajoute l'adresse et la date. **Accueil progressif** (14/10, après un test avec un novice : le site lui semblait technique et les graphiques intimidants, seul l'effet sur sa situation l'intéressait) : l'accueil est un simulateur minimal (statut, composition, enfants, revenu net ; sans dividendes), résultat en euros par mois avec un libellé en langage courant (`libelle_simple`) et le porteur de la mesure (`porteur`, colonnes de `distributif_reformes.csv`) ; le bouton « Affiner mon calcul » ouvre « Mon foyer » avec la même situation ; le reste du site est rangé sous « Pour aller plus loin ». Pas de présentation « par parti » tant que chaque grand parti n'a pas au moins deux mesures ménages sourcées et simulées (aujourd'hui : gouvernement et NFP seulement) ; l'accueil dit que les autres partis ne sont pas encore calculés. **Idées qui reviennent** (`#/idees`, T16) : 17 idées choisies par une règle externe (proposition comptée au moins 5 000 fois dans la synthèse officielle des cahiers citoyens et courriers de 2019, Roland Berger et al., `recherche/T16/D_rapport.md`, ou mesure testée par le sondage Elabe du 3/9/2026, et effet sur le budget ; `recherche/T16/idees.md`). `data/raw/idees.csv` (statut, résumé, « peut-on s'y fier ? », « qui paierait ? ») et `idees_chiffres.csv` (66 chiffres sourcés des volets de recherche A, B et C, ou lus dans le moteur par `ligne_moteur` pour afficher annonce et correction ; `repere` = comparé au déficit 2025, seulement pour ce qu'une mesure rapporterait ou coûterait). La page montre un tableau d'ensemble puis une carte par idée ; les pourcentages de soutien du sondage sont dans les données mais pas affichés. Les comptes provisoires de l'association (non publiés) ne sont plus utilisés ni affichés ; ils surestimaient certains sujets (taxe sur les transactions financières). fraude sociale (recherche faite, 14 Md€ estimés) exclue par la règle : 3 594 mentions dans la synthèse de 2019, et non testée par le sondage. La vue « Mon foyer » est un simulateur : statut, composition, enfants, revenu net, dividendes ; il affiche la situation la plus proche de `distributif_grille.csv` (précalculée, rien n'est envoyé). Chaque montant corrigé (lignes des programmes et des paniers, totaux des cartes) a un bouton « Pourquoi ce chiffre ? » : chiffrage de départ et sa source, règle et ses références (`regles.csv`, élasticités, mesures du backtest), part déjà dans la référence, recoupements, fourchette P10-P90, statut de la règle (`validation_regles.csv`), et le détail du moteur (`moteur_lignes`, `moteur_regles`, `moteur_parametres`). Le tableau de bord complet (http://localhost:8000/web/complet.html) couvre 13 sections : les 8 d'origine (les sections 7 et 8 lisent désormais les montants corrigés du moteur, `moteur_lignes.csv`), puis incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
+**Site.** En local : depuis la racine, `python3 -m http.server 8000`, puis http://localhost:8000/web/. Tous les chiffres viennent des CSV (`SOURCES` dans `web/site.js`) ; aucune valeur en dur.
+
+- **Vues adressables** : `#/accueil`, `#/idees`, `#/hier`, `#/programmes`, `#/equilibre`, `#/foyer`, `#/demain`, `#/methode`, `#/lexique` (et `#/idees/<id>`, `#/hier/<graphique>` pour une partie). Encadré « En bref » en langage courant, graphiques doublés d'un tableau de données, détail expert dans des accordéons, paramètres d'affichage (thème, taille du texte). Apparence inspirée des sites publics, sans leurs signes distinctifs ; un bandeau rappelle que le site est indépendant.
+- **Accueil progressif** (après un test avec un novice : site jugé technique, graphiques intimidants, seul l'effet sur sa situation l'intéressait) : simulateur minimal (statut, composition, enfants, revenu net ; sans dividendes), résultat en euros par mois avec un libellé courant (`libelle_simple`) et le porteur de la mesure (`porteur`, colonnes de `distributif_reformes.csv`) ; « Affiner mon calcul » ouvre « Mon foyer » avec la même situation ; le reste est rangé sous « Pour aller plus loin ». Pas de présentation « par parti » tant que chaque grand parti n'a pas au moins deux mesures ménages sourcées et simulées (aujourd'hui : gouvernement et NFP seulement ; règle de sélection T15, `recherche/T15/regle_selection.md`).
+- **Les idées qui reviennent** (`#/idees`, T16) : 17 idées choisies par une règle externe (`recherche/T16/idees.md`) : proposition comptée au moins 5 000 fois dans la synthèse officielle des cahiers citoyens et courriers de 2019 (Roland Berger, Bluenove, Cognito ; `recherche/T16/D_rapport.md`), ou mesure testée par le sondage Elabe du 3/9/2026, et effet sur le budget. `data/raw/idees.csv` (statut, résumé, « peut-on s'y fier ? », « qui paierait ? », attestation des cahiers : proposition, mentions, page) et `idees_chiffres.csv` (65 chiffres des volets de recherche A, B et C, ou lus dans le moteur par `ligne_moteur` pour afficher annonce et correction ; `repere` = comparé au déficit 2025, seulement pour ce qu'une mesure rapporterait ou coûterait). Un tableau d'ensemble, puis une carte par idée. Les pourcentages de soutien du sondage sont dans les données mais pas affichés. Les comptes provisoires de l'association « Des cahiers pour décider et agir » ne sont ni utilisés ni publiés (ils surestimaient la taxe sur les transactions financières). La fraude sociale (recherche faite, 14 Md€ estimés) est exclue par la règle : 3 594 mentions en 2019, et non testée par le sondage.
+- **Mon foyer** : simulateur complet (statut, composition, enfants, revenu net, dividendes) ; il affiche la situation la plus proche de `distributif_grille.csv` (précalculée, rien n'est envoyé).
+- **« Pourquoi ce chiffre ? »** sur chaque montant corrigé (lignes des programmes et des paniers, totaux, cartes des idées liées au moteur) : chiffrage de départ et sa source, règle et ses références, part déjà dans la référence, recoupements, fourchette P10-P90, statut de la règle (`validation_regles.csv`), détail du moteur.
+- **Partage et impression** : les choix d'une vue s'écrivent dans l'adresse (seuls ceux qui diffèrent du défaut) ; boutons « Copier le lien de cette page » et « Imprimer » (accordéons ouverts, couleurs claires, adresse et date ajoutées).
+- **Accessibilité** : audit WCAG 2.2 AA (`recherche/audit/accessibilite.md`) ; `test_web.py` lance axe-core (`scripts/vendor/`) sur chaque vue, aux deux tailles d'écran et dans les deux thèmes. La CI tourne avec d'autres polices que la machine locale : elle a déjà révélé des débordements et des noms de tableaux en double ; ne pas se fier au seul test local.
+- **Tableau de bord complet** (`web/complet.html`, pour spécialistes) : 13 sections, dont incertitude et variantes (9), sensibilité au chiffreur (10), trajectoires 2026-2032 (11), validation (12), ménages types (13).
 
 **OpenFisca.** `distributif.sh` utilise le clone local `../openfisca-france` (à côté du projet, version 176.1.4 rebasée sur l'upstream du 14/10/2026) et son `.venv`, recréé le 14 octobre. Si OpenFisca est absent, l'étape est sautée.
 
@@ -84,7 +100,7 @@ Inchangé sur le fond, mais les 21 programmes de stabilité sont désormais tous
 
 ### Couche 3 : élasticités
 
-75 estimations (62 + 13 lues sur sources primaires par T2b : Saez-Slemrod-Giertz 0,12-0,40, Colombie, Norvège, Suède, CNEPI, Bozio-Wasmer par tranche de salaire, Carbonnier, Mésange lu à la source, non-recours CSS et CMU-C). Colonnes numériques `val_bas`, `val_central`, `val_haut`, `unite`, `type`. 71 high, 4 medium (raison dans `note_confiance`).
+78 estimations (dont 13 lues sur sources primaires par T2b : Saez-Slemrod-Giertz 0,12-0,40, Colombie, Norvège, Suède, CNEPI, Bozio-Wasmer par tranche de salaire, Carbonnier, Mésange lu à la source, non-recours CSS et CMU-C). Colonnes numériques `val_bas`, `val_central`, `val_haut`, `unite`, `type`. 76 high, 1 medium, 1 low (raison dans `note_confiance`).
 
 ### Moteur de correction (T4)
 
@@ -118,26 +134,29 @@ Seuls Montaigne et l'iFRAP chiffrent les deux programmes ligne à ligne. Asterè
 
 | Programme | Chiffreur | Solde publié | Lignes propres → corrigé | Complété (médiane des autres) → corrigé |
 |---|---|---|---|---|
-| NFP | Montaigne | −179 | −179,0 → −181,8 | −142,5 → −151,9 |
-| NFP | iFRAP (hors ligne reprise du parti) | −160,4 | −165,3 → −156,9 | −152,8 → −144,4 |
-| NFP | La Grande Conversation | recettes seules | +90,0 → +83,0 | −135,0 → −132,3 |
-| NFP | Asterès (recettes du parti) | −50 | −55,7 → −80,4 | −72,8 → −92,7 |
+| NFP | Montaigne | −179 | −179,0 → −181,3 | −142,5 → −151,5 |
+| NFP | iFRAP (hors ligne reprise du parti) | −160,4 | −165,3 → −155,0 | −152,8 → −142,5 |
+| NFP | La Grande Conversation | recettes seules | +90,0 → +85,7 | −135,0 → −129,6 |
+| NFP | Asterès (recettes du parti) | −50 | −55,7 → −78,6 | −72,8 → −90,9 |
 | Ensemble | Montaigne | −20,6 | −20,6 → −26,0 | −18,1 → −25,5 |
 | Ensemble | iFRAP | +4,0 | +4,0 → −2,3 | −2,1 → −9,6 |
 
-**Les corrections ne réduisent pas l'écart entre chiffreurs** (NFP : 17,8 Md€ avant, 19,6 après ; Ensemble : 16,0 → 15,9). L'écart vient du périmètre (retraites de −9,5 à −74 ; ISF de 3,5 à 22,5 ; recettes du parti reprises ou non : 76 Md€), pas du comportement. Le chiffreur de départ reste le premier facteur d'incertitude.
+**Les corrections ne réduisent pas l'écart entre chiffreurs** (NFP : 17,8 Md€ avant, 21,9 après ; Ensemble : 16,0 → 15,9). L'écart vient du périmètre (retraites de −9,5 à −74 ; ISF de 3,5 à 22,5 ; recettes du parti reprises ou non : 76 Md€), pas du comportement. Le chiffreur de départ reste le premier facteur d'incertitude.
 
 ### Paniers à l'équilibre (référence 2027)
 
-| Variante | Mesures phares | Financement | Solde central (moteur) | P10 / P50 / P90 | Loi votée seule | Variante « dégel » |
+| Variante | Mesures phares | Financement | Solde central (moteur) | P10 / P50 / P90 | Loi votée seule | Variante « dégel » (P10 / P90) |
 |---|---|---|---|---|---|---|
-| LFI intégral | −111,2 | +39,2 | **−72,0** | −87 / −68 / −49 | −67,3 | −96,6 |
-| LFI ajusté (hors 30 Md€ d'investissement emprunté) | −32,0 | +39,2 | **+7,2** | +2 / +8 / +14 | +11,9 | −17,3 |
-| Ensemble | −14,7 | +7,5 | **−7,0** | −11 / −7 / −4 | −1,6 | −7,0 |
+| LFI intégral | −111,2 | +39,2 | **−72,0** | −87 / −68 / −49 | −67,3 | −96,6 (−116 / −69) |
+| Ensemble | −14,7 | +7,7 | **−7,0** | −11 / −7 / −4 | −1,6 | −7,0 (non concerné) |
 
-**Le résultat LFI dépend surtout du SMIC.** La référence 2027 contient le gel du SMIC de référence des allègements (voté pour 2026, proposé pour 2027). Par symétrie avec la décote des bandeaux d'allègements, qui invoque ce même gel, le SMIC à 1 600 € n'augmente plus les allègements : son coût statique (−19 selon Montaigne, dont −21,5 d'allègements) devient +2,3, plus une ligne d'effet emploi (−1,7 : 103 500 emplois, T13). Si au contraire la hausse du SMIC s'accompagne d'un dégel (variante « dégel », `variantes_sensibilite.csv` : coût −24,7 et bandeaux à 0,715), LFI ajusté passe de +7,2 à −17,3. **Les deux lectures sont cohérentes ; le programme LFI 2027 devra dire laquelle s'applique.**
+**Le résultat LFI dépend surtout du SMIC.** La référence 2027 contient le gel du SMIC de référence des allègements (voté pour 2026, proposé pour 2027). Par symétrie avec la décote des bandeaux d'allègements, qui invoque ce même gel, le SMIC à 1 600 € n'augmente plus les allègements : son coût statique (−19 selon Montaigne, dont −21,5 d'allègements) devient +2,3, plus une ligne d'effet emploi (−1,7 : 103 500 emplois, T13). Si au contraire la hausse du SMIC s'accompagne d'un dégel (variante « dégel », `variantes_sensibilite.csv` : coût −24,7 et bandeaux à 0,715), LFI intégral passe de −72,0 à −96,6. **Les deux lectures sont cohérentes ; le programme LFI 2027 devra dire laquelle s'applique.**
 
-Autres effets de la référence 2027 : surtaxe d'IS déjà au PLF 2027 (facteur de référence 0,286, puis 1 dès 2028 car la surtaxe de la référence n'est reconduite qu'un an) ; bandeaux d'allègements en partie rabotés (0,5, statique 11,4 après effets emploi) ; sous-indexation des pensions et abattement des retraités déjà au PLF 2027 (0) ; Zucman décoté de 35 % pour son interaction avec l'ISF, l'IR et la fin du PFU du même panier (impôt plancher, PPL 768). La variante « loi votée seule » ne décote pas les mesures seulement proposées (+3,7 pour LFI, +5,4 pour Ensemble). La taxe renforcée sur les rachats d'actions (8,4 statiques, calcul de l'auteur de l'amendement sur les rachats du CAC 40 de 2024) reçoit depuis T13 une règle propre : 85 % de l'assiette perdue au central (report vers les dividendes, extrapolé de la taxe américaine de 1 %), moins la taxe existante de 0,2, soit **1,06 Md€** net (P10-P90 0,6-2,7 ; confiance low).
+Autres effets de la référence 2027 : surtaxe d'IS déjà au PLF 2027 (facteur de référence 0,286, puis 1 dès 2028 car la surtaxe de la référence n'est reconduite qu'un an) ; bandeaux d'allègements en partie rabotés (0,5, statique 11,4 après effets emploi) ; sous-indexation des pensions et abattement des retraités déjà au PLF 2027 (0) ; Zucman décoté de 35 % pour son interaction avec l'ISF, l'IR et la fin du PFU du même panier (impôt plancher, PPL 768). La variante « loi votée seule » ne décote pas les mesures seulement proposées (+4,7 pour LFI, +5,4 pour Ensemble). La taxe renforcée sur les rachats d'actions (8,4 statiques, calcul de l'auteur de l'amendement sur les rachats du CAC 40 de 2024) reçoit depuis T13 une règle propre : 85 % de l'assiette perdue au central (report vers les dividendes, extrapolé de la taxe américaine de 1 %), moins la taxe existante de 0,2, soit **1,06 Md€** net (P10-P90 0,6-2,7 ; confiance low).
+
+**Affichage sur le site (relecture externe du 15/10).** La page « Financer les promesses » ne donne plus de verdict « Financé » / « Non financé » : chaque carte affiche le solde et sa fourchette P10-P90, les deux lectures « allègements gelés » et « dégelés » côte à côte quand elles diffèrent (LFI intégral) (fourchette de la variante calculée par `moteur.py` avec les mêmes tirages, `moteur_variantes.csv`), et la part des corrections reposant sur une règle confirmée (`confiance_programmes.csv`). Un encadré dit en tête que les scénarios sont construits par le site, pas par les partis, et une liste « Ce que ces scénarios ne disent pas » rappelle les limites (financements choisis par le site ; leviers d'Ensemble déjà dans la référence ; effet du SMIC ; peu de règles confirmées). La page Méthode dit que le test n'est pas en aveugle, affiche l'erreur moyenne à côté de la médiane et le nombre de cas dégradés, et les limites rappellent que les corrections ne réduisent pas l'écart entre chiffreurs.
+
+**Scénario « LFI ajusté » retiré (décision de l'utilisateur, 15/10).** Une version « corrigée » d'un programme laisse croire que le site fait mieux que le parti, alors que le but est de montrer si un programme de campagne peut tenir ses promesses principales ; une modification qui améliore le solde n'est qu'un choix parmi d'autres. Ne pas construire de variante « ajustée » pour un parti, ni pour LFI ni pour Ensemble. Les trois mesures propres à l'ancienne variante (`l_ret62`, `l_point5`, `l_eco_rg`) restent sourcées dans `data/raw/paniers.csv` avec `variantes` vide (hors scénario, non publiées), ainsi que leurs lignes `_a` de `statut_reference_2027.csv` ; les 13 doublons `_a` des lignes communes ont été supprimés (`historique.csv`). Pour mémoire, l'ancien LFI ajusté donnait +7,2 (P10-P90 +2 / +14 ; dégel −17,3) et 8 % de corrections confirmées. **Suite proposée** (avec T3) : un seul scénario par parti, financé par ses propres annonces, et un outil « Combler l'écart » où le lecteur réduit ou retire des mesures et ajoute des leviers d'un menu commun à tous les partis (`rendements_leviers.csv`), sans combinaison proposée par défaut ; la règle d'or y deviendrait un réglage de lecture. Limite : les fourchettes d'une combinaison libre ne peuvent pas venir du Monte-Carlo dans le navigateur.
 
 ### Projection 2026-2032 (T5, `projection.csv`)
 
@@ -148,7 +167,6 @@ Trajectoire du gouvernement (PLF 2027 et trajectoire communiquée au HCFP) : dé
 | Référence du gouvernement | 5,0 | 2,8 | 2,8 | 120,3 |
 | Référence corrigée du biais | 5,6 | 4,8 | 5,1 | 130,3 |
 | Panier LFI intégral | 7,9 | 7,3 | 8,1 | 144,8 |
-| Panier LFI ajusté (dont 1,0 pt d'investissement emprunté) | 6,3 | 5,5 | 6,1 | 134,8 |
 | Panier Ensemble | 5,8 | 5,1 | 5,4 | 131,8 |
 
 Depuis l'audit : l'emprunt « règle d'or » entre dans le déficit et la dette (colonne `dont_investissement_pct`) ; l'impact de chaque ligne suit son facteur de référence de 2028 (`corrige_2028`) ; chaque tranche refinancée garde le spread de son année. Le stress +25 pb ajoute environ 0,2 point de déficit et 0,7 point de dette en 2032. Montée en charge (T14, `montee_en_charge.csv`) : le coût de l'abrogation de la réforme 2023 double en part du PIB entre 2027 et 2032 (`l_ret62`), celui du retour à 60 ans augmente de 11 % (`l_ret60`) ; les autres lignes restent constantes en % du PIB. Le HCFP juge la croissance 2027 « optimiste » et le retour sous 3 % en 2029 « très peu vraisemblable ».
@@ -178,11 +196,11 @@ Question : notre chiffrage corrigé est-il plus proche du réalisé que le chiff
 
 Sur la statistique principale des chiffrages officiels (26 mesures), l'erreur médiane passe de 11,2 % à 10,2 %, mais l'erreur moyenne monte (20,2 % → 23,9 %) : la méthode ne fait pas nettement mieux que le départ : elle ne change rien aux coûts mécaniques, qui sont la majorité, et ses gains (comportement du capital, effets promis, retraites) sont compensés par les règles mitigées ou contredites.
 
-**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 29 %, Ensemble 2024 92 %, panier LFI intégral 37 %, LFI ajusté 8 %, Ensemble 0 %. LFI ajusté chute depuis T13 : sa principale correction confirmée (Élasticité capital sur les rachats) est remplacée par une règle propre, non testable faute de précédent. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
+**Part des corrections reposant sur une règle confirmée** (`confiance_programmes.csv`) : NFP 2024 29 %, Ensemble 2024 92 %, panier LFI intégral 37 %, Ensemble 0 %. La correction la plus lourde du panier LFI qui ne soit pas confirmée est la garantie d'autonomie (taux de recours, +4,3 Md€) ; celle d'Ensemble est la décote de mise en œuvre de ses économies (−0,9).
 
 **Biais signés résiduels** (`biais_residuels.csv`, sens du solde : + = mieux que prévu) : après correction, le biais **médian** est nul (+0,1 % pour les chiffrages officiels comme pour les instituts) ; l'erreur centrée du Monte-Carlo est donc justifiée pour la médiane. La **moyenne** reste négative (officiels −0,4 % au départ, −4,9 % après correction ; instituts −10,4 % et −12,3 %) : quelques gros ratés défavorables (taux de recours, réforme structurelle, CDHR) forment une queue asymétrique que les règles ne réduisent pas, et que les échantillons par règle (1 à 4 cas) ne permettent pas de corriger.
 
-**Limites** : l'agent connaissait l'issue de 60 cas sur 83 (le 3e agent ne connaissait pas celle des rachats) ; échantillons très petits par règle (1 à 8) ; les règles les plus influentes pour 2027 (revenus, successions, nouvelle assiette Zucman) n'ont au mieux qu'un précédent.
+**Limites** : l'agent connaissait l'issue de 62 cas sur 87 (60 sur 83 dans `recherche/validation/README.md`, écrit avant les cas IS, CDHR et rachats) (le 3e agent ne connaissait pas celle des rachats) ; échantillons très petits par règle (1 à 8) ; les règles les plus influentes pour 2027 (revenus, successions, nouvelle assiette Zucman) n'ont au mieux qu'un précédent.
 
 **Décisions appliquées le 14/10** : « Taux de recours » restreinte aux chiffrages à recours complet (vérifié pour Montaigne : tous les éligibles au montant plein) ; « Élasticité patrimoine » affaiblie à 0,97. **Décision appliquée** : décote faible pour l'IS (0,94, fourchette 0,73-1). **À surveiller** : les soldes 2025 de la surtaxe et de la CDHR (déclarations de 2026), qui confirmeront ou non les acomptes.
 
@@ -221,7 +239,8 @@ Ménages types et grille = conventions (multiples du SMIC, montants ronds, pas d
 | `calibration_instituts.csv` | — | Chiffrages de campagne 2017/2022 vs coûts réalisés (T10b) |
 | `rendements_leviers.csv` | `id` | Rendements sourcés de leviers génériques (point de CSG 17,8 Md€, TVA restauration à 20 % 2,1, carbone 1,8 par 10 €/t…) |
 | `projection_reference.csv`, `projection_parametres.csv` | `annee`, `id` | T5 |
-| `distributif_reformes.csv` | `id` | Réformes simulées sous OpenFisca (T7) |
+| `distributif_reformes.csv` | `id` | Réformes simulées sous OpenFisca (T7), avec `libelle_simple` et `porteur` pour l'accueil |
+| `idees.csv`, `idees_chiffres.csv` | `id` ; (`idee`, `ordre`) | Idées qui reviennent (T16) : cartes et chiffres ; `build.py` refuse un chiffre sans source, un renvoi inconnu au moteur, une idée des cahiers sans attestation d'au moins 5 000 mentions |
 | `historique.csv` | — | Journal des modifications |
 
 ## 5. Règles de correction en vigueur
@@ -241,29 +260,31 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 
 1. **Le chiffreur de départ décide du résultat** (T6) : les corrections ne réduisent pas la dispersion.
 2. **Référence 2027 = budgets déposés.** Si le Parlement modifie le PLF (l'abattement des retraités a été supprimé en commission le 9 octobre, la séance repart du texte du gouvernement), les facteurs de référence changent. Avec la loi votée seule, les lignes « proposées » repasseraient à 1.
-3. **SMIC et gel des allègements** : résultat LFI très sensible (LFI ajusté de +7,2 à −17,3 selon le gel ou le dégel). Emplois perdus (T13) : 103 500 au central (élasticité française −0,6 × hausse moyenne de 6,9 % × 2,5 M de salariés entre 1 et 1,15 SMIC), de ≈29 000 (Dube) à 389 000 (diffusion complète, −0,9, 3 M) ; Montaigne 230 000 à 380 000.
+3. **SMIC et gel des allègements** : résultat LFI très sensible (LFI intégral de −72,0 à −96,6 selon le gel ou le dégel). Emplois perdus (T13) : 103 500 au central (élasticité française −0,6 × hausse moyenne de 6,9 % × 2,5 M de salariés entre 1 et 1,15 SMIC), de ≈29 000 (Dube) à 389 000 (diffusion complète, −0,9, 3 M) ; Montaigne 230 000 à 380 000.
 4. **Suspension des retraites** : 1,9 Md€ en 2027 retenu (lettre rectificative 1,4 + amendement 0,5) ; le 1,0 du PLFSS 2027 est un incrément d'une année sur l'autre. Le 8,3 de l'iFRAP (rendement de la réforme) n'est pas archivé.
 5. **Bases de prix** : corrigées par `deflateur_ex_ante` pour retraites 2023 et Woerth (déflateurs approchés : ≈1,75 %/an ; ≈+8 % de 2008 à 2016).
-6. **Ex post administratif** : 5 mesures (marquées `type_ex_post = administratif`) ; la statistique sur ex post observés seulement est publiée à côté (13,1 %).
+6. **Ex post administratif** : 5 mesures (marquées `type_ex_post = administratif`) ; la statistique sur ex post observés seulement est publiée à côté (14,4 %).
 7. **Pas de bouclage macro** dans le solde (les multiplicateurs Mésange sont dans `elasticites.csv` mais pas utilisés) ; la projection n'a pas d'effet du programme sur la croissance.
 8. **Projection** : 2030-2032 extrapolés ; biais tenu constant au-delà de 3 ans ; montée en charge seulement pour les deux lignes de retraites (coefficient central, profil calculé ; aucune ligne d'Ensemble profilée) ; `part_commune_erreur` = 0,5 est une hypothèse.
 9. **Distributif** : ménages types seulement ; pas de déciles.
 
 ## 7. État des tâches et suite du travail
 
-| Tâche | État au 14/10 | Reste à faire |
+| Tâche | État au 15/10 | Reste à faire |
 |---|---|---|
 | T1 Référence 2027 | **Fait** : 68 lignes avec statut (aucune inconnue), `facteur_reference`, paramètres du PLF 2027 | Suivre le vote du PLF/PLFSS 2027 (abattement des retraités, surtaxe, holdings) et mettre à jour `statut_reference_2027.csv` |
-| T2 Sources primaires | **Largement fait** : couche 2 entièrement high ; 74/75 élasticités high ; sources « navigateur » lues (T2c : cepr.org, Dares, DREES, Persée, Cour des comptes, budget.gouv.fr) | 10 mesures de la couche 1 et 8 lignes de paniers en medium (section 6 ; T12 a lu les évaluations préalables disponibles) |
+| T2 Sources primaires | **Largement fait** : couche 2 entièrement high ; 76/78 élasticités high ; sources « navigateur » lues (T2c : cepr.org, Dares, DREES, Persée, Cour des comptes, budget.gouv.fr) | 10 mesures de la couche 1 et 8 lignes de paniers en medium (section 6 ; T12 a lu les évaluations préalables disponibles) |
 | T3 Programmes 2027 | **Prêt** : gabarits `modeles/programme_2027.csv` (lignes) et `programme_2027_entete.csv` (programme : `scrutin` = « Présidentielle 2027 », référence `prevision_2027_actuelle` + `biais_t1`, car le PLF 2027 est à 1 an de 2027) ; garde-fous, sensibilité et site s'appliquent automatiquement (le site affiche l'élection la plus récente, avec un sélecteur d'élection et des cases à cocher au-delà de deux programmes) | Saisir LFI 2027 dès le 6/11, puis les autres ; faire auditer par un agent indépendant |
 | T4 Moteur | **Fait** (critère rempli) | Barèmes IR et successions dès qu'un parti les publie ; distribution des dividendes par tranche (DGFiP) |
 | T5 Projection | **Fait** (critère rempli) ; montée en charge des retraites ajoutée (T14) | Profils d'autres lignes si documentés ; propager les bornes ; bouclage macro (multiplicateurs Mésange) ; trajectoire 2030+ si publiée |
 | T6 Sensibilité | **Fait** | Ajouter les chiffreurs des programmes 2027 |
 | T7 Distributif | **Partiel** | Mesures ménages sourcées pour chaque grand parti (RN, LR, Ensemble, gauche), puis accueil « par parti » ; déciles : accès ERFS (CASD) ou maquette publique ; reproduire un cas type publié ; refaire tester l'accueil par 2-3 novices |
-| T8 Garde-fous | **Fait** ; CI prête (dépôt git à créer) | — |
+| T8 Garde-fous | **Fait** ; CI GitHub active (contrôles puis déploiement) | — |
 | T9 Pipeline | **Fait** : données dans `data/raw/`, schémas pydantic, 257 sources archivées avec sha256 | — |
 | T10 Backtest | **Fait** : 29 mesures ; calibration par institut (aucun biais significatif, n ≤ 8) | Recalculer à périmètre et base de prix identiques ; sortir les ex post administratifs |
-| T11 Tableau de bord (nouveau) | Fait le 14/10 : sections 9 à 13 (moteur, sensibilité, projection, validation, distributif) ; sections 7-8 sur le moteur | Déciles quand T7 sera fait ; mettre à jour l'artifact claude.ai seulement sur demande |
+| T11 Tableau de bord (nouveau) | Fait le 14/10 : sections 9 à 13 (moteur, sensibilité, projection, validation, distributif) ; sections 7-8 sur le moteur. Site public et tableau de bord en ligne sur GitHub Pages (15/10) | Déciles quand T7 sera fait |
+| T15 Mesures ménages par parti (nouveau) | Règle de sélection rédigée (`recherche/T15/regle_selection.md`, v0.1) : inventaire exhaustif de chaque programme, double codage, catégories des mesures non calculées | Trois décisions de l'utilisateur (seuil des partis, élargir la grille, effet d'ensemble par parti) ; inventaires dès la publication des programmes 2027 |
+| T16 Idées qui reviennent (nouveau) | Fait le 14-15/10 : page `#/idees`, 17 idées, 65 chiffres, recherche en quatre volets (`recherche/T16/A_` à `D_`) | Chiffrer la variante chômage « 12 mois avant 50 ans » si un organisme la publie ; lire les jaunes du PLF 2027 (opérateurs, UE, rémunérations) ; signaler à l'association l'écart de son repérage sur la TTF ; refaire tester par 2-3 novices |
 | T12 Rachats d'actions et évaluations préalables (nouveau) | Fait le 14/10 : taxe sur les rachats ajoutée à la couche 1 (0,4 prévu par la LFI 2025, 0,5 encaissé) ; évaluations préalables PLF 2015, 2020, 2021 lues (`recherche/T12/rapport.md`) | Évaluation préalable PLF 2018 (IS) sans objet ; dossier de presse PLF 2008 introuvable |
 | T14 Retraites et électricité (nouveau) | Fait le 14/10 : montée en charge de `l_ret62` (×2,0 en 2032) et `l_ret60` (×1,11) ; accise symétrique sur l'électricité (Ensemble −7,2 → −7,0) (`recherche/T14/rapport.md`) | Chiffrage officiel de la suspension après 2027 ; élasticité de court terme de l'électricité |
 | T13 SMIC et rachats (nouveau) | Fait le 14/10 : effet emploi du SMIC recalculé (103 500 emplois, −1,67 Md€) ; règle propre des rachats d'actions (1,06 Md€ net au lieu de 3,6) (`recherche/T13/rapport.md`) | Effectif 1-1,15 SMIC à confirmer si la Dares le publie ; taux de 33 % hors de tout échantillon observé |
@@ -274,6 +295,8 @@ Voir `data/raw/regles.csv` (facteurs forfaitaires, utilisés par les garde-fous 
 
 Le site est publié par GitHub Pages : https://hugofara.github.io/promesses-a-l-epreuve/web/ (dépôt public https://github.com/HugoFara/promesses-a-l-epreuve). Le job `deploiement` de `.github/workflows/ci.yml` publie `web/` et les CSV de `data/` (sans `data/raw/`) après la réussite du job `controles` sur `main` ; la racine redirige vers `web/`. L'ancien artifact claude.ai (données du 12 octobre) n'est plus tenu à jour.
 
+**Pousser sur `main`, c'est publier** : chaque push dont les contrôles passent met le site en ligne. Ne pousser que sur demande de l'utilisateur. Actions utilisées : `checkout` v7, `setup-python` v7, `upload-pages-artifact` v5, `deploy-pages` v5 (versions vérifiées sur GitHub le 15/10).
+
 ## 9. Règles à respecter
 
 1. **Aucun chiffre sans source lue.** URL et niveau de confiance pour chaque valeur ; une valeur dérivée est marquée comme telle (`note`, `justification`, `source_type = calcul`).
@@ -282,3 +305,5 @@ Le site est publié par GitHub Pages : https://hugofara.github.io/promesses-a-l-
 4. **Pas de double compte avec la référence** (`statut_reference`, `facteur_reference`).
 5. **Garder l'historique** (`historique.csv`, `appliquer_corrections.py`).
 6. **N'éditer que `data/raw/`**, jamais les CSV publiés de `data/`.
+7. **Ne rien publier sans demande explicite** : ni push sur `main` (qui met le site en ligne), ni artifact, ni document en ligne. Les comptes provisoires de l'association « Des cahiers pour décider et agir » ne doivent jamais entrer dans le dépôt.
+8. **Commits** : conventional commits en français, sans mention d'IA ; fichiers ajoutés par leur nom ; seulement sur demande.
