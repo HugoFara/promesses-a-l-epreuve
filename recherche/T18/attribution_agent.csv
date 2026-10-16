@@ -1,0 +1,71 @@
+fichier,id,regle,justification,issue_connue
+mesures_officielles,accise_elec_2025,Élasticité électricité,Hausse de l'accise sur l'électricité.,non
+mesures_officielles,accise_gaz_bouclier_2024,Élasticité carburants,"Accise énergétique sur le gaz, rattachée aux accises sur les carburants faute de règle gaz (hésitation avec Élasticité électricité).",non
+mesures_officielles,aej_2020,Taux de recours,Aide à l'embauche nouvelle versée sur demande des employeurs (hésitation avec Effet promis).,oui
+mesures_officielles,aide_apprentissage_2020,Taux de recours,Aide à l'embauche nouvelle versée sur demande des employeurs.,oui
+mesures_officielles,aide_contrat_pro_2020,Taux de recours,Aide à l'embauche nouvelle versée sur demande des employeurs.,non
+mesures_officielles,am_2004_transferts,Réforme structurelle,"Économies attendues d'une réforme de l'assurance maladie, soumises au risque de mise en œuvre.",non
+mesures_officielles,bareme_capital_2013,Élasticité capital,Changement de l'imposition des dividendes et intérêts (fin du PFL).,oui
+mesures_officielles,bmc_suppression_2012,Élasticité IS,"Modification de l'assiette de l'IS des grands groupes (hésitation avec Aucune, ce n'est pas un taux).",non
+mesures_officielles,bouclier_50_2008,Élasticité patrimoine,"Bouclier fiscal plafonnant notamment l'ISF, donc modification de l'impôt sur la fortune (hésitation avec Taux de recours, restitution sur demande).",oui
+mesures_officielles,bouclier_60_2007,Élasticité patrimoine,"Création du bouclier fiscal, qui modifie la charge de l'ISF (hésitation avec Taux de recours, restitution sur demande).",oui
+mesures_officielles,bouclier_suppr_2012,Élasticité patrimoine,"Suppression du bouclier, liée à la réforme de l'impôt sur la fortune.",non
+mesures_officielles,carbone_convergence_2018,Élasticité carburants,Hausse des accises sur les carburants et énergies fossiles.,non
+mesures_officielles,carte_judiciaire_2008,Réforme structurelle,Réorganisation des services de l'État avec risque de mise en œuvre.,non
+mesures_officielles,ce_is_2017,Recette ponctuelle,Contribution exceptionnelle d'IS prélevée une fois (hésitation avec Élasticité IS).,non
+mesures_officielles,ce_is_anticipe_2012,Recette ponctuelle,"Versement anticipé, avance de trésorerie non récurrente.",non
+mesures_officielles,ce_trs_2012,Recette ponctuelle,Contribution exceptionnelle des banques prélevée une fois.,non
+mesures_officielles,cef_2012,Recette ponctuelle,Contribution exceptionnelle sur la fortune prélevée une seule fois (hésitation avec Élasticité patrimoine).,non
+mesures_officielles,cehr_2012,Élasticité revenus,"Contribution sur les hauts revenus, qui touche les tranches supérieures.",oui
+mesures_officielles,cellule_regul_2010,Recette ponctuelle,"Régularisation d'avoirs passés, recette non récurrente (hésitation avec Effet promis, lutte contre la fraude).",non
+mesures_officielles,cheque_energie_elarg_2019,Taux de recours,"Extension d'une prestation dont la dépense dépend de l'encaissement des chèques par les ménages (hésitation avec Aucune, l'envoi est automatique).",non
+mesures_officielles,cheque_energie_gen_2018,Taux de recours,"Nouvelle prestation dont la dépense dépend de l'encaissement des chèques (hésitation avec Aucune, l'envoi est automatique).",non
+mesures_officielles,ci_dividendes_2011,Élasticité capital,Changement de la fiscalité des dividendes.,non
+mesures_officielles,contrib_1pt_2011,Élasticité revenus,"Hausse de la tranche supérieure d'IR, avec un volet revenus du capital (hésitation avec Élasticité capital).",non
+mesures_officielles,contrib_stocks_petroliers_2012,Recette ponctuelle,Contribution exceptionnelle prélevée une seule fois sur des stocks.,non
+mesures_officielles,cri_2023,Nouvelle assiette : risque juridique,"Prélèvement sur une assiette sans précédent, la rente inframarginale (hésitation avec Recette ponctuelle).",oui
+mesures_officielles,dmtg_tepa_2008,Élasticité succession,Allègement des droits de succession et de donation.,non
+mesures_officielles,ecotaxe_pl_2014,Nouvelle assiette : risque juridique,Taxe kilométrique nouvelle sans précédent en France.,oui
+mesures_officielles,embauche_pme_2017,Taux de recours,Prime à l'embauche versée sur demande des employeurs.,non
+mesures_officielles,emplois_francs_2018,Taux de recours,Nouvelle prime à l'embauche versée sur demande.,oui
+mesures_officielles,frais_pro_2013,Aucune,"Plafonnement d'une déduction sur une assiette connue, effet mécanique.",non
+mesures_officielles,indemnite_carburant_2023,Taux de recours,"Prime versée sur demande, sous conditions de revenus.",oui
+mesures_officielles,isf_plafonnement_2013,Élasticité patrimoine,Modification de l'ISF (plafonnement).,non
+mesures_officielles,isf_pme_tepa,Élasticité patrimoine,Réduction d'ISF dont le coût dépend des comportements des redevables (hésitation avec Effet promis).,non
+mesures_officielles,isf_reforme_2013,Élasticité patrimoine,Modification du barème de l'ISF.,non
+mesures_officielles,maj_is_5pct_2012,Élasticité IS,"Majoration du taux d'IS des grandes entreprises (hésitation avec Recette ponctuelle, contribution dite exceptionnelle).",non
+mesures_officielles,pass_sport_2021,Taux de recours,Nouvelle aide utilisée à la demande des familles.,oui
+mesures_officielles,ps_nonresidents_2012,Nouvelle assiette : risque juridique,Extension des prélèvements sociaux à des contribuables jusque-là hors champ (hésitation avec Élasticité capital).,oui
+mesures_officielles,pv_immo_2012,Élasticité capital,Changement de la fiscalité des plus-values.,non
+mesures_officielles,qf_2013,Aucune,"Modification d'un paramètre du barème de l'IR, effet mécanique.",non
+mesures_officielles,qf_2014,Aucune,"Modification d'un paramètre du barème de l'IR, effet mécanique.",non
+mesures_officielles,rappel_donations_2011,Élasticité succession,Modification des droits de donation.,non
+mesures_officielles,report_deficits_is_2012,Élasticité IS,"Modification de l'IS des entreprises bénéficiaires de reports de déficits (hésitation avec Aucune, ce n'est pas un taux).",non
+mesures_officielles,rgpp_2012,Réforme structurelle,Économies attendues de la réorganisation de l'État.,non
+mesures_officielles,rsa_activite_2009,Taux de recours,Nouvelle prestation versée à la demande.,oui
+mesures_officielles,stdr_2014,Recette ponctuelle,"Régularisation d'avoirs passés, recette non récurrente (hésitation avec Effet promis, lutte contre la fraude).",oui
+mesures_officielles,stdr_2015,Recette ponctuelle,"Régularisation d'avoirs passés, recette non récurrente (hésitation avec Effet promis).",non
+mesures_officielles,stdr_2016,Recette ponctuelle,"Régularisation d'avoirs passés, recette non récurrente (hésitation avec Effet promis).",non
+mesures_officielles,stdr_2017,Recette ponctuelle,"Régularisation d'avoirs passés, recette non récurrente (hésitation avec Effet promis).",non
+mesures_officielles,successions_delais_2015,Recette ponctuelle,"Changement de délai de paiement, gain de trésorerie surtout la première année (hésitation avec Élasticité succession).",non
+mesures_officielles,taxe_dividendes_3pct_2012,Élasticité IS,Contribution additionnelle à l'IS des sociétés distributrices (hésitation avec Élasticité capital).,oui
+mesures_officielles,ticfe_baisse_2022,Élasticité électricité,Baisse de l'accise sur l'électricité.,non
+mesures_officielles,ticfe_prolongation_2023,Élasticité électricité,Maintien d'une accise sur l'électricité abaissée.,non
+mesures_officielles,tranche45_2013,Élasticité revenus,Nouvelle tranche supérieure d'IR.,non
+mesures_officielles,tsn_2019,Nouvelle assiette : risque juridique,"Taxe sur une assiette nouvelle, les services numériques.",non
+mesures_officielles,ttf_2012,Nouvelle assiette : risque juridique,Taxe nouvelle sur les transactions financières (hésitation avec Élasticité capital).,non
+effets_annonces,ati_2019,Taux de recours,Nouvelle prestation versée à la demande.,oui
+effets_annonces,bouclier_60_benef,Taux de recours,Nombre de bénéficiaires d'une restitution versée sur demande (hésitation avec Élasticité patrimoine).,oui
+effets_annonces,cheque_energie_usage_2018,Taux de recours,"Taux d'usage d'une prestation, qui dépend de la démarche des bénéficiaires.",oui
+effets_annonces,cice_export,Effet promis,Effet économique attendu sur les exportations.,oui
+effets_annonces,cice_invest,Effet promis,Effet économique attendu sur l'investissement.,oui
+effets_annonces,cir2008_levier,Effet promis,Effet attendu sur la dépense de R&D privée.,oui
+effets_annonces,cir2008_pib,Effet promis,Effet macroéconomique attendu sur le PIB.,non
+effets_annonces,contrat_generation,Effet promis,"Effet emploi attendu d'une aide à l'embauche (hésitation avec Taux de recours, aide sur demande).",oui
+effets_annonces,demission_reconversion_2019,Taux de recours,Extension d'une prestation versée à la demande.,oui
+effets_annonces,emplois_avenir_2013,Effet promis,Nombre d'embauches attendu d'un contrat aidé (hésitation avec Taux de recours).,oui
+effets_annonces,fraude_is_lfi2014,Effet promis,Recettes attendues de la lutte contre la fraude.,non
+effets_annonces,fraude_lfi2013,Effet promis,Recettes attendues de la lutte contre la fraude.,non
+effets_annonces,pass_sport_benef,Taux de recours,Nombre de bénéficiaires d'une aide utilisée à la demande.,oui
+effets_annonces,prepare_emploi_meres,Effet promis,Changement de comportement attendu (retour à l'emploi).,non
+effets_annonces,prepare_partage,Effet promis,Changement de comportement attendu (partage du congé entre parents).,oui
