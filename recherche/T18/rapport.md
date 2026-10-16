@@ -63,3 +63,14 @@ En plus des 27 points de `rapport_fusion.md` :
 - choisir l'indicateur du test « Recette ponctuelle » avant de publier un statut pour cette règle ;
 - décider comment le site présente la dépendance du résultat à `issue_connue` ;
 - lancer ou non une seconde collecte ciblée (patrimoine, revenus, nouvelle assiette, IS), en priorité sur des réalisés récents, moins connus d'un agent d'attribution.
+
+## 6. Après intégration (16/10/2026)
+
+Une fois les mesures intégrées à `data/raw/` avec les décisions de l'utilisateur, la lecture du § 4.1 ne tient plus. Ces décisions : lignes fragiles et années suivantes d'un même dispositif hors statistique, « Recette ponctuelle » non concluante et sortie des agrégats. Sur les chiffrages officiels de la statistique principale de `scripts/validation.py` (anciennes et nouvelles mesures) :
+
+| Groupe | n | Erreur médiane : départ → règle | Améliorés / dégradés |
+|---|---|---|---|
+| Issue connue de l'agent | 25 | 21,4 % → 22,0 % | 12 / 8 |
+| Issue inconnue de l'agent | 24 | 16,4 % → 15,0 % | 8 / 6 |
+
+L'écart entre cas connus et inconnus venait surtout des lignes désormais exclues. Il n'y a donc pas d'indice que la connaissance de l'issue ait favorisé la méthode. Le constat d'ensemble reste le même : sur le coût des mesures, les règles changent peu les chiffrages officiels ; sur les effets promis, elles les rapprochent nettement du réalisé.

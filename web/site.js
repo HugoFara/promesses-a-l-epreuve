@@ -198,7 +198,11 @@ function calculer() {
     return rs.length < 2 ? null : `pour ${p}, ${n1(etendue(rs, "complete_statique"))} milliards d'euros d'écart avant correction, ${n1(etendue(rs, "complete_corrige"))} après`;
   }).filter(Boolean).join(" ; ") + ".";
   const att = D.validation_attribution, connus = att.filter(r => r.issue_connue === "oui").length;
-  K.val_connus = `l'agent qui a choisi la règle à appliquer à chaque mesure connaissait déjà le coût réel de ${connus} cas sur ${att.length}. Le résultat est donc probablement un peu flatteur pour la méthode.`;
+  const oc = sousGroupe("Chiffrages officiels, statistique principale", "dont issue connue");
+  const oi = sousGroupe("Chiffrages officiels, statistique principale", "dont issue inconnue");
+  const de = (r, c) => `de ${pc(num(r[`erreur_${c}_depart_pct`]))} à ${pc(num(r[`erreur_${c}_nous_pct`]))}`;
+  K.val_connus = `l'agent qui a choisi la règle à appliquer à chaque mesure connaissait déjà le coût réel de ${connus} cas sur ${att.length}. Son choix a pu en être influencé.` +
+    (oc && oi ? ` Sur le coût des mesures chiffrées par l'État, l'erreur d'un cas typique passe ${de(oc, "mediane")} quand il connaissait l'issue (${oc.n} cas) et ${de(oi, "mediane")} quand il l'ignorait (${oi.n} cas). Ce second chiffre est le plus proche d'un test en aveugle.` : "");
   D.pan = D.paniers.map(r => ({...r, corrige: num(mot.get("paniers|" + r.id)?.corrige_central)})).sort((a, b) => alpha(a.variante, b.variante));
 
   // Scénarios d'équilibre
@@ -221,13 +225,15 @@ function calculer() {
   K.el_n = D.elasticites.length;
   // Limite de la méthode, dite tôt (vue Programmes) : chiffres du test sur le passé
   const vr = n => D.validation_resume.find(r => r.groupe.trim().startsWith(n));
+  const vi = sousGroupe("Chiffrages officiels, statistique principale", "dont issue inconnue");
   const vo = vr("Chiffrages officiels, statistique principale"), ve = vr("Effets annoncés");
   if (vo && ve) {
     const mieux = num(vo.erreur_moyenne_nous_pct) < num(vo.erreur_moyenne_depart_pct) && num(vo.erreur_mediane_nous_pct) < num(vo.erreur_mediane_depart_pct);
     K.limite_methode = `${mieux ? "Notre méthode prédit à peine mieux" : "Notre méthode ne prédit pas mieux"} que les chiffrages existants : ` +
       `sur le coût de ${vo.n} mesures passées, l'erreur d'un cas typique passe de ${pc(num(vo.erreur_mediane_depart_pct))} à ${pc(num(vo.erreur_mediane_nous_pct))}, ` +
-      `mais l'erreur moyenne de ${pc(num(vo.erreur_moyenne_depart_pct))} à ${pc(num(vo.erreur_moyenne_nous_pct))}. ` +
-      `Elle corrige surtout les promesses d'effets (emplois, investissements) : l'erreur typique y passe de ${pc(num(ve.erreur_mediane_depart_pct))} à ${pc(num(ve.erreur_mediane_nous_pct))}.`;
+      `${(num(vo.erreur_moyenne_nous_pct) < num(vo.erreur_moyenne_depart_pct)) === (num(vo.erreur_mediane_nous_pct) < num(vo.erreur_mediane_depart_pct)) ? "et" : "mais"} l'erreur moyenne de ${pc(num(vo.erreur_moyenne_depart_pct))} à ${pc(num(vo.erreur_moyenne_nous_pct))}. ` +
+      `Elle corrige surtout les promesses d'effets (emplois, investissements) : l'erreur typique y passe de ${pc(num(ve.erreur_mediane_depart_pct))} à ${pc(num(ve.erreur_mediane_nous_pct))}.` +
+      (vi ? ` Sur les ${vi.n} mesures dont le coût réel était inconnu de l'agent qui a choisi les règles, l'erreur typique passe de ${pc(num(vi.erreur_mediane_depart_pct))} à ${pc(num(vi.erreur_mediane_nous_pct))}.` : "");
   }
   const dd = D.meta.find(r => r.cle === "date_donnees")?.valeur;
   if (dd) K.maj = new Date(dd + "T12:00:00").toLocaleDateString("fr-FR", {day: "numeric", month: "long", year: "numeric"});
@@ -530,6 +536,14 @@ function drawProj() {
   table($("#tb-proj"), [{t: "Année", f: r => r.a}, ...series.map(s => ({t: s.court, num: true, f: r => {
     const p = s.pts.find(q => q.a === r.a); return p ? n1(p.v) + (p.ext ? "*" : "") : "—"; }}))],
     annees.map(a => ({a})), {caption: lib + " (% du PIB) ; * = prolongation des tendances"});
+}
+
+// Sous-groupe (ligne indentée) d'un groupe de validation_resume : « dont issue inconnue » existe sous plusieurs groupes
+function sousGroupe(parent, prefixe) {
+  const R = D.validation_resume, i = R.findIndex(r => r.groupe.trim().startsWith(parent));
+  if (i < 0) return null;
+  for (let j = i + 1; j < R.length && /^\s/.test(R[j].groupe); j++) if (R[j].groupe.trim().startsWith(prefixe)) return R[j];
+  return null;
 }
 
 /* ------------------------------------------------------------------ remplissage des vues */
@@ -986,6 +1000,9 @@ function vueMethode() {
     return h("li", {}, h("strong", {}, `Pour ${lib} : ${verdict}.`),
       ` L'erreur d'un cas typique passe de ${pc(a)} à ${pc(b)}, l'erreur moyenne de ${pc(ma)} à ${pc(mb)} ; ${am} cas améliorés, ${de} dégradés (${r.n} cas).`);
   })));
+  const bi = sousGroupe("Chiffrages officiels, statistique principale", "dont issue inconnue");
+  if (bi) box.append(h("p", {style: "margin-top:.75rem"}, h("strong", {}, "Le test le plus proche de l'aveugle. "),
+    `L'agent qui a choisi les règles connaissait souvent le coût réel. Sur les ${bi.n} mesures chiffrées par l'État dont il ignorait l'issue, l'erreur d'un cas typique passe de ${pc(num(bi.erreur_mediane_depart_pct))} à ${pc(num(bi.erreur_mediane_nous_pct))} (${bi.ameliores} cas améliorés, ${bi.degrades} dégradés).`));
   box.append(h("p", {style: "margin-top:.75rem"}, "La méthode ne fait donc pas nettement mieux que les chiffrages de départ, sauf pour repérer les promesses d'effets trop optimistes. Sur le coût direct des mesures, les chiffrages officiels sont déjà assez bons, et les corrections ajoutent parfois de gros écarts."));
 
   table($("#tb-valr"), [{t: "Groupe", f: r => r.groupe.trim(), cls: r => /^\s/.test(r.groupe) ? "sub" : ""},

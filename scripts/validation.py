@@ -172,6 +172,7 @@ def main():
         ("  dont hors calibration (test)", [l for l in officiel if l["echantillon"] == "test"]),
         ("  dont mesures où la règle change le chiffre (facteur ≠ 1)", [l for l in officiel if abs(l["facteur"] - 1) > 1e-9]),
         ("  dont issue inconnue de l'agent d'attribution", [l for l in officiel if l["issue_connue"] == "non"]),
+        ("  dont issue connue de l'agent d'attribution", [l for l in officiel if l["issue_connue"] == "oui"]),
         ("  dont mesures choisies pour tester les règles (T18)", [l for l in officiel if l["selection"] == "test_regles"]),
         ("  sans les crédits votés pris comme chiffrage de départ", [l for l in officiel if not l["credit_vote"]]),
         ("Chiffrages officiels, toutes mesures", [l for l in lignes if l["source"].startswith("officiel")]),
