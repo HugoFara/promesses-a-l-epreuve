@@ -28,6 +28,7 @@ Tous les chiffres affichés viennent des CSV de `data/` ; chaque montant corrig�
 - `data/*.csv` : fichiers publiés et dérivés, régénérés par le pipeline.
 - `scripts/` : validation (`build.py`, schémas dans `schemas.py`), calculs (`calc.py`, `moteur.py`, `projection.py`…), contrôles (`garde_fous.py`, `test_web.py`).
 - `recherche/` : les rapports de recherche documentaire, avec l'index des sources consultées (`sources.csv` : URL, date, sha256). Les documents eux-mêmes ne sont pas versionnés.
+- `predictions/` : prédictions enregistrées avant que le coût réel existe (budget 2027), pour tester la méthode en aveugle. Ces fichiers ne sont jamais réécrits.
 
 Lancer tout le pipeline :
 

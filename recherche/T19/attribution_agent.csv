@@ -1,0 +1,144 @@
+fichier,id,regle,justification,issue_connue
+plf2027,fraude534_art110_trop_percus_chomage,Effet promis,Recette attendue d'un renforcement du recouvrement de la fraude : relève des recettes de lutte contre la fraude.,non
+plf2027,fraude534_art21_signalements_complementaires,Effet promis,"Gain attendu d'échanges d'informations contre la fraude, dont le rendement dépend de la détection effective.",non
+plf2027,fraude534_art27_geolocalisation_transports,Effet promis,Économie attendue d'un contrôle anti-fraude (géolocalisation) qui suppose un changement de comportement des transporteurs.,non
+plf2027,fraude534_art48_atmp_sous_declaration,Effet promis,Préjudice détecté et évité grâce à des pénalités : recette de lutte contre la fraude.,non
+plf2027,fraude534_art48_atmp_subventions,Effet promis,"Enjeu de lutte contre la fraude aux subventions, rendement dépendant des contrôles.",non
+plf2027,fraude534_art75_cumul_penalites,Effet promis,Gain attendu de sanctions contre les professionnels fraudeurs : recette de lutte contre la fraude.,non
+plf2027,fraude534_art75_mso_centres_tlc,Effet promis,Économie attendue d'un changement de pratiques sous mise sous objectifs (lutte contre les abus).,non
+plf2027,fraude534_art75_mso_medecins,Effet promis,Économie potentielle liée à un changement de comportement de prescription sous contrôle.,non
+plf2027,fraude534_art93_flagrance_sociale,Effet promis,"Gain potentiel de lutte contre le travail dissimulé, dépendant des contrôles effectifs.",non
+plf2027,fraude534_art93_opposition_contrainte,Effet promis,Gain de recouvrement en matière de travail dissimulé : recette de lutte contre la fraude.,non
+plf2027,fraude534_art95_maitre_ouvrage,Effet promis,Gain potentiel de lutte contre le travail dissimulé en sous-traitance.,non
+plf2027,plf27_art10_reprises,Élasticité capital,"Dispositif mêlant abattement sur plus-values et avantages fiscaux dont le coût dépend du nombre de reprises ; hésitation avec Effet promis et Aucune, la composante plus-value étant la plus spécifique.",non
+plf2027,plf27_art10_reprises_2028,Élasticité capital,"Dispositif mêlant abattement sur plus-values et avantages fiscaux dont le coût dépend du nombre de reprises ; hésitation avec Effet promis et Aucune, la composante plus-value étant la plus spécifique.",non
+plf2027,plf27_art11_cice_mayotte,Aucune,Prorogation d'un crédit d'impôt existant sur une assiette connue.,non
+plf2027,plf27_art12_prorogation_df_culture_2028,Aucune,Prorogation de dépenses fiscales existantes dont le coût est connu.,non
+plf2027,plf27_art12_taxe_pub_vad,Aucune,Modification d'un paramètre de taxe sur une assiette existante.,non
+plf2027,plf27_art12_taxe_pub_vad_2028,Aucune,Modification d'un paramètre de taxe sur une assiette existante.,non
+plf2027,plf27_art13_credits_impot_agricoles,Aucune,"Prorogation et ajustement de crédits d'impôt et dégrèvement existants, coût de barème.",non
+plf2027,plf27_art13_credits_impot_agricoles_2028,Aucune,"Prorogation et ajustement de crédits d'impôt et dégrèvement existants, coût de barème.",non
+plf2027,plf27_art13_onf_frais_garderie,Aucune,Contribution des collectivités à l'ONF : transfert entre administrations.,non
+plf2027,plf27_art13_suramortissement_agricole_2028,Aucune,Avantage fiscal à l'investissement chiffré comme dépense fiscale ; hésitation avec Effet promis si l'investissement induit était compté.,non
+plf2027,plf27_art14_tsca,Aucune,Hausse de taux d'une taxe existante sur une assiette connue.,non
+plf2027,plf27_art15_contribution_grandes_entreprises,Élasticité IS,"Surtaxe sur les bénéfices des grandes entreprises, équivalente à un taux d'IS ; hésitation avec Recette ponctuelle (contribution exceptionnelle).",non
+plf2027,plf27_art15_contribution_grandes_entreprises_2028,Élasticité IS,"Surtaxe sur les bénéfices des grandes entreprises, équivalente à un taux d'IS ; hésitation avec Recette ponctuelle (contribution exceptionnelle).",non
+plf2027,plf27_art15_contribution_maritime,Recette ponctuelle,Contribution exceptionnelle sur une assiette hors IS de droit commun ; hésitation avec Élasticité IS.,non
+plf2027,plf27_art16_tva_television,Aucune,Changement de taux de TVA sur une assiette connue.,non
+plf2027,plf27_art16_tva_television_2028,Aucune,Changement de taux de TVA sur une assiette connue.,non
+plf2027,plf27_art19_df_carburants_aeronefs,Élasticité carburants,Niche d'accise sur les carburants (tarif nul) ; hésitation avec Aucune puisqu'il s'agit d'un maintien du droit existant.,non
+plf2027,plf27_art20_taxe_inb,Aucune,Tarifs réduits d'une taxe existante sur des installations identifiées.,non
+plf2027,plf27_art21_taxe_surete_aerodromes,Aucune,"Relèvement de plafond d'une taxe existante, rendement de barème.",non
+plf2027,plf27_art21_ttap_outremer,Aucune,Tarif réduit d'une taxe existante sur un trafic connu.,non
+plf2027,plf27_art21_ttap_strasbourg,Aucune,Exonération ciblée d'une taxe existante sur un trafic connu.,non
+plf2027,plf27_art22_teitld,Aucune,"Renforcement d'une taxe existante sur une assiette déjà taxée ; hésitation avec Nouvelle assiette : risque juridique, l'assiette n'étant pas nouvelle.",non
+plf2027,plf27_art22_teitld_2028,Aucune,"Renforcement d'une taxe existante sur une assiette déjà taxée ; hésitation avec Nouvelle assiette : risque juridique, l'assiette n'étant pas nouvelle.",non
+plf2027,plf27_art23_desherence_cdc,Recette ponctuelle,Prélèvement exceptionnel et ponctuel sur des avoirs en déshérence.,non
+plf2027,plf27_art24_accise_navires_quai,Élasticité électricité,Tarif réduit d'accise sur l'électricité.,non
+plf2027,plf27_art24_accise_recharge_poids_lourds,Élasticité électricité,Tarif réduit d'accise sur l'électricité de recharge.,non
+plf2027,plf27_art24_accise_recharge_poids_lourds_2028,Élasticité électricité,Tarif réduit d'accise sur l'électricité de recharge.,non
+plf2027,plf27_art25_malus_masse_hybrides,Aucune,Paramètre de barème du malus masse ; hésitation avec Effet promis si les achats se déplacent.,non
+plf2027,plf27_art27_justice,Aucune,Droit de timbre et contribution à montant fixé sur un contentieux connu.,non
+plf2027,plf27_art27_justice_2028,Aucune,Droit de timbre et contribution à montant fixé sur un contentieux connu.,non
+plf2027,plf27_art2_carburant,Aucune,"Relèvement d'un plafond d'exonération chiffré en coût majorant, barème.",non
+plf2027,plf27_art2_csg_ij,Aucune,Hausse de taux de CSG sur une assiette connue.,non
+plf2027,plf27_art2_csg_ij_2028,Aucune,Hausse de taux de CSG sur une assiette connue.,non
+plf2027,plf27_art2_ij_fiscalisation,Aucune,"Intégration à l'assiette de l'IR de revenus connus, effet de barème.",non
+plf2027,plf27_art2_ij_fiscalisation_2028,Aucune,"Intégration à l'assiette de l'IR de revenus connus, effet de barème.",non
+plf2027,plf27_art2_indexation_ir,Aucune,Indexation du barème de l'impôt sur le revenu.,non
+plf2027,plf27_art2_ruptures,Aucune,"Élargissement de l'assiette imposable à des indemnités connues, effet de barème.",non
+plf2027,plf27_art34_dgf,Aucune,"Montant de dotation fixé, transfert vers les collectivités.",non
+plf2027,plf27_art35_fctva,Aucune,Baisse de taux d'un transfert de l'État aux collectivités.,non
+plf2027,plf27_art36_tva_collectivites,Aucune,Écrêtement d'une fraction de TVA affectée : transfert entre administrations.,non
+plf2027,plf27_art37_cpeb,Aucune,Contribution des collectivités à l'effort budgétaire : transfert entre administrations.,non
+plf2027,plf27_art39_accises_regions,Aucune,Suppression d'une affectation de recette aux régions : transfert entre administrations.,non
+plf2027,plf27_art3_abattement_retraites,Aucune,"Plafonnement d'un abattement de l'IR, effet de barème sur des pensions connues.",non
+plf2027,plf27_art3_abattement_retraites_2028,Aucune,"Plafonnement d'un abattement de l'IR, effet de barème sur des pensions connues.",non
+plf2027,plf27_art42_audiovisuel_public,Aucune,Ajustement de ressources affectées : montant fixé.,non
+plf2027,plf27_art50_prelevement_ancv,Recette ponctuelle,"Prélèvement sur réserves, recette non récurrente ; hésitation avec Aucune (transfert entre organismes).",non
+plf2027,plf27_art50_prelevement_fcac,Recette ponctuelle,"Prélèvement sur les réserves d'un fonds, recette non récurrente.",non
+plf2027,plf27_art54_droits_cpge_sts,Aucune,Droits d'inscription à montant fixé sur des effectifs connus.,non
+plf2027,plf27_art54_droits_cpge_sts_2028,Aucune,Droits d'inscription à montant fixé sur des effectifs connus.,non
+plf2027,plf27_art56_pensions_livrees,Aucune,Gain de gestion de la dette par changement technique ; hésitation avec Effet promis.,non
+plf2027,plf27_art5_apport_cession,Élasticité capital,Changement de la fiscalité des plus-values (report d'imposition).,non
+plf2027,plf27_art6_assurance_vie,Élasticité capital,Changement de la fiscalité de l'épargne en assurance-vie (revenus du capital).,non
+plf2027,plf27_art6_assurance_vie_2028,Élasticité capital,Changement de la fiscalité de l'épargne en assurance-vie (revenus du capital).,non
+plf2027,plf27_art70_garantie_bei_sgp,Aucune,"Garantie d'emprunt entre administrations, effet mécanique sur les charges financières.",non
+plf2027,plf27_art70_garantie_bei_sgp_2028,Aucune,"Garantie d'emprunt entre administrations, effet mécanique sur les charges financières.",non
+plf2027,plf27_art72_invalidite_fonctionnaires,Taux de recours,Création d'une nouvelle prestation d'invalidité attribuée sur demande ; hésitation avec Réforme structurelle.,non
+plf2027,plf27_art72_invalidite_fonctionnaires_2028,Taux de recours,Création d'une nouvelle prestation d'invalidité attribuée sur demande ; hésitation avec Réforme structurelle.,non
+plf2027,plf27_art74_gel_apl,Aucune,Gel des paramètres des aides au logement.,non
+plf2027,plf27_art74_gel_apl_2028,Aucune,Gel des paramètres des aides au logement.,non
+plf2027,plf27_art74_gel_prime_activite,Aucune,Gel de la revalorisation de la prime d'activité.,non
+plf2027,plf27_art74_gel_prime_activite_2028,Aucune,Gel de la revalorisation de la prime d'activité.,non
+plf2027,plf27_art76_propagande_electorale,Aucune,Suppression de dépenses d'impression et d'envoi connues ; hésitation avec Réforme structurelle (organisation de l'État).,non
+plf2027,plf27_art77_dotation_feader_regions,Aucune,Suppression d'une dotation à montant fixé aux régions.,non
+plf2027,plf27_art78_option_apl_etudiants,Effet promis,Économie qui dépend du choix des familles entre APL et rattachement fiscal : changement de comportement attendu.,non
+plf2027,plf27_art78_option_apl_etudiants_2028,Effet promis,Économie qui dépend du choix des familles entre APL et rattachement fiscal : changement de comportement attendu.,non
+plf2027,plf27_art79_complement_pension_militaires,Aucune,Paramètre de calcul de pension sur une population connue.,non
+plf2027,plf27_art79_complement_pension_militaires_2028,Aucune,Paramètre de calcul de pension sur une population connue.,non
+plf2027,plf27_art7_lmnp,Élasticité capital,Changement de la fiscalité de revenus locatifs (revenus du patrimoine) avec réaction attendue des loueurs ; hésitation avec Effet promis.,non
+plf2027,plf27_art7_ptz_parentalite_2028,Taux de recours,"Nouveau prêt aidé accordé à la demande, dont le coût dépend du nombre de bénéficiaires ; hésitation avec Effet promis.",non
+plf2027,plf27_art81_cheque_energie,Taux de recours,"Mesure qui porte sur le recours au chèque énergie, le coût dépendant du nombre de bénéficiaires supplémentaires ; hésitation avec Aucune, le dispositif devenant automatique.",non
+plf2027,plf27_art81_cheque_energie_2028,Taux de recours,"Mesure qui porte sur le recours au chèque énergie, le coût dépendant du nombre de bénéficiaires supplémentaires ; hésitation avec Aucune, le dispositif devenant automatique.",non
+plf2027,plf27_art82_resiliation_contrats_pv,Aucune,Moindre dépense sur des contrats d'achat identifiés.,non
+plf2027,plf27_art82_resiliation_contrats_pv_2028,Aucune,Moindre dépense sur des contrats d'achat identifiés.,non
+plf2027,plf27_art84_dilico,Aucune,Étalement d'un calendrier de reversement aux collectivités : transfert entre administrations.,non
+plf2027,plf27_art84_dilico_2028,Aucune,Étalement d'un calendrier de reversement aux collectivités : transfert entre administrations.,non
+plf2027,plf27_art85_dotation_communes_rurales,Aucune,Dotation à montant fixé.,non
+plf2027,plf27_art86_aides_exceptionnelles_departements,Aucune,Ouverture de crédits à montant fixé.,non
+plf2027,plf27_art87_fonds_soutien_cpeb,Aucune,Fonds à montant fixé.,non
+plf2027,plf27_art88_france_competences_pric,Aucune,Suppression d'enveloppes de crédits à montant fixé.,non
+plf2027,plf27_art88_france_competences_pric_2028,Aucune,Suppression d'enveloppes de crédits à montant fixé.,non
+plf2027,plf27_art89_cpf_participation,Effet promis,Économie qui repose sur la baisse attendue de la demande de formations : changement de comportement.,non
+plf2027,plf27_art89_cpf_participation_2028,Effet promis,Économie qui repose sur la baisse attendue de la demande de formations : changement de comportement.,non
+plf2027,plf27_art9_c3iv_2028,Aucune,Extension d'un crédit d'impôt chiffrée par décaissements ; hésitation avec Effet promis.,non
+plf2027,plf27_art9_suramortissement_2028,Aucune,Suramortissement chiffré comme dépense fiscale ; hésitation avec Effet promis.,non
+plf2027,plfss27_art10_distribution_medicament,Nouvelle assiette : risque juridique,"Contribution nouvelle sur les rétrocessions aux groupements, assiette sans précédent ; hésitation avec Aucune.",non
+plf2027,plfss27_art10_distribution_medicament_2028,Nouvelle assiette : risque juridique,"Contribution nouvelle sur les rétrocessions aux groupements, assiette sans précédent ; hésitation avec Aucune.",non
+plf2027,plfss27_art11_clause_sauvegarde_medicaments,Aucune,Hausse d'un rendement cible fixé par la loi.,non
+plf2027,plfss27_art12_contribution_complementaires,Recette ponctuelle,Contribution exceptionnelle prorogée pour une seule année ; hésitation avec Aucune (assiette connue).,non
+plf2027,plfss27_art21_solidarite_territoriale,Aucune,Rémunération de missions à montant fixé.,non
+plf2027,plfss27_art21_solidarite_territoriale_2028,Aucune,Rémunération de missions à montant fixé.,non
+plf2027,plfss27_art22_secpa_centres_sante,Aucune,"Financement forfaitaire de structures, coût de paramètre.",non
+plf2027,plfss27_art22_secpa_centres_sante_2028,Aucune,"Financement forfaitaire de structures, coût de paramètre.",non
+plf2027,plfss27_art24_ase_soins_enfants,Aucune,Crédits d'investissement et de fonctionnement à montant fixé.,non
+plf2027,plfss27_art24_ase_soins_enfants_2028,Aucune,Crédits d'investissement et de fonctionnement à montant fixé.,non
+plf2027,plfss27_art25_psychotraumatisme,Aucune,Crédits à montant fixé pour des centres existants.,non
+plf2027,plfss27_art25_psychotraumatisme_2028,Aucune,Crédits à montant fixé pour des centres existants.,non
+plf2027,plfss27_art26_complementaire_fph_2028,Aucune,Participation employeur sur des effectifs connus.,non
+plf2027,plfss27_art27_vaccination,Aucune,Crédits pour des mesures de vaccination ; hésitation avec Taux de recours.,non
+plf2027,plfss27_art27_vaccination_2028,Aucune,Crédits pour des mesures de vaccination ; hésitation avec Taux de recours.,non
+plf2027,plfss27_art28_antibiotiques,Effet promis,Économie attendue d'un changement des pratiques de prescription et de dispensation.,non
+plf2027,plfss27_art28_antibiotiques_2028,Effet promis,Économie attendue d'un changement des pratiques de prescription et de dispensation.,non
+plf2027,plfss27_art29_depistage_cancer_sein,Taux de recours,Coût d'extension d'un dépistage dont la participation est volontaire ; hésitation avec Aucune.,non
+plf2027,plfss27_art29_depistage_cancer_sein_2028,Taux de recours,Coût d'extension d'un dépistage dont la participation est volontaire ; hésitation avec Aucune.,non
+plf2027,plfss27_art30_reevaluation_medicaments,Effet promis,Économie qui dépend des décisions de la HAS et des changements de prescription.,non
+plf2027,plfss27_art30_reevaluation_medicaments_2028,Effet promis,Économie qui dépend des décisions de la HAS et des changements de prescription.,non
+plf2027,plfss27_art31_radiotherapie,Aucune,"Convergence tarifaire, effet de tarif.",non
+plf2027,plfss27_art31_radiotherapie_2028,Aucune,"Convergence tarifaire, effet de tarif.",non
+plf2027,plfss27_art32_facturation_fraude,Effet promis,Fraude évitée par la sécurisation de la facturation : recette de lutte contre la fraude.,non
+plf2027,plfss27_art32_facturation_fraude_2028,Effet promis,Fraude évitée par la sécurisation de la facturation : recette de lutte contre la fraude.,non
+plf2027,plfss27_art35_sous_indexation_pensions,Aucune,Sous-revalorisation et gel des pensions.,non
+plf2027,plfss27_art35_sous_indexation_pensions_2028,Aucune,Sous-revalorisation et gel des pensions.,non
+plf2027,plfss27_art35_sous_indexation_pensions_etat,Aucune,Sous-revalorisation des pensions des régimes compensés par l'État.,non
+plf2027,plfss27_art35_sous_indexation_pensions_etat_2028,Aucune,Sous-revalorisation des pensions des régimes compensés par l'État.,non
+plf2027,plfss27_art36_remplacement_nsa,Taux de recours,Nouvelle allocation versée à la demande.,non
+plf2027,plfss27_art37_apl_etrangers,Aucune,"Restriction d'éligibilité appliquée à une population connue, effet de paramètre.",non
+plf2027,plfss27_art37_apl_etrangers_2028,Aucune,"Restriction d'éligibilité appliquée à une population connue, effet de paramètre.",non
+plf2027,plfss27_art37_prestations_familiales_etrangers,Aucune,"Restriction d'éligibilité appliquée à une population connue, effet de paramètre.",non
+plf2027,plfss27_art37_prestations_familiales_etrangers_2028,Aucune,"Restriction d'éligibilité appliquée à une population connue, effet de paramètre.",non
+plf2027,plfss27_art38_fusion_sections_ehpad,Aucune,Prolongation d'une expérimentation à paramètres tarifaires connus.,non
+plf2027,plfss27_art39_interessement_ehpad,Effet promis,Économie qui suppose une baisse des hospitalisations évitables : changement de comportement attendu.,non
+plf2027,plfss27_art39_interessement_ehpad_2028,Effet promis,Économie qui suppose une baisse des hospitalisations évitables : changement de comportement attendu.,non
+plf2027,plfss27_art4_incendies_chido,Aucune,Exonérations de cotisations sur une assiette connue.,non
+plf2027,plfss27_art5_aci_publics,Aucune,Suppression d'exonérations compensées : transfert entre administrations.,non
+plf2027,plfss27_art5_aci_publics_2028,Aucune,Suppression d'exonérations compensées : transfert entre administrations.,non
+plf2027,plfss27_art6_indemnites_rupture,Aucune,Abaissement d'un plafond d'exemption sur une assiette connue.,non
+plf2027,plfss27_art6_indemnites_rupture_2028,Aucune,Abaissement d'un plafond d'exemption sur une assiette connue.,non
+plf2027,plfss27_art7_assiette_allegements,Aucune,"Changement du mode de calcul des allègements, effet de barème.",non
+plf2027,plfss27_art7_assiette_allegements_2028,Aucune,"Changement du mode de calcul des allègements, effet de barème.",non
+plf2027,plfss27_art8_taxe_soda_produits,Nouvelle assiette : risque juridique,"Extension de la taxe aux produits solides, assiette nouvelle ; hésitation avec Aucune.",non
+plf2027,plfss27_art8_taxe_soda_produits_2028,Nouvelle assiette : risque juridique,"Extension de la taxe aux produits solides, assiette nouvelle ; hésitation avec Aucune.",non
+plf2027,plfss27_art9_contribution_dispositifs_medicaux,Aucune,"Contribution de régulation à rendement cible, effet de paramètre.",non
+plf2027,plfss27_art9_contribution_dispositifs_medicaux_2028,Aucune,"Contribution de régulation à rendement cible, effet de paramètre.",non
