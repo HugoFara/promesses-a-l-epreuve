@@ -35,6 +35,11 @@ class MesureCout(Ligne):
     citation_ex_post: OptStr = None; page_ex_post: OptStr = None
     deflateur_ex_ante: float = 1.0; type_ex_post: Literal["observe", "administratif", "reestimation"] = "observe"
     inclus_stats: Literal[0, 1] = 1
+    # T18 : test_regles = mesure choisie parce qu'une règle s'y applique (hors statistique de la couche 1)
+    selection: Literal["generale", "test_regles"] = "generale"; drapeaux: OptStr = None
+    comportement_inclus_ex_ante: Annotated[Optional[Literal["oui", "non", "inconnu"]], BeforeValidator(_vide_none)] = None
+    citation_comportement: OptStr = None; annee_ex_ante: OptStr = None; annee_ex_post: OptStr = None
+    realise_publie_le: OptStr = None
 
     @field_validator("inclus_stats", mode="before")
     @classmethod
@@ -56,6 +61,13 @@ class MesureEffet(Ligne):
     citation_ex_ante: OptStr = None; page_ex_ante: OptStr = None; citation_ex_post: OptStr = None
     page_ex_post: OptStr = None; note: OptStr = None; note_confiance: OptStr = None
     confiance: Annotated[Optional[Confiance], BeforeValidator(_vide_none)] = None
+    inclus_stats: Literal[0, 1] = 1; selection: Literal["generale", "test_regles"] = "generale"
+    drapeaux: OptStr = None; realise_publie_le: OptStr = None
+
+    @field_validator("inclus_stats", mode="before")
+    @classmethod
+    def _int(cls, v):
+        return int(v)
 
 
 class ProgrammeStabilite(Ligne):

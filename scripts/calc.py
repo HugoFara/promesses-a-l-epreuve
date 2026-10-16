@@ -8,9 +8,13 @@ c['ratio']=c.ex_post_central/a
 c['ecart_solde']=np.where(c.sens=='cout', a-c.ex_post_central, c.ex_post_central-a)
 c['ecart_pct']=np.where(c.sens=='cout',(a-c.ex_post_central)/a,(c.ex_post_central-a)/a)*100
 print(c[['id','ex_ante_comparable','ex_post_central','ratio','ecart_pct','cause_principale','type_ex_post','inclus_stats']].round(2).to_string())
-# Statistique principale : mesures incluses (hors dispositifs énergie exclus) ; variantes pour la sensibilité
-echantillons={'principal (inclus_stats = 1)': c.inclus_stats==1, 'toutes': c.id.notna(),
-              'ex post observés seulement': (c.inclus_stats==1)&(c.type_ex_post=='observe')}
+# Statistique principale : mesures incluses (hors dispositifs énergie exclus) ; variantes pour la sensibilité.
+# Les mesures de T18 (selection = test_regles) ont été choisies parce qu'une règle de comportement s'y applique : elles
+# ne représentent pas l'ensemble des chiffrages officiels et restent hors de la statistique principale.
+gen=c.selection=='generale'
+echantillons={'principal (inclus_stats = 1)': (c.inclus_stats==1)&gen, 'toutes (hors test des règles)': gen,
+              'ex post observés seulement': (c.inclus_stats==1)&gen&(c.type_ex_post=='observe'),
+              'y compris mesures choisies pour tester les règles': c.inclus_stats==1}
 stats=[]
 for nom,m in echantillons.items():
     e=c.ecart_pct[m].abs()
@@ -19,7 +23,7 @@ for nom,m in echantillons.items():
     print(f"{nom:<32} n={int(m.sum()):>2}  erreur absolue médiane {e.median():5.1f} %  à ±15 % : {(e<=15).sum()}/{int(m.sum())}")
 pd.DataFrame(stats).to_csv('couche1_stats.csv',index=False)
 c_all=c
-c=c[c.inclus_stats==1]
+c=c[(c.inclus_stats==1)&(c.selection=='generale')]
 p=pd.read_csv('programmes_stabilite_fr.csv')
 p['e1']=p.real_t1-p.prev_t1; p['e3']=p.real_t3-p.prev_t3
 print(p[['millesime','e1','e3']].round(2).to_string())

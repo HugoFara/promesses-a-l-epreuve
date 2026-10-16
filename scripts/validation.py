@@ -51,6 +51,12 @@ CALIBRATION = {
 RESTREINTES = {"Taux de recours": "restreinte le 14/10/2026 aux chiffrages qui supposent un recours complet ; les chiffrages "
                "officiels testés (prime d'activité, CIR, CITE) intégraient déjà un recours partiel : la version restreinte "
                "n'est pas testée"}
+# En dessous de ce nombre de cas observés, une règle n'est dite ni confirmée ni contredite (décision du 16/10/2026)
+MIN_CAS = 5
+# Règles dont le test sur le passé est mal posé : le facteur ne se compare pas au réalisé disponible
+NON_CONCLUANTES = {"Recette ponctuelle": "le facteur 0 signifie « ne pas compter la recette dans le solde durable » ; "
+                   "le comparer au rendement de la première année donne une erreur de 100 % par construction. Indicateur "
+                   "à définir (recette encore perçue après la durée annoncée, recherche/T18/rapport.md)"}
 
 
 def facteurs_centraux():
@@ -74,7 +80,8 @@ def main():
     attrib = {(r["fichier"], r["id"]): r for r in lire("validation_attribution.csv")}
     lignes = []
 
-    def ajouter(source, idm, libelle, depart, realise, regle, issue_connue, base=None, observe=True):
+    def ajouter(source, idm, libelle, depart, realise, regle, issue_connue, base=None, observe=True, drapeaux="",
+                selection="generale"):
         base = abs(depart) if base is None else base
         fac = f[regle]
         echantillon = "test"
@@ -90,7 +97,8 @@ def main():
                        "echantillon": echantillon, "issue_connue": issue_connue, "depart": depart,
                        "prevision": round(prev, 3), "realise": realise,
                        "erreur_depart_pct": round(e_dep * 100, 1), "erreur_nous_pct": round(e_nous * 100, 1),
-                       "verdict": verdict, "realise_observe": observe})
+                       "verdict": verdict, "realise_observe": observe, "selection": selection,
+                       "credit_vote": "credit_vote" in (drapeaux or "").split(";")})
 
     # 1. Chiffrages officiels (couche 1), à base de prix comparable
     for r in lire("mesures_cout.csv"):
@@ -98,13 +106,15 @@ def main():
         depart = float(r["ex_ante"]) * float(r["deflateur_ex_ante"])
         source = "officiel" if r["inclus_stats"] == "1" else "officiel (hors statistique principale)"
         ajouter(source, r["id"], r["mesure"], depart, float(r["ex_post_central"]), a["regle"], a["issue_connue"],
-                observe=r["type_ex_post"] != "administratif")
+                observe=r["type_ex_post"] != "administratif", drapeaux=r["drapeaux"], selection=r["selection"])
     # 2. Effets promis : départ = 1 (l'annonce), réalisé = ratio réalisé / annoncé
     for r in lire("mesures_effets.csv"):
         if not r["ratio_central"]:
             continue
         a = attrib[("effets_annonces", r["id"])]
-        ajouter("effet annoncé", r["id"], f"{r['mesure']} — {r['effet']}", 1.0, float(r["ratio_central"]), a["regle"], a["issue_connue"])
+        source = "effet annoncé" if r["inclus_stats"] == "1" else "effet annoncé (hors statistique principale)"
+        ajouter(source, r["id"], f"{r['mesure']} — {r['effet']}", 1.0, float(r["ratio_central"]), a["regle"], a["issue_connue"],
+                drapeaux=r["drapeaux"], selection=r["selection"])
     # 3. Chiffrages d'instituts (programmes Macron 2017 et 2022), comparaisons retenues par T10b
     for i, r in enumerate(lire("calibration_instituts.csv")):
         if not r["inclus_stats"].lower().startswith("oui") or not r["cout_realise"] or not r["chiffrage_campagne"]:
@@ -155,20 +165,24 @@ def main():
                 "ameliores": sum(l["verdict"] == "amélioré" for l in sel), "degrades": sum(l["verdict"] == "dégradé" for l in sel),
                 "inchanges": sum(l["verdict"] == "inchangé" for l in sel)}
 
-    officiel = [l for l in lignes if l["source"] == "officiel"]
+    # Règles au test mal posé (NON_CONCLUANTES) : hors des statistiques d'ensemble, montrées seulement dans leur ligne
+    officiel = [l for l in lignes if l["source"] == "officiel" and l["regle"] not in NON_CONCLUANTES]
     groupes = [
         ("Chiffrages officiels, statistique principale", officiel),
         ("  dont hors calibration (test)", [l for l in officiel if l["echantillon"] == "test"]),
         ("  dont mesures où la règle change le chiffre (facteur ≠ 1)", [l for l in officiel if abs(l["facteur"] - 1) > 1e-9]),
         ("  dont issue inconnue de l'agent d'attribution", [l for l in officiel if l["issue_connue"] == "non"]),
+        ("  dont mesures choisies pour tester les règles (T18)", [l for l in officiel if l["selection"] == "test_regles"]),
+        ("  sans les crédits votés pris comme chiffrage de départ", [l for l in officiel if not l["credit_vote"]]),
         ("Chiffrages officiels, toutes mesures", [l for l in lignes if l["source"].startswith("officiel")]),
         ("Effets annoncés", [l for l in lignes if l["source"] == "effet annoncé"]),
+        ("  dont issue inconnue de l'agent d'attribution", [l for l in lignes if l["source"] == "effet annoncé" and l["issue_connue"] == "non"]),
         ("Chiffrages d'instituts (tous)", [l for l in lignes if l["source"].startswith("institut")]),
     ]
     for ch in sorted({l["source"] for l in lignes if l["source"].startswith("institut")}):
         groupes.append((f"  {ch}", [l for l in lignes if l["source"] == ch]))
     for regle in sorted({l["regle"] for l in lignes} - {"Aucune"}):
-        groupes.append((f"Règle : {regle}", [l for l in lignes if l["regle"] == regle]))
+        groupes.append((f"Règle : {regle}", [l for l in lignes if l["regle"] == regle and "hors statistique" not in l["source"]]))
     out = [x for x in (resume(n, s) for n, s in groupes) if x]
     with open("validation_resume.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(out[0]), lineterminator="\n")
@@ -178,12 +192,14 @@ def main():
     # l'erreur médiane ; contredite dans le cas inverse ; non concluante si les réalisés ne sont pas des observations
     statuts = []
     for regle in sorted(f):
-        tous = [l for l in lignes if l["regle"] == regle and abs(l["facteur"] - 1) > 1e-9]
+        tous = [l for l in lignes if l["regle"] == regle and abs(l["facteur"] - 1) > 1e-9 and "hors statistique" not in l["source"]]
         sel = [l for l in tous if l["realise_observe"]]
         if regle in ("Aucune",):
             continue
         if not tous:
             st, note = "non testée", "aucune mesure passée de ce type dans le backtest"
+        elif regle in NON_CONCLUANTES:
+            st, note = "non concluante", f"{len(sel)} cas ; {NON_CONCLUANTES[regle]}"
         elif not sel:
             st, note = "non concluante", f"{len(tous)} cas, mais aucun réalisé observé (chiffrages administratifs à comportement constant)"
         elif regle in RESTREINTES:
@@ -193,10 +209,19 @@ def main():
             a, d = sum(l["verdict"] == "amélioré" for l in sel), sum(l["verdict"] == "dégradé" for l in sel)
             m0 = statistics.median(abs(l["erreur_depart_pct"]) for l in sel)
             m1 = statistics.median(abs(l["erreur_nous_pct"]) for l in sel)
-            st = "confirmée" if a > d and m1 < m0 else "contredite" if d > a and m1 > m0 else "mitigée"
+            st = ("trop peu de cas" if len(sel) < MIN_CAS else
+                  "confirmée" if a > d and m1 < m0 else "contredite" if d > a and m1 > m0 else "mitigée")
             note = f"{a} améliorée(s), {d} dégradée(s) ; erreur médiane {m0:.0f} % → {m1:.0f} %"
             if len(tous) > len(sel):
                 note += f" ({len(tous) - len(sel)} cas à réalisé administratif écarté(s))"
+            inc = [l for l in sel if l["issue_connue"] == "non"]
+            if inc:
+                ai, di = sum(l["verdict"] == "amélioré" for l in inc), sum(l["verdict"] == "dégradé" for l in inc)
+                note += (f" ; cas dont l'agent d'attribution ignorait l'issue : {ai} améliorée(s), {di} dégradée(s), erreur "
+                         f"médiane {statistics.median(abs(l['erreur_depart_pct']) for l in inc):.0f} % → "
+                         f"{statistics.median(abs(l['erreur_nous_pct']) for l in inc):.0f} %")
+            else:
+                note += " ; aucun cas dont l'agent d'attribution ignorait l'issue"
         statuts.append({"regle": regle, "statut": st, "n": len(sel), "note": note})
     with open("validation_regles.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(statuts[0]), lineterminator="\n")
@@ -221,7 +246,8 @@ def main():
         tot = sum(abs(v) for k, v in d.items() if k != "sans correction")
         sorties.append({"fichier": fichier, "groupe": groupe,
                         **{f"correction_{k.replace(' ', '_')}": round(d.get(k, 0.0), 1)
-                           for k in ("confirmée", "mitigée", "contredite", "non concluante", "non testée", "non testée (restreinte)")},
+                           for k in ("confirmée", "mitigée", "contredite", "trop peu de cas", "non concluante", "non testée",
+                                     "non testée (restreinte)")},
                         "part_confirmee_pct": round(abs(d.get("confirmée", 0.0)) / tot * 100) if tot else 0})
     with open("confiance_programmes.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(sorties[0]), lineterminator="\n")

@@ -1,4 +1,4 @@
-"""Valeurs de référence au 12/10/2026, mises à jour le 14/10/2026 (voir data/raw/historique.csv). Toute modification volontaire des données doit mettre à jour ce fichier."""
+"""Valeurs de référence au 12/10/2026, mises à jour le 14/10/2026 ; mesures de T18 (selection = test_regles) exclues de la couche 1 le 16/10/2026 (voir data/raw/historique.csv). Toute modification volontaire des données doit mettre à jour ce fichier."""
 import csv, statistics
 def rows(f): return list(csv.DictReader(open(f, encoding="utf-8")))
 ok = True
@@ -9,7 +9,7 @@ def check(name, got, exp, tol=0.05):
     print(f"{'OK ' if good else 'ÉCHEC'} {name}: {got:.2f} (attendu {exp})")
 
 # Couche 1
-c = [r for r in rows("mesures_cout.csv") if r["inclus_stats"] == "1"]
+c = [r for r in rows("mesures_cout.csv") if r["inclus_stats"] == "1" and r["selection"] == "generale"]  # T18 hors couche 1
 def ecart(r):
     a = float(r["ex_ante"]) * float(r["deflateur_ex_ante"])
     return ((a - float(r["ex_post_central"])) if r["sens"] == "cout" else (float(r["ex_post_central"]) - a)) / a * 100

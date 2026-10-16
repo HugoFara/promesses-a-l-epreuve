@@ -298,9 +298,13 @@ function hbars(box, rows, o) {
   });
 }
 
+// Statistique principale de la couche 1 : hors mesures choisies pour tester les règles (T18), qui ne représentent pas
+// l'ensemble des chiffrages officiels
+const principale = r => r.inclus_stats === "1" && r.selection !== "test_regles";
+
 function drawWaffle() {
   const box = $("#ch-waffle");
-  const rows = D.mesures.filter(r => r.inclus_stats === "1").map(r => ({...r, e: Math.abs(num(r.ecart_pct))}))
+  const rows = D.mesures.filter(principale).map(r => ({...r, e: Math.abs(num(r.ecart_pct))}))
     .sort((a, b) => a.e - b.e);
   const cats = [
     ["À 15 % près", css("--ok"), e => e <= 15],
@@ -320,7 +324,7 @@ function drawWaffle() {
 }
 
 function drawEcarts() {
-  const rows = D.mesures.filter(r => r.inclus_stats === "1").map(r => ({label: r.mesure, v: num(r.ecart_pct)})).sort((a, b) => b.v - a.v);
+  const rows = D.mesures.filter(principale).map(r => ({label: r.mesure, v: num(r.ecart_pct)})).sort((a, b) => b.v - a.v);
   hbars($("#ch-ecarts"), rows, {label: "Écart entre coût réel et coût annoncé, par mesure", fmt: v => sg(v, n0) + " %", tick: t => sg(t, n0) + " %",
     color: r => r.v >= 0 ? css("--ok") : css("--bad")});
 }
@@ -535,7 +539,7 @@ function remplirK() {
 
 function vueHier() {
   table($("#tb-ecarts"), [{t: "Mesure", f: r => r.mesure}, {t: "Écart", num: true, f: r => sg(num(r.ecart_pct), n0) + " %", cls: r => signCls(num(r.ecart_pct), .5)}],
-    D.mesures.filter(r => r.inclus_stats === "1").sort((a, b) => num(b.ecart_pct) - num(a.ecart_pct)));
+    D.mesures.filter(principale).sort((a, b) => num(b.ecart_pct) - num(a.ecart_pct)));
 
   const V = {"Surestimé": "bad", "Non réalisé": "bad", "Non mesuré": "", "Conforme": "ok", "Au moins conforme": "ok", "Sous-estimé": "warn"};
   const box = $("#cards-effets"); box.textContent = "";
@@ -555,7 +559,8 @@ function vueHier() {
 
   const CF = {high: ["élevée", "ok"], medium: ["moyenne", "warn"], low: ["faible", "bad"]};
   table($("#tb-mesures"), [
-    {t: "Mesure", f: r => [r.mesure, r.inclus_stats === "1" ? "" : h("div", {class: "small muted"}, "exclue de la statistique principale")]},
+    {t: "Mesure", f: r => [r.mesure, principale(r) ? "" : h("div", {class: "small muted"},
+      r.selection === "test_regles" ? "choisie pour tester les règles, hors statistique principale" : "exclue de la statistique principale")]},
     {t: "Année", num: true, f: r => r.annee},
     {t: "Annoncé", num: true, f: r => n1(num(r.ex_ante))},
     {t: "Réel", num: true, f: r => n1(num(r.ex_post_central))},
@@ -1109,6 +1114,7 @@ function statutRegle(regle) {
   const phrase = v.statut === "confirmée" ? `Testée sur ${v.n} mesure${v.n > 1 ? "s" : ""} passée${v.n > 1 ? "s" : ""}, elle a amélioré les chiffrages.`
     : v.statut === "contredite" ? "Testée sur le passé, elle n'a pas amélioré les chiffrages : ce montant est à prendre avec prudence."
     : v.statut === "mitigée" ? "Testée sur le passé, elle a donné des résultats partagés."
+    : v.statut === "trop peu de cas" ? `Testée sur seulement ${v.n} mesure${v.n > 1 ? "s" : ""} passée${v.n > 1 ? "s" : ""} : trop peu pour conclure.`
     : "Elle n'a pas encore pu être vérifiée sur des mesures passées (pas de précédent comparable).";
   return [h("h3", {}, "Cette règle est-elle fiable ?"), h("p", {}, badge("Règle " + v.statut, k), " ", phrase), h("p", {class: "small muted"}, v.note)];
 }

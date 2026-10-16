@@ -5,13 +5,16 @@ Chiffrages d'instituts | règle : Réforme structurelle,1,-107.7,-91.9,-107.7,-9
 Chiffrages d'instituts | règle : Taux de recours,1,88.2,53.2,88.2,53.2
 Chiffrages d'instituts | règle : Élasticité IS,3,-1.9,-7.9,-13.1,-19.1
 Chiffrages d'instituts | règle : Élasticité patrimoine,4,-6.3,-7.5,-15.5,-16.7
-"Chiffrages officiels, statistique principale",26,-1.9,0.1,-0.4,-4.9
-"Chiffrages officiels, statistique principale | règle : Aucune",12,1.5,1.5,4.3,4.3
-"Chiffrages officiels, statistique principale | règle : Nouvelle assiette : risque juridique",1,25.0,40.8,25.0,40.8
+"Chiffrages officiels, statistique principale",55,3.1,-0.6,-2.4,2.9
+"Chiffrages officiels, statistique principale | règle : Aucune",14,4.7,4.7,6.0,6.0
+"Chiffrages officiels, statistique principale | règle : Nouvelle assiette : risque juridique",5,-62.3,-46.5,-49.7,-33.9
+"Chiffrages officiels, statistique principale | règle : Recette ponctuelle",6,6.7,106.7,17.2,117.2
 "Chiffrages officiels, statistique principale | règle : Réforme structurelle",1,48.0,63.8,48.0,63.8
 "Chiffrages officiels, statistique principale | règle : Substitution retraites",2,-15.8,4.2,-15.8,4.2
-"Chiffrages officiels, statistique principale | règle : Taux de recours",4,-15.2,-50.2,-30.3,-65.3
-"Chiffrages officiels, statistique principale | règle : Élasticité IS",3,-4.5,-6.2,13.1,13.2
+"Chiffrages officiels, statistique principale | règle : Taux de recours",12,15.6,-19.4,9.0,-26.0
+"Chiffrages officiels, statistique principale | règle : Élasticité IS",4,-5.3,-8.3,-15.2,-13.6
 "Chiffrages officiels, statistique principale | règle : Élasticité capital",1,55.3,-1.0,55.3,-1.0
-"Chiffrages officiels, statistique principale | règle : Élasticité patrimoine",1,3.1,1.9,3.1,1.9
-"Chiffrages officiels, statistique principale | règle : Élasticité revenus",1,-80.0,-70.0,-80.0,-70.0
+"Chiffrages officiels, statistique principale | règle : Élasticité patrimoine",5,-6.3,-9.3,-23.9,-25.3
+"Chiffrages officiels, statistique principale | règle : Élasticité revenus",3,7.5,17.5,-5.0,5.0
+"Chiffrages officiels, statistique principale | règle : Élasticité succession",1,-66.7,-56.7,-66.7,-56.7
+"Chiffrages officiels, statistique principale | règle : Élasticité électricité",1,12.5,4.8,12.5,4.8
