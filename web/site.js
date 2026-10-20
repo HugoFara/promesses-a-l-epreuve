@@ -1192,6 +1192,14 @@ function pourquoi(fichier, id) {
     m.mode === "forfait" ? h("p", {class: "small muted"}, `Facteur forfaitaire : la formule détaillée attend encore des paramètres (${m.parametres_manquants.split(/\s+/).join(", ")}).`) : null,
     fr !== 1 ? h("p", {}, `Une partie de la mesure est déjà prévue par la loi ou les budgets 2027 : seuls ${pc(fr * 100)} sont comptés, pour ne pas les compter deux fois.`, l.note_reference ? h("span", {class: "small muted"}, " " + l.note_reference) : null) : null,
     fi !== 1 ? h("p", {}, `Cette mesure recoupe d'autres mesures du même programme (même impôt ou même assiette) : son montant est multiplié par ${n2(fi)}.`) : null,
+    l.risque_juridique ? (() => {
+      const [texte, url = ""] = (l.source_juridique || "").split(" — ");
+      const pourquoiRisque = [l.risque_juridique.includes("J1") ? "une décision de justice antérieure a censuré une mesure de même nature" : null,
+        l.risque_juridique.includes("J2") ? "le programme la fait dépendre d'une révision de la Constitution" : null].filter(Boolean).join(", et ");
+      return h("p", {}, h("strong", {}, "Risque juridique, non corrigé : "), pourquoiRisque + ". " + texte + ". ",
+        lien(url.split(" ")[0], "Consulter la décision"),
+        h("span", {class: "small muted"}, " Le montant n'en tient pas compte : les cas passés ne permettent pas de mesurer ce risque (voir la méthode)."));
+    })() : null,
     h("h3", {}, "3. Le résultat"),
     h("p", {}, `Après correction : ${impact(c)}. Compte tenu des incertitudes, le résultat se situe entre ${sg(num(m.p10))} et ${sg(num(m.p90))} milliards dans 8 cas sur 10.`),
     statutRegle(m.regle),

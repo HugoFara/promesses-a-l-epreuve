@@ -3,7 +3,7 @@ Déjà dans la référence,non testée,0,aucune mesure passée de ce type dans l
 Effet emploi du SMIC,non testée,0,aucune mesure passée de ce type dans le backtest
 Effet promis,confirmée,13,"10 améliorée(s), 3 dégradée(s) ; erreur médiane 82 % → 29 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 0 dégradée(s), erreur médiane 100 % → 29 %"
 Médiane des estimations,non testée,0,aucune mesure passée de ce type dans le backtest
-Nouvelle assiette : risque juridique,confirmée,5,"4 améliorée(s), 1 dégradée(s) ; erreur médiane 62 % → 46 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 1 dégradée(s), erreur médiane 25 % → 41 %"
+Nouvelle assiette,confirmée,5,"4 améliorée(s), 1 dégradée(s) ; erreur médiane 62 % → 46 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 1 dégradée(s), erreur médiane 25 % → 41 %"
 Recette ponctuelle,non concluante,6,"6 cas ; le facteur 0 signifie « ne pas compter la recette dans le solde durable » ; le comparer au rendement de la première année donne une erreur de 100 % par construction. Indicateur à définir (recette encore perçue après la durée annoncée, recherche/T18/rapport.md)"
 Règle d'or,non testée,0,aucune mesure passée de ce type dans le backtest
 Réforme structurelle,trop peu de cas,2,"1 améliorée(s), 1 dégradée(s) ; erreur médiane 78 % → 78 % ; aucun cas dont l'agent d'attribution ignorait l'issue"

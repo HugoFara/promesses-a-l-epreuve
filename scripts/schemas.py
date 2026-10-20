@@ -132,6 +132,10 @@ class LigneApplication(Ligne):
     source_recours: OptStr = None
     # Famille de mesures (familles.csv) : même famille, même règle, quel que soit le parti ; écart expliqué dans exception_symetrie
     famille: OptStr = None; exception_symetrie: OptStr = None
+    # Risque juridique (T23), affiché sans correction : J1 = décision antérieure de même nature, J2 = le texte dépend
+    # d'une révision constitutionnelle ou d'un traité ; source_juridique = décision ou texte, puis « — URL »
+    risque_juridique: Annotated[Optional[Literal["J1", "J2", "J1 et J2"]], BeforeValidator(_vide_none)] = None
+    source_juridique: OptStr = None
 
 
 class ProgrammeApplication(Ligne):
@@ -158,6 +162,10 @@ class LignePanier(Ligne):
     source_recours: OptStr = None
     # Famille de mesures (familles.csv) : même famille, même règle, quel que soit le parti ; écart expliqué dans exception_symetrie
     famille: OptStr = None; exception_symetrie: OptStr = None
+    # Risque juridique (T23), affiché sans correction : J1 = décision antérieure de même nature, J2 = le texte dépend
+    # d'une révision constitutionnelle ou d'un traité ; source_juridique = décision ou texte, puis « — URL »
+    risque_juridique: Annotated[Optional[Literal["J1", "J2", "J1 et J2"]], BeforeValidator(_vide_none)] = None
+    source_juridique: OptStr = None
 
 
 class Famille(Ligne):

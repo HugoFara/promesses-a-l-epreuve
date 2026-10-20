@@ -8,7 +8,7 @@ Déjà dans la référence,0,0,,Mesure entièrement comprise dans la référence
 Déjà en partie dans la référence,,1,,Fraction non encore votée ; facteur propre à chaque ligne et justifié par le statut de référence (T1)
 Effet promis,0.333,0,cice_emploi tepa_heures,"Effets promis divisés par 3 (backtest couche 1 : CICE ≈0,3 ; TEPA ≈0)"
 Réforme structurelle,0.8,0,woerth_2010 retraites_2023,"Décote de mise en œuvre, à prix constants : retraites 2023 0,82 ; retraites 2010 0,86"
-Nouvelle assiette : risque juridique,0.8,0,woerth_2010 retraites_2023,Même décote que les réformes structurelles (assiette nouvelle sans précédent)
+Nouvelle assiette,0.8,0,woerth_2010 retraites_2023,Même décote que les réformes structurelles (assiette nouvelle sans précédent)
 Substitution retraites,0.8,0,retraite_report,≈20 % du coût compensé par moins de chômage et d'invalidité (Rabaté-Rochut)
 Taux de recours,0.65,0,nr_rsa,"Prestation à la demande : recours ≈65 % comme le RSA. NE S'APPLIQUE QUE si le chiffrage de départ suppose un recours complet (colonne recours_complet_suppose = oui, vérifiée dans la source) : les chiffrages officiels intègrent déjà un recours partiel (validation, 14/10/2026)"
 Élasticité capital,0.45,0,capital_fr dividendes_fr pfu,"Backtest flat tax −55 % ; élasticité ≈0,77"

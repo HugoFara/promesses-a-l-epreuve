@@ -28,8 +28,8 @@ investissement_public,Plans d'investissement public,Aucune,Montant annoncé ; le
 masse_salariale_publique,Point d'indice et effectifs de la fonction publique (hausses),Aucune,Montant mécanique
 niche_ir_retraites,Niches de l'impôt sur le revenu des retraités,Aucune,Montant de l'évaluation préalable
 niches_fiscales,Suppression de niches fiscales (ensemble non détaillé),Médiane des estimations,Liste non détaillée : médiane des chiffrages indépendants
-nouvelle_assiette_patrimoine,Nouvel impôt sur les très hauts patrimoines (Zucman…),Nouvelle assiette : risque juridique,Assiette jamais appliquée : risque juridique et d'évasion
-politique_migratoire,Règles de l'asile et de l'immigration (coûts ou économies),Aucune,Montant du chiffreur de départ ; risque juridique à examiner avec l'issue #5 (la règle actuelle ne vise que les impôts)
+nouvelle_assiette_patrimoine,Nouvel impôt sur les très hauts patrimoines (Zucman…),Nouvelle assiette,"Assiette jamais appliquée : rendement incertain (évasion, montée en charge)"
+politique_migratoire,Règles de l'asile et de l'immigration (coûts ou économies),Aucune,Montant du chiffreur de départ ; risque juridique affiché sans correction quand une décision antérieure de même nature existe (T23)
 prestation_automatisee,Versement automatique de prestations existantes,Aucune,Montant du chiffreur de départ
 prestation_nouvelle,Nouvelle allocation sous condition de ressources,Taux de recours,Si le chiffrage suppose un recours complet (colonne recours_complet_suppose)
 prestation_restriction,Restriction d'une prestation (AME…),Aucune,Économie mécanique
@@ -43,6 +43,6 @@ smic_effet_emploi,SMIC : effet emploi,Effet emploi du SMIC,Élasticité de l'emp
 succession,Droits de succession et de donation (hausses et baisses),Élasticité succession,"Même élasticité, quel que soit le sens"
 taxe_carburants,"Taxes sur les carburants et produits pétroliers (accises, TVA, niches)",Élasticité carburants,"Hausse ou baisse : même formule accise (élasticité-prix des carburants), quel que soit le sens"
 taxe_electricite_gaz,"Taxes sur l'électricité et le gaz (accise, TVA)",Élasticité électricité,"Hausse ou baisse, accise ou TVA : même formule accise que les carburants (audit, point 15) ; le gaz reçoit l'élasticité de l'électricité, faute d'élasticité propre"
-taxe_importations,Taxes nouvelles sur les biens importés (taxe kilométrique…),Nouvelle assiette : risque juridique,Assiette jamais appliquée : même décote que les autres impôts sur une assiette nouvelle
+taxe_importations,Taxes nouvelles sur les biens importés (taxe kilométrique…),Nouvelle assiette,Assiette jamais appliquée : même décote que les autres impôts sur une assiette nouvelle
 taxe_transactions_financieres,Taxe sur les transactions financières (hausse ou extension),Aucune,Aucune règle testée ne couvre cette assiette : montant du chiffreur de départ
 tva_produits,TVA réduite ou nulle sur des produits de consommation courante,Aucune,Taux nul : la consommation supplémentaire ne rapporte pas de TVA

@@ -8,7 +8,7 @@ Déjà dans la référence,fixe,zero,
 Déjà en partie dans la référence,ligne,,Facteur propre à chaque ligne (statut de référence T1)
 Effet promis,fixe,ratio_effet_promis,"Mode = CICE (0,29), seul effet promis non nul observé ; l'ancien 0,333 était l'arrondi « diviser par 3 »"
 Réforme structurelle,fixe,facteur_reforme,
-Nouvelle assiette : risque juridique,fixe,facteur_reforme,
+Nouvelle assiette,fixe,facteur_reforme,
 Substitution retraites,complement,part_substitution,
 Taux de recours,fixe,taux_recours,
 Élasticité capital,taxe_elasticite,eps=eps_capital;t0=t0_capital;t1=t1_capital,

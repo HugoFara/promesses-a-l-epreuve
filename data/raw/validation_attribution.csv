@@ -85,7 +85,7 @@ chiffrages_campagne,inst_42,Aucune,Revalorisation d'un montant de prestation exi
 mesures_officielles,cebge_2025,Élasticité IS,"Hausse temporaire du taux effectif d'IS ciblée sur les grandes entreprises : le risque principal du chiffrage est la réaction de l'assiette (optimisation, calendrier des bénéfices), pas le caractère exceptionnel ; la contribution porte sur une assiette d'IS existante et reste un changement de taux",oui
 mesures_officielles,ce_is_5pct_2013,Élasticité IS,"Surtaxe de 5 % de l'IS des grandes entreprises, reconduite en 2e année : changement de taux d'IS sur grandes entreprises, avec effets de comportement sur l'assiette",non
 mesures_officielles,cdhr_2025,Élasticité revenus,"Imposition minimale de 20 % visant les très hauts revenus : touche les contribuables des tranches supérieures, dont les revenus déclarés réagissent fortement (optimisation, arbitrage de rémunération)",oui
-mesures_officielles,rachats_2025,Nouvelle assiette : risque juridique,"Il s'agit d'une taxe sur une assiette nouvelle sans précédent (réductions de capital liées aux rachats d'actions), donc exposée à un risque juridique et d'évaluation.",non
+mesures_officielles,rachats_2025,Nouvelle assiette,"Il s'agit d'une taxe sur une assiette nouvelle sans précédent (réductions de capital liées aux rachats d'actions), donc exposée à un risque juridique et d'évaluation.",non
 mesures_officielles,accise_elec_2025,Élasticité électricité,Hausse de l'accise sur l'électricité.,non
 mesures_officielles,accise_gaz_bouclier_2024,Élasticité carburants,"Accise énergétique sur le gaz, rattachée aux accises sur les carburants faute de règle gaz (hésitation avec Élasticité électricité).",non
 mesures_officielles,aej_2020,Taux de recours,Aide à l'embauche nouvelle versée sur demande des employeurs (hésitation avec Effet promis).,oui
@@ -110,9 +110,9 @@ mesures_officielles,cheque_energie_gen_2018,Taux de recours,"Nouvelle prestation
 mesures_officielles,ci_dividendes_2011,Élasticité capital,Changement de la fiscalité des dividendes.,non
 mesures_officielles,contrib_1pt_2011,Élasticité revenus,"Hausse de la tranche supérieure d'IR, avec un volet revenus du capital (hésitation avec Élasticité capital).",non
 mesures_officielles,contrib_stocks_petroliers_2012,Recette ponctuelle,Contribution exceptionnelle prélevée une seule fois sur des stocks.,non
-mesures_officielles,cri_2023,Nouvelle assiette : risque juridique,"Prélèvement sur une assiette sans précédent, la rente inframarginale (hésitation avec Recette ponctuelle).",oui
+mesures_officielles,cri_2023,Nouvelle assiette,"Prélèvement sur une assiette sans précédent, la rente inframarginale (hésitation avec Recette ponctuelle).",oui
 mesures_officielles,dmtg_tepa_2008,Élasticité succession,Allègement des droits de succession et de donation.,non
-mesures_officielles,ecotaxe_pl_2014,Nouvelle assiette : risque juridique,Taxe kilométrique nouvelle sans précédent en France.,oui
+mesures_officielles,ecotaxe_pl_2014,Nouvelle assiette,Taxe kilométrique nouvelle sans précédent en France.,oui
 mesures_officielles,embauche_pme_2017,Taux de recours,Prime à l'embauche versée sur demande des employeurs.,non
 mesures_officielles,emplois_francs_2018,Taux de recours,Nouvelle prime à l'embauche versée sur demande.,oui
 mesures_officielles,frais_pro_2013,Aucune,"Plafonnement d'une déduction sur une assiette connue, effet mécanique.",non
@@ -122,7 +122,7 @@ mesures_officielles,isf_pme_tepa,Élasticité patrimoine,Réduction d'ISF dont l
 mesures_officielles,isf_reforme_2013,Élasticité patrimoine,Modification du barème de l'ISF.,non
 mesures_officielles,maj_is_5pct_2012,Élasticité IS,"Majoration du taux d'IS des grandes entreprises (hésitation avec Recette ponctuelle, contribution dite exceptionnelle).",non
 mesures_officielles,pass_sport_2021,Taux de recours,Nouvelle aide utilisée à la demande des familles.,oui
-mesures_officielles,ps_nonresidents_2012,Nouvelle assiette : risque juridique,Extension des prélèvements sociaux à des contribuables jusque-là hors champ (hésitation avec Élasticité capital).,oui
+mesures_officielles,ps_nonresidents_2012,Nouvelle assiette,Extension des prélèvements sociaux à des contribuables jusque-là hors champ (hésitation avec Élasticité capital).,oui
 mesures_officielles,pv_immo_2012,Élasticité capital,Changement de la fiscalité des plus-values.,non
 mesures_officielles,qf_2013,Aucune,"Modification d'un paramètre du barème de l'IR, effet mécanique.",non
 mesures_officielles,qf_2014,Aucune,"Modification d'un paramètre du barème de l'IR, effet mécanique.",non
@@ -139,8 +139,8 @@ mesures_officielles,taxe_dividendes_3pct_2012,Élasticité IS,Contribution addit
 mesures_officielles,ticfe_baisse_2022,Élasticité électricité,Baisse de l'accise sur l'électricité.,non
 mesures_officielles,ticfe_prolongation_2023,Élasticité électricité,Maintien d'une accise sur l'électricité abaissée.,non
 mesures_officielles,tranche45_2013,Élasticité revenus,Nouvelle tranche supérieure d'IR.,non
-mesures_officielles,tsn_2019,Nouvelle assiette : risque juridique,"Taxe sur une assiette nouvelle, les services numériques.",non
-mesures_officielles,ttf_2012,Nouvelle assiette : risque juridique,Taxe nouvelle sur les transactions financières (hésitation avec Élasticité capital).,non
+mesures_officielles,tsn_2019,Nouvelle assiette,"Taxe sur une assiette nouvelle, les services numériques.",non
+mesures_officielles,ttf_2012,Nouvelle assiette,Taxe nouvelle sur les transactions financières (hésitation avec Élasticité capital).,non
 effets_annonces,ati_2019,Taux de recours,Nouvelle prestation versée à la demande.,oui
 effets_annonces,bouclier_60_benef,Taux de recours,Nombre de bénéficiaires d'une restitution versée sur demande (hésitation avec Élasticité patrimoine).,oui
 effets_annonces,cheque_energie_usage_2018,Taux de recours,"Taux d'usage d'une prestation, qui dépend de la démarche des bénéficiaires.",oui

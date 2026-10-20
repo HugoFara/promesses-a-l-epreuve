@@ -45,6 +45,10 @@ for nom in ("application_lignes", "paniers"):
             else:
                 alertes.append(f"exception de famille {lid} : {r['exception_symetrie']}")
 
+        # Risque juridique (T23) : affiché sans correction, toujours avec sa décision ou son texte, et sa source
+        if r.get("risque_juridique") and "http" not in (r.get("source_juridique") or ""):
+            erreurs.append(f"JURIDIQUE {lid} : risque {r['risque_juridique']} sans décision ni source")
+
         # Taux de recours : seulement si le chiffrage de départ suppose un recours complet (validation du 14/10/2026)
         if r["regle"] == "Taux de recours" and not (r.get("recours_complet_suppose") == "oui" and r.get("source_recours")):
             erreurs.append(f"RECOURS {lid} : règle « Taux de recours » sans preuve que le chiffrage suppose un recours complet")
@@ -94,6 +98,12 @@ for r in registre:
     elif panier and panier["statut_reference"] != r["statut_reference"] and not r.get("raison_ecart"):
         erreurs.append(f"RÉFÉRENCE {r['id_ligne']} : statut 2027 « {r['statut_reference']} », panier {r['mesure_panier']} "
                        f"« {panier['statut_reference']} », sans raison_ecart")
+    # Risque juridique (T23, #5) : même critère pour la même mesure ; un écart se justifie en citant l'autre ligne
+    prog = actuel.get(("application_lignes", r["id_ligne"])) if r["fichier"] == "application_lignes" else None
+    if panier and prog and (prog.get("risque_juridique") or "") != (panier.get("risque_juridique") or ""):
+        if r["mesure_panier"] not in (prog.get("source_juridique") or "") + (panier.get("source_juridique") or ""):
+            erreurs.append(f"JURIDIQUE {r['id_ligne']} : risque « {prog.get('risque_juridique') or 'aucun'} », panier "
+                           f"{r['mesure_panier']} « {panier.get('risque_juridique') or 'aucun'} », écart non expliqué")
 
 # Convention de l'application 2024 (#8) : statut_reference = écart au droit de juin 2024 (référence des chiffreurs) ;
 # le statut par rapport à la référence 2027 est dans note_reference et dans statut_reference_2027.csv
