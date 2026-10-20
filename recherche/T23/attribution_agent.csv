@@ -1,0 +1,135 @@
+fichier,id,critere,famille,famille_nouvelle,justification,issue_connue
+cas_passes,ps_nonresidents_2012,J1,,,"Décision CJCE 2000 antérieure sur l'application de la CSG/CRDS à des personnes relevant d'un autre régime de sécurité sociale de l'UE : même mécanisme (prélèvement social sur des non-affiliés) et même motif (unicité de législation, libre circulation), même si l'arrêt visait des revenus d'activité.",oui
+cas_passes,taxe_carbone_2010,J1,,,"CC 2000-441 DC antérieure : extension d'une taxe énergétique censurée pour rupture d'égalité sans rapport avec l'objectif, même mécanisme et même motif.",oui
+cas_passes,exit_tax_2011,J1,,,"Arrêt de Lasteyrie (2004) antérieur : imposition des plus-values latentes au transfert de domicile contraire à la liberté d'établissement, même mécanisme et même motif.",oui
+cas_passes,boissons_energisantes_2013,J1,,,"Décisions antérieures (2002-464 DC, 2009-599 DC) censurant des taxes à visée incitative dont l'assiette est sans rapport avec l'objectif, pour rupture d'égalité devant l'impôt ; rapprochement par le mécanisme général de taxe comportementale.",oui
+cas_passes,boissons_energisantes_2014,J1,,,CC 2012-659 DC antérieure a censuré une contribution sur les mêmes boissons pour le même motif (art. 13 DDHC).,oui
+cas_passes,taxe_75pct_2013,J1,,,"CC 2000-437 DC antérieure : prélèvement sur les revenus d'activité individuels ignorant le foyer et l'ensemble des facultés contributives, même motif (art. 13 DDHC).",oui
+cas_passes,cotisations_salariales_degressives_2015,J1,,,"CC 2000-437 DC antérieure : réduction dégressive d'un prélèvement social sur les revenus d'activité sans prise en compte du foyer, même mécanisme et même motif.",oui
+cas_passes,decristallisation_lfr2002,J1,,,CE Diop (2001) antérieur : différence de traitement des pensions selon la nationalité contraire à l'art. 14 CEDH ; la mesure maintient un traitement distinct de ces mêmes pensionnés.,oui
+cas_passes,decristallisation_lfi2007,J1,,,CE Diop (2001) antérieur : même mécanisme (pensions et prestations différenciées selon la nationalité) et même motif (art. 14 CEDH).,oui
+cas_passes,harkis_allocation_reconnaissance_2003,J1,,,"CC 89-269 DC et CE Diop antérieurs : prestation réservée selon la nationalité, censurée pour atteinte à l'égalité ; la mesure réserve l'allocation aux supplétifs restés français.",oui
+cas_passes,mineurs_greves_1948_lfi2015,J1,,,CC 90-285 DC antérieure : droits à réparation dépendant de la date de la demande contraires à l'égalité ; la mesure réserve l'allocation aux dossiers instruits au titre d'une loi antérieure.,non
+cas_passes,bouclier_gaz_2023,J1,,,"CJUE et CE ANODE antérieurs : tarifs réglementés de vente du gaz incompatibles avec la directive 2009/73 ; la mesure fixe ces mêmes tarifs, même mécanisme et même motif.",oui
+lignes,L001,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L002,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L003,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L004,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L005,aucun,,,"Dépend d'une négociation européenne sans changement de traité : risque de mise en œuvre, hors champ.",sans objet
+lignes,L006,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L007,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L008,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L009,aucun,,,"La décision 2012-662 DC valide le principe d'un impôt sur la fortune ; ses censures visent des modalités (plafonnement, biens sociaux) que la ligne ne mentionne pas.",sans objet
+lignes,L010,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L011,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L012,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L013,J1,,exoneration_ir_categorielle : exonération d'impôt sur le revenu réservée à une catégorie de contribuables,CC 2023-862 DC antérieure a censuré une exonération d'IR réservée à une catégorie de salariés faute de critères objectifs et rationnels (égalité) : même mécanisme et même motif.,sans objet
+lignes,L014,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L015,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L016,aucun,,,La directive citée autorise le taux réduit sur l'électricité et le gaz ; aucune décision contraire.,sans objet
+lignes,L017,J1,impot_revenu,,CC 2000-437 DC antérieure a censuré une CSG modulée selon les revenus d'activité sans prise en compte du foyer (art. 13 DDHC) ; la CSG progressive relève du même mécanisme.,sans objet
+lignes,L018,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L019,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L020,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L021,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L022,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L023,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L024,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L025,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L026,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L027,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L028,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L029,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L030,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L031,J1,controle_prix,,CC 2019-774 QPC antérieure a censuré un pouvoir général de fixation des prix pour atteinte disproportionnée à la liberté d'entreprendre ; un gel des prix relève du même mécanisme.,sans objet
+lignes,L032,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L033,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L034,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L035,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L036,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L037,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L038,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L039,J1,,imposition_depart : imposition des plus-values latentes lors du transfert du domicile fiscal hors de France,"La composante « rétablir l'exit tax » relève du mécanisme jugé contraire à la liberté d'établissement par l'arrêt de Lasteyrie (2004), antérieur à l'annonce.",sans objet
+lignes,L040,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L041,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L042,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L043,J1,controle_prix,,"CC 2019-774 QPC antérieure : blocage administratif des prix censuré pour atteinte à la liberté d'entreprendre, même mécanisme et même motif.",sans objet
+lignes,L044,aucun,,,"Barème de l'IR seul, sans décision ni texte relevé.",sans objet
+lignes,L045,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L046,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L047,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L048,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L049,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L050,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L051,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L052,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L053,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L054,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L055,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L056,J1,,exoneration_ir_categorielle : exonération d'impôt sur le revenu réservée à une catégorie de contribuables,"CC 2023-862 DC antérieure : exonération d'IR catégorielle censurée pour égalité devant les charges publiques, même mécanisme (exonération selon une catégorie, ici l'âge).",sans objet
+lignes,L057,aucun,,,La décision 2012-662 DC valide le principe de l'impôt sur la fortune ; ses censures visent des modalités non décrites dans la ligne.,sans objet
+lignes,L058,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L059,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L060,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L061,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L062,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L063,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L064,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L065,aucun,,,La directive citée autorise le taux réduit sur le transport de personnes ; aucune décision contraire.,sans objet
+lignes,L066,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L067,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L068,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L069,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L070,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L071,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L072,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L073,aucun,,,La directive citée autorise taux nul et exonération sur certains points de l'annexe III ; aucune décision contraire relevée.,sans objet
+lignes,L074,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L075,aucun,,,2010-622 DC est une conformité et 2024-6 RIP ne statue pas sur le remplacement de l'AME : pas de censure de même nature.,sans objet
+lignes,L076,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L077,J1,taxe_importations,,"CJCE 1969 (Diamantarbeiders) : charge unilatérale frappant les marchandises en raison du franchissement de la frontière, taxe d'effet équivalent interdite ; même mécanisme et même motif.",sans objet
+lignes,L078,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L079,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L080,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L081,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L082,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L083,J1,,imposition_depart : imposition des plus-values latentes lors du transfert du domicile fiscal hors de France,"La composante exit tax relève du mécanisme censuré par l'arrêt de Lasteyrie (2004, liberté d'établissement), antérieur à l'annonce.",sans objet
+lignes,L084,aucun,,,"La mesure est une abrogation ; la censure de 2023-863 DC est de procédure et 2024-6 RIP porte sur la condition abrogée, non sur une abrogation.",sans objet
+lignes,L085,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L086,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L087,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L088,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L089,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L090,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L091,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L092,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L093,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L094,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L095,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L096,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L097,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L098,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L099,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L100,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L101,J1,taxe_carburants,,"CJUE C-479/13 (2015) : taux réduit de TVA appliqué hors annexe III jugé en manquement ; les carburants et le fioul ne figurent pas à l'annexe III, même mécanisme et même motif.",sans objet
+lignes,L102,J1,politique_migratoire,,"CC 93-325 DC antérieure : le droit d'asile constitutionnel impose d'examiner les demandes présentées sur le territoire ; imposer le dépôt en ambassade revient à refuser cet examen, même motif.",sans objet
+lignes,L103,aucun,,,La décision 2012-662 DC valide le principe de l'impôt sur la fortune ; aucune censure d'une disposition de même nature n'est établie pour la composante climatique.,sans objet
+lignes,L104,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L105,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L106,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L107,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L108,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L109,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L110,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L111,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L112,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L113,aucun,,,"La mesure s'appuie sur le pacte européen existant et dépend d'une mise en œuvre européenne, sans changement de traité exigé ni décision contraire.",sans objet
+lignes,L114,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L115,J2,,prestation_condition_nationalite_residence : prestation conditionnée à la nationalité ou à une durée de résidence ou de travail,"Le programme prévoit lui-même un « référendum constitutionnel si nécessaire » (J2) ; J1 est aussi rempli (89-269 DC, 2024-6 RIP, Koua Poirrez).",sans objet
+lignes,L116,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L117,aucun,,,"Simple évocation des minima de la directive 2003/96, sans décision contraire ni texte J2.",sans objet
+lignes,L118,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L119,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet
+lignes,L120,aucun,,,Ligne technique sans mesure propre.,sans objet
+lignes,L121,aucun,,,"La décision citée (2012-662 DC) est une décision de conformité sur l'assiette patrimoniale, pas une censure d'un dispositif de même nature.",sans objet
+lignes,L122,aucun,,,Aucune décision antérieure de même nature ni texte conditionnant la mesure à une révision.,sans objet

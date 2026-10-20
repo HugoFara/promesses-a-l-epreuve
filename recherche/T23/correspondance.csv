@@ -1,0 +1,123 @@
+id_anonyme,id,fichier,programme
+L001,nfp_indexation_salaires,application_lignes.csv,NFP 2024 (LFI)
+L002,nfp_aah,application_lignes.csv,NFP 2024 (LFI)
+L003,ens_notaire,application_lignes.csv,Ensemble 2024
+L004,nfp_autres_rec_ecart,application_lignes.csv,NFP 2024 (LFI)
+L005,rn24_ue,application_lignes.csv,RN 2024
+L006,l_ret60,paniers.csv,panier LFI intégral
+L007,l_point5,paniers.csv,panier
+L008,ens_snu,application_lignes.csv,Ensemble 2024
+L009,rn24_iff,application_lignes.csv,RN 2024
+L010,e_fp,paniers.csv,panier Ensemble
+L011,rn24_agences,application_lignes.csv,RN 2024
+L012,nfp_cotis_vieillesse,application_lignes.csv,NFP 2024 (LFI)
+L013,rn24_medecins,application_lignes.csv,RN 2024
+L014,rn24_chomage,application_lignes.csv,RN 2024
+L015,ens_leasing,application_lignes.csv,Ensemble 2024
+L016,rn24_tva_elec_gaz,application_lignes.csv,RN 2024
+L017,nfp_ir,application_lignes.csv,NFP 2024 (LFI)
+L018,l_autonomie,paniers.csv,panier LFI intégral
+L019,l_succ,paniers.csv,panier LFI intégral
+L020,rn24_ptz,application_lignes.csv,RN 2024
+L021,nfp_cotis_dividendes,application_lignes.csv,NFP 2024 (LFI)
+L022,l_rachats,paniers.csv,panier LFI intégral
+L023,rn24_rente_infra,application_lignes.csv,RN 2024
+L024,rn24_part_fiscale,application_lignes.csv,RN 2024
+L025,nfp_retraites,application_lignes.csv,NFP 2024 (LFI)
+L026,nfp_enseignants,application_lignes.csv,NFP 2024 (LFI)
+L027,ens_elec,application_lignes.csv,Ensemble 2024
+L028,rn24_transmissions,application_lignes.csv,RN 2024
+L029,l_smic,paniers.csv,panier LFI intégral
+L030,l_surtaxe,paniers.csv,panier LFI intégral
+L031,l_gel,paniers.csv,panier LFI intégral
+L032,rn24_autres_dep_ecart,application_lignes.csv,RN 2024
+L033,e_carence,paniers.csv,panier Ensemble
+L034,l_cotis,paniers.csv,panier LFI intégral
+L035,nfp_taux,application_lignes.csv,NFP 2024 (LFI)
+L036,e_prime,paniers.csv,panier Ensemble
+L037,e_succ,paniers.csv,panier Ensemble
+L038,nfp_avances_pme,application_lignes.csv,NFP 2024 (LFI)
+L039,nfp_flat,application_lignes.csv,NFP 2024 (LFI)
+L040,rn24_taux,application_lignes.csv,RN 2024
+L041,e_vers,paniers.csv,panier Ensemble
+L042,ens_autres_dep_reste,application_lignes.csv,Ensemble 2024
+L043,nfp_blocage_prix,application_lignes.csv,NFP 2024 (LFI)
+L044,l_ir,paniers.csv,panier LFI intégral
+L045,l_eco_rg,paniers.csv,panier
+L046,nfp_surcotisation,application_lignes.csv,NFP 2024 (LFI)
+L047,nfp_succession,application_lignes.csv,NFP 2024 (LFI)
+L048,nfp_logements_publics,application_lignes.csv,NFP 2024 (LFI)
+L049,l_bandeaux,paniers.csv,panier LFI intégral
+L050,nfp_gul,application_lignes.csv,NFP 2024 (LFI)
+L051,e_notaire,paniers.csv,panier Ensemble
+L052,rn24_prisons,application_lignes.csv,RN 2024
+L053,nfp_apl,application_lignes.csv,NFP 2024 (LFI)
+L054,e_oper,paniers.csv,panier Ensemble
+L055,ens_autres_dep_ecart,application_lignes.csv,Ensemble 2024
+L056,rn24_ir_jeunes,application_lignes.csv,RN 2024
+L057,l_isf,paniers.csv,panier LFI intégral
+L058,nfp_bio,application_lignes.csv,NFP 2024 (LFI)
+L059,rn24_audiovisuel,application_lignes.csv,RN 2024
+L060,l_point10,paniers.csv,panier LFI intégral
+L061,rn24_autres_eco_ecart,application_lignes.csv,RN 2024
+L062,nfp_indexation_pensions,application_lignes.csv,NFP 2024 (LFI)
+L063,nfp_smic_emploi,application_lignes.csv,NFP 2024 (LFI)
+L064,nfp_soin_medicosocial,application_lignes.csv,NFP 2024 (LFI)
+L065,nfp_transports,application_lignes.csv,NFP 2024 (LFI)
+L066,nfp_egalite,application_lignes.csv,NFP 2024 (LFI)
+L067,rn24_apprentissage,application_lignes.csv,RN 2024
+L068,nfp_fonds_tpe_pme,application_lignes.csv,NFP 2024 (LFI)
+L069,nfp_vss,application_lignes.csv,NFP 2024 (LFI)
+L070,rn24_retraites,application_lignes.csv,RN 2024
+L071,rn24_production,application_lignes.csv,RN 2024
+L072,rn24_fraude,application_lignes.csv,RN 2024
+L073,rn24_tva_pn,application_lignes.csv,RN 2024
+L074,l_eco,paniers.csv,panier LFI intégral
+L075,rn24_ame,application_lignes.csv,RN 2024
+L076,nfp_niches,application_lignes.csv,NFP 2024 (LFI)
+L077,nfp_taxe_kilometrique,application_lignes.csv,NFP 2024 (LFI)
+L078,rn24_autres_dep_reste,application_lignes.csv,RN 2024
+L079,rn24_armateurs,application_lignes.csv,RN 2024
+L080,rn24_heritage,application_lignes.csv,RN 2024
+L081,ens_succession,application_lignes.csv,Ensemble 2024
+L082,nfp_superprofits,application_lignes.csv,NFP 2024 (LFI)
+L083,l_pfu,paniers.csv,panier LFI intégral
+L084,nfp_asile,application_lignes.csv,NFP 2024 (LFI)
+L085,ens_versement,application_lignes.csv,Ensemble 2024
+L086,e_ame,paniers.csv,panier Ensemble
+L087,nfp_smic,application_lignes.csv,NFP 2024 (LFI)
+L088,nfp_autres_dep_reste,application_lignes.csv,NFP 2024 (LFI)
+L089,nfp_gratuite_ecole,application_lignes.csv,NFP 2024 (LFI)
+L090,e_elec,paniers.csv,panier Ensemble
+L091,ens_fraude,application_lignes.csv,Ensemble 2024
+L092,rn24_autres_eco_reste,application_lignes.csv,RN 2024
+L093,rn24_salaires,application_lignes.csv,RN 2024
+L094,e_abat,paniers.csv,panier Ensemble
+L095,ens_chomage,application_lignes.csv,Ensemble 2024
+L096,rn24_donations,application_lignes.csv,RN 2024
+L097,l_ret62,paniers.csv,panier
+L098,e_feries,paniers.csv,panier Ensemble
+L099,nfp_petite_enfance,application_lignes.csv,NFP 2024 (LFI)
+L100,nfp_point_indice,application_lignes.csv,NFP 2024 (LFI)
+L101,rn24_tva_carburants,application_lignes.csv,RN 2024
+L102,rn24_asile,application_lignes.csv,RN 2024
+L103,nfp_isf,application_lignes.csv,NFP 2024 (LFI)
+L104,nfp_autonomie,application_lignes.csv,NFP 2024 (LFI)
+L105,ens_taux,application_lignes.csv,Ensemble 2024
+L106,nfp_ttf,application_lignes.csv,NFP 2024 (LFI)
+L107,nfp_logement_social,application_lignes.csv,NFP 2024 (LFI)
+L108,l_smic_emploi,paniers.csv,panier LFI intégral
+L109,nfp_emplois_aides,application_lignes.csv,NFP 2024 (LFI)
+L110,ens_prime,application_lignes.csv,Ensemble 2024
+L111,rn24_enseignants,application_lignes.csv,RN 2024
+L112,ens_agents_publics,application_lignes.csv,Ensemble 2024
+L113,ens_retention,application_lignes.csv,Ensemble 2024
+L114,nfp_zucman,application_lignes.csv,NFP 2024 (LFI)
+L115,rn24_preference_nationale,application_lignes.csv,RN 2024
+L116,nfp_culture_sport,application_lignes.csv,NFP 2024 (LFI)
+L117,nfp_taxe_macron,application_lignes.csv,NFP 2024 (LFI)
+L118,l_brunes,paniers.csv,panier LFI intégral
+L119,e_pens,paniers.csv,panier Ensemble
+L120,nfp_autres_rec_reste,application_lignes.csv,NFP 2024 (LFI)
+L121,l_zucman,paniers.csv,panier LFI intégral
+L122,e_appr,paniers.csv,panier Ensemble

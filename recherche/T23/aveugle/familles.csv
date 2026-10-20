@@ -1,0 +1,48 @@
+famille,libelle,justification
+aides_entreprises,Aides et exonérations ciblées des entreprises (apprentissage…),Montant budgétaire direct
+aides_logement,"Aides au logement hors prestations sous condition de ressources (garantie des loyers, aide à l'accession)",Montant du chiffreur de départ
+aides_transition_ecologique,Subventions à la transition écologique des ménages ou des producteurs,Montant budgétaire ou enveloppe annoncée
+annulation_economie_reference,Annulation d'économies inscrites dans la référence 2027 (indexations rétablies…),"Coût mécanique : rétablir une indexation ou un point d'indice gelés dans la référence (audit, § 1.7)"
+arrets_maladie,Indemnités journalières et jours de carence,Économie mécanique sur les indemnités versées
+assurance_chomage,Assurance chômage (règles d'indemnisation),Économie mécanique ; une réforme déjà votée relève de la règle « Déjà dans la référence »
+charge_interets,Charge d'intérêts supplémentaire (écart de taux),Même calcul de l'écart de taux pour tous les programmes
+contribution_exceptionnelle,Contribution temporaire (superprofits…),Non récurrente : nulle dans un solde structurel
+contribution_ue,Contribution de la France au budget de l'Union européenne,Montant annoncé ; la faisabilité dépend des partenaires européens (prochain cadre financier pluriannuel en 2028)
+controle_prix,Blocage ou gel de prix,Montant du chiffreur de départ
+cotisations_sociales_taux,Taux de cotisations sociales,Montant du chiffreur de départ
+cout_travail_allegements,Allègements généraux de cotisations (bandeaux),"Montant du chiffreur de départ ; effet emploi en débat (audit, § 1.6)"
+credits_sectoriels,"Crédits d'une politique publique ou nouveau service public (culture, sport, jeunesse, petite enfance…)",Montant budgétaire : crédits fixés par la loi de finances
+effet_promis,Recette ou économie attendue d'un changement de comportement,"Fraude, égalité salariale, rétention… : effet annoncé divisé selon le ratio observé des effets promis"
+emplois_aides,Contrats aidés et emplois subventionnés chez des employeurs non marchands,Enveloppe budgétaire
+exoneration_remuneration,Primes et rémunérations exonérées (prime de partage de la valeur…),"Montant du chiffreur de départ ; effet d'aubaine en débat (audit, § 1.6)"
+frais_mutation,Droits de mutation immobiliers (frais de notaire),Coût mécanique
+gratuite_service_public,"Gratuité ou baisse des tarifs d'un service public (école, transports…)",Coût mécanique : recettes des usagers perdues
+impot_multinationales,Imposition minimale ou unitaire des multinationales,Base nouvelle sans consensus : médiane des chiffrages indépendants
+impot_patrimoine,Impôt sur la fortune (ISF / IFI),Élasticité de l'assiette taxable du patrimoine
+impot_revenu,Impôt sur le revenu et CSG (barème),Élasticité du revenu imposable
+impot_revenu_capital,Imposition des revenus du capital (prélèvement forfaitaire unique…),Élasticité des revenus du capital déclarés
+impot_societes,Impôt et surtaxe sur les sociétés (pérennes),Élasticité de l'assiette de l'IS
+impots_production,"Impôts de production (CVAE, C3S)",Le chiffrage de départ intègre déjà le retour d'impôt sur les sociétés
+indexation_prestations,Indexation des pensions et prestations,Montant mécanique
+investissement_public,Plans d'investissement public,Montant annoncé ; le financement par emprunt relève de la règle d'or (colonne à part)
+masse_salariale_publique,Point d'indice et effectifs de la fonction publique (hausses),Montant mécanique
+niche_ir_retraites,Niches de l'impôt sur le revenu des retraités,Montant de l'évaluation préalable
+niches_fiscales,Suppression de niches fiscales (ensemble non détaillé),Liste non détaillée : médiane des chiffrages indépendants
+nouvelle_assiette_patrimoine,Nouvel impôt sur les très hauts patrimoines (Zucman…),Assiette jamais appliquée : risque juridique et d'évasion
+politique_migratoire,Règles de l'asile et de l'immigration (coûts ou économies),Montant du chiffreur de départ ; risque juridique à examiner avec l'issue #5 (la règle actuelle ne vise que les impôts)
+prestation_automatisee,Versement automatique de prestations existantes,Montant du chiffreur de départ
+prestation_nouvelle,Nouvelle allocation sous condition de ressources,Si le chiffrage suppose un recours complet (colonne recours_complet_suppose)
+prestation_restriction,Restriction d'une prestation (AME…),Économie mécanique
+rachats_actions,Taxe sur les rachats d'actions,Assiette très mobile
+reforme_structurelle_etat,"Réorganisation de l'État (opérateurs, non-remplacement des départs, jours fériés)",Rendement rarement atteint dans les délais annoncés
+residu,Poste « autres » (ensemble de mesures non détaillées),Résidu du chiffreur de départ : aucune règle propre à une mesure ne peut s'appliquer
+retraites_age,Âge de départ et réforme des retraites,Report partiel vers d'autres dépenses (chômage…)
+revalorisation_prestation,"Hausse du montant d'une prestation existante (AAH, APL…)","Montant mécanique, comme les indexations ; le recours est déjà dans la prestation existante"
+smic_cout_direct,"SMIC : coût direct (allègements, masse salariale publique, prélèvements)",Coût mécanique
+smic_effet_emploi,SMIC : effet emploi,Élasticité de l'emploi au coût du travail au niveau du SMIC
+succession,Droits de succession et de donation (hausses et baisses),"Même élasticité, quel que soit le sens"
+taxe_carburants,"Taxes sur les carburants et produits pétroliers (accises, TVA, niches)","Hausse ou baisse : même formule accise (élasticité-prix des carburants), quel que soit le sens"
+taxe_electricite_gaz,"Taxes sur l'électricité et le gaz (accise, TVA)","Hausse ou baisse, accise ou TVA : même formule accise que les carburants (audit, point 15) ; le gaz reçoit l'élasticité de l'électricité, faute d'élasticité propre"
+taxe_importations,Taxes nouvelles sur les biens importés (taxe kilométrique…),Assiette jamais appliquée : même décote que les autres impôts sur une assiette nouvelle
+taxe_transactions_financieres,Taxe sur les transactions financières (hausse ou extension),Aucune règle testée ne couvre cette assiette : montant du chiffreur de départ
+tva_produits,TVA réduite ou nulle sur des produits de consommation courante,Taux nul : la consommation supplémentaire ne rapporte pas de TVA
