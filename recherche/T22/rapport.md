@@ -431,7 +431,7 @@ Décisions prises avec l'utilisateur, appliquées de la même façon aux trois p
 | Indépendant (NFP, Ensemble, RN) | −149,9 ; −18,0 ; −63,6 | inchangé |
 | Corrigé, moteur, central (NFP, Ensemble, RN) | −159,4 ; −25,6 ; −60,3 | −159,8 ; −25,6 ; −59,3 |
 | NFP, fourchette P10-P90 | −202,2 à −104,1 | −193,0 à −115,9 |
-| Écart entre chiffreurs indépendants, avant correction (NFP ; Ensemble ; RN) | 17,8 ; 16,0 ; 43,4 | 34,5 ; 12,0 ; 36,1 |
+| Écart entre chiffreurs indépendants, avant correction (NFP ; Ensemble ; RN) | 17,8 ; 16,0 ; 43,4 | 5,6 ; 12,0 ; 36,1 (voir ci-dessous) |
 
 - RN : +1,0 par les élasticités des baisses d'impôt découpées (IR des jeunes, transmissions, héritage).
 - NFP : taxe Macron (élasticité électricité), taxe kilométrique (risque juridique) et effet emploi du SMIC (−0,5) se compensent presque.
@@ -439,3 +439,5 @@ Décisions prises avec l'utilisateur, appliquées de la même façon aux trois p
 - L'écart entre chiffreurs NFP double : La Grande Conversation ne chiffre que des recettes, et ses dépenses sont remplies ligne par ligne par la médiane des autres. Avant, la ligne mère était remplie d'un bloc par la médiane de −162,7, −133,3 et −159,9 (−159,9) ; après, par les médianes de chaque ligne découpée et par le seul reste Montaigne (−2,8). Les mesures que seul l'iFRAP compte dans son résidu (chômage, kWh gratuits, gaz…) ne sont plus reportées. Autre choix possible : la médiane des restes Montaigne et iFRAP (−23,6), qui reporterait une partie de ces mesures au risque de compter deux fois celles que l'iFRAP range aussi dans son résidu.
 
 Restent ouverts : la part « allègements » du coût du SMIC par rapport à la référence 2027 (le panier LFI 2027 la retire, gel du SMIC de référence ; la ligne `nfp_smic` la garde, statut `absente`, comme la ligne mère avant) ; la base fragile des deux mesures d'asile (issue #5).
+
+**Décision complémentaire (20/10/2026)** : l'écart entre chiffreurs ne compte plus que les chiffreurs qui publient un solde total pour le programme (`scripts/sensibilite.py`, statut « partiel, sans total publié » sinon), la même règle pour tous les programmes. La Grande Conversation, qui ne chiffre que des recettes, reste dans le tableau mais sort de l'écart : son solde « complété » était surtout reconstitué par nous, et l'écart passait de 17,8 à 34,5 Md€ selon la seule façon de remplir le reste. Écart NFP entre Montaigne et l'iFRAP : 5,6 Md€ avant correction, 13,3 après (10,3 et 9,0 avant le découpage). Le reste est toujours reconstitué depuis le seul reste Montaigne.

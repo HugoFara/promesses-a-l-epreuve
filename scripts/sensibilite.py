@@ -10,6 +10,7 @@ Exclus du point de départ : chiffrages partisans ; composantes partielles (OFCE
 Une mesure « dans_residu » est comptée dans le résidu du chiffreur : elle n'est pas remplie par la médiane des autres.
 Les lignes de montant calculé par le moteur (statique conventionnel −1, effet emploi du SMIC) n'entrent que dans le corrigé.
 Asterès reprend les recettes du parti : il figure comme scénario « recettes du parti », pas comme chiffreur indépendant.
+Un chiffreur qui ne publie pas de solde total (statut « partiel, sans total publié ») n'entre pas dans l'écart entre chiffreurs.
 Sortie : data/sensibilite_chiffreurs.csv.
 """
 import csv
@@ -74,6 +75,10 @@ for prog in dict.fromkeys(r["programme"] for r in lignes.values()):
             statut = "recettes du parti"
         # Solde publié : premier total de l'institut (Asterès en a deux : on prend la note ligne à ligne)
         pub = next((v for (p, cc), v in publies.items() if p == prog and c.split(" ")[0] in cc), "")
+        # Chiffreur sans solde total publié (La Grande Conversation : recettes seules) : son « complété » est surtout
+        # reconstitué par les autres ; il reste dans le tableau mais n'entre pas dans l'écart entre chiffreurs
+        if statut == "indépendant" and pub == "":
+            statut = "partiel, sans total publié"
         out.append({"programme": prog, "chiffreur": c, "statut": statut, "lignes_chiffrees": n_propres,
                     "lignes_programme": len(ids), "solde_publie": pub,
                     "propre_statique": round(propre_s, 1), "propre_corrige": round(propre_c, 1),
