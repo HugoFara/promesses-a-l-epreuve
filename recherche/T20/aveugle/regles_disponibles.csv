@@ -1,0 +1,22 @@
+regle,quand_l_appliquer
+Aucune,"Coût mécanique : barème, assiette connue, montant fixé (prime, revalorisation, baisse de taux sans effet de comportement attendu)"
+Médiane des estimations,(non applicable ici)
+Taux d'intérêt,(non applicable ici)
+Règle d'or,(non applicable ici)
+Recette ponctuelle,"Recette non récurrente (exceptionnelle, une seule fois)"
+Déjà dans la référence,(non applicable ici)
+Déjà en partie dans la référence,(non applicable ici)
+Effet promis,"Effet économique annoncé (emplois, investissement, heures, recettes de lutte contre la fraude, changement de comportement attendu)"
+Réforme structurelle,"Économie attendue d'une réforme structurelle (retraites, assurance chômage, organisation de l'État) : risque de mise en œuvre"
+Nouvelle assiette : risque juridique,Impôt sur une assiette nouvelle sans précédent
+Substitution retraites,Report ou abaissement de l'âge de départ : effet compensé en partie par le chômage et l'invalidité
+Taux de recours,Nouvelle prestation ou extension d'une prestation versée à la demande (non automatique)
+Élasticité capital,"Changement de la fiscalité des revenus du capital (dividendes, intérêts, plus-values, PFU)"
+Élasticité patrimoine,"Impôt sur la fortune (création, suppression, modification)"
+Élasticité revenus,Impôt sur le revenu des hauts revenus (tranches supérieures)
+Élasticité succession,Droits de succession et de donation
+Élasticité IS,Taux de l'impôt sur les sociétés (grandes entreprises)
+Élasticité carburants,"Accises sur les carburants, niches défavorables à l'environnement"
+Élasticité SMIC (hypothèse : emplois perdus),"(remplacée, ne pas utiliser)"
+Effet emploi du SMIC,(non applicable ici)
+Élasticité électricité,"Accise sur l'électricité (hausse ou baisse du tarif)"

@@ -1,0 +1,15 @@
+fichier,id,regle,justification,issue_connue
+mesures_officielles,bc_carbon_tax_2008_09,Élasticité carburants,"Taxe carbone prélevée sur les combustibles et carburants fossiles : la recette dépend de la réaction des volumes consommés au prix, comme une accise sur les carburants.",oui
+mesures_officielles,bc_carbon_tax_2009_10,Élasticité carburants,"Hausse programmée de la taxe carbone sur les combustibles fossiles, assimilable à une hausse d'accise sur les carburants.",oui
+mesures_officielles,bc_carbon_tax_2010_11,Élasticité carburants,"Hausse programmée de la taxe carbone sur les combustibles fossiles, assimilable à une hausse d'accise sur les carburants.",oui
+mesures_officielles,ca_fuel_charge_2019_20,Élasticité carburants,"Redevance par tonne de CO2 perçue sur les combustibles et carburants, de même nature qu'une accise sur les carburants.",non
+mesures_officielles,ca_fuel_charge_ab_2019_20,Élasticité carburants,"Redevance sur les combustibles appliquée en Alberta, de même nature qu'une accise sur les carburants.",non
+mesures_officielles,ca_fuel_charge_2020_21,Élasticité carburants,"Hausse de la redevance sur les combustibles (30 $/t), de même nature qu'une hausse d'accise sur les carburants.",non
+mesures_officielles,ca_fuel_charge_ab_2020_21,Élasticité carburants,"Redevance sur les combustibles en Alberta en année pleine, de même nature qu'une accise sur les carburants.",non
+mesures_officielles,es_smi_2019_emploi,Effet emploi du SMIC,"Hausse du salaire minimum dont l'indicateur est le nombre d'emplois perdus au voisinage du minimum.",oui
+mesures_officielles,de_mindestlohn_2015_emploi,Effet emploi du SMIC,"Introduction d'un salaire minimum légal dont l'indicateur est le nombre d'emplois perdus au voisinage du minimum.",oui
+mesures_officielles,p117_2020,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",oui
+mesures_officielles,p117_2023,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",oui
+mesures_officielles,p117_2024,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",non
+mesures_officielles,p117_2025,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",non
+mesures_officielles,us_rachats_1pct_fy2024,Taxe sur les rachats d'actions,"Taxe d'accise sur les rachats d'actions par les sociétés cotées, exactement le cas visé par la règle.",non

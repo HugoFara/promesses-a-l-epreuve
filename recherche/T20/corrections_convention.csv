@@ -1,0 +1,2 @@
+fichier,id,colonne,valeur_precedente,valeur_nouvelle,confiance_precedente,confiance_nouvelle,url,citation,page,note
+mesures_cout,tva_resto_2009,type_ex_post,observe,reestimation,,,https://www.assemblee-nationale.fr/14/pdf/rap-info/i0337.pdf,"Le coût brut de cette dépense fiscale a atteint 3,3 milliards d’euros en 2010 et 2011",,"convention type_ex_post du 20/10/2026 (recherche/validation/README.md) : le réalisé est le coût de la dépense fiscale chiffré après coup (rapport Thévenoud), pas une recette isolée ; même classement que tva_resto_7pct_2012 (T20)"
