@@ -28,10 +28,14 @@ check("C2 n t+3 hors crises", len(e3), 15)
 check("C3 nb estimations", len(rows("elasticites.csv")), 140)  # 78 + 36 répercussions (T20) + 26 tests de paramètres (T21), 20/10/2026
 # Application 2024
 a = rows("application_lignes.csv")
+# Lignes dont le moteur calcule le montant (statique conventionnel −1) : hors total « indépendant »
+calc = {r["regle"] for r in rows("moteur_regles.csv") if r["formule"] in ("emploi_smic", "montant")}
 # Spread 3 → 2,5 pb par point de dette (T21, 20/10/2026) : lignes nfp_taux, ens_taux, rn24_taux
-for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -149.9, -158.9), ("Ensemble 2024", -18.0, -25.3), ("RN 2024", -63.6, -60.0)]:
+# Lignes « Autres » découpées (T22, 20/10/2026) : indépendant inchangé ; RN corrigé −60,0 → −59,0 (IR des jeunes, transmissions,
+# héritage : élasticités) ; NFP inchangé à 0,1 près (taxe Macron, taxe kilométrique, effet emploi du SMIC se compensent)
+for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -149.9, -158.9), ("Ensemble 2024", -18.0, -25.3), ("RN 2024", -63.6, -59.0)]:
     l = [r for r in a if r["programme"] == prog]
-    check(f"App {prog} indépendant", sum(float(r["independant"]) for r in l), exp_i, 0.1)
+    check(f"App {prog} indépendant", sum(float(r["independant"]) for r in l if r["regle"] not in calc), exp_i, 0.1)
     check(f"App {prog} corrigé", sum(float(r["independant"]) * float(r["facteur"]) * float(r["facteur_reference"]) for r in l), exp_c, 0.1)
 # Paniers
 k = rows("paniers.csv")

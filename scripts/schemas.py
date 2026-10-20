@@ -178,7 +178,8 @@ class MoteurParametre(Ligne):
 
 class ChiffrageInstitut(Ligne):
     id_ligne: str; programme: str; chiffreur: str; valeur: float
-    usage: Literal["ligne", "recettes_du_parti", "composante", "hors_lignes", "partisan"]
+    # dans_residu : mesure couverte par le résidu du chiffreur (total publié − lignes isolées), sans montant propre (T22)
+    usage: Literal["ligne", "recettes_du_parti", "composante", "hors_lignes", "partisan", "dans_residu"]
     horizon: OptStr = None; perimetre: OptStr = None; url: Url; citation: OptStr = None; page: OptStr = None
     confiance: Confiance; note: OptStr = None
 

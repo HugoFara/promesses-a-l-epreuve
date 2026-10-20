@@ -7,6 +7,8 @@ Chaque ligne reçoit le facteur de sa règle (application_lignes.csv), quel que 
 ne dépend que de la nature de la mesure.
 
 Exclus du point de départ : chiffrages partisans ; composantes partielles (OFCE).
+Une mesure « dans_residu » est comptée dans le résidu du chiffreur : elle n'est pas remplie par la médiane des autres.
+Les lignes de montant calculé par le moteur (statique conventionnel −1, effet emploi du SMIC) n'entrent que dans le corrigé.
 Asterès reprend les recettes du parti : il figure comme scénario « recettes du parti », pas comme chiffreur indépendant.
 Sortie : data/sensibilite_chiffreurs.csv.
 """
@@ -24,6 +26,8 @@ facteur = {k: float(r["facteur"]) for k, r in lignes.items()}
 ch = [r for r in lire("chiffrages_instituts.csv") if r["usage"] not in ("partisan", "composante")]
 publies = {(r["programme"], r["chiffreur"]): r["solde_total"] for r in lire("totaux_instituts.csv")}
 INDEPENDANTS = {"ligne", "hors_lignes"}
+# Règles dont le moteur calcule le montant en Md€ (ligne de statique −1) : facteur forfaitaire = montant
+MONTANT_CALCULE = {r["regle"] for r in lire("moteur_regles.csv") if r["formule"] in ("emploi_smic", "montant")}
 
 out = []
 for prog in dict.fromkeys(r["programme"] for r in lignes.values()):
@@ -43,13 +47,24 @@ for prog in dict.fromkeys(r["programme"] for r in lignes.values()):
             propre_c += v * f
             compl_s += v
             compl_c += v * f
-            n_propres += k in ids
+            n_propres += k in ids and usage != "dans_residu"
         for k in ids:
             if (c, k) in val:
                 continue
             autres = [v for (cc, kk), (v, u) in val.items() if kk == k and cc != c and u in INDEPENDANTS]
+            if lignes[k]["famille"] == "residu":
+                # Reste d'un découpage (T22) : propre à l'arithmétique de chaque chiffreur. Un écart au total publié n'est
+                # jamais reporté sur un autre ; un reste ne l'est que depuis un chiffreur dont le résidu ne couvre pas
+                # aussi les lignes découpées (pas de « dans_residu »)
+                if k.endswith("_ecart"):
+                    continue
+                autres = [v for (cc, kk), (v, u) in val.items() if kk == k and cc != c and u in INDEPENDANTS
+                          and not any(cc == c2 and u2 == "dans_residu" for (c2, _), (_, u2) in val.items())]
             if k.endswith("_taux"):
                 autres = [float(lignes[k]["independant"])]  # charge d'intérêts : calcul propre au projet
+            if lignes[k]["regle"] in MONTANT_CALCULE:
+                compl_c += float(lignes[k]["independant"]) * facteur[k]  # montant calculé : pas de statique
+                continue
             if autres:
                 m = statistics.median(autres)
                 compl_s += m

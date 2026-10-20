@@ -43,6 +43,9 @@ const DEPOT = "https://github.com/HugoFara/promesses-a-l-epreuve";
 
 const CRISES_T3 = [2009, 2010, 2020, 2021];
 
+/** Règle dont le moteur calcule le montant (ligne de statique −1, comme l'effet emploi du SMIC) : hors chiffrage de départ. */
+const montantCalcule = regle => ["emploi_smic", "montant"].includes(D.moteur_regles.find(m => m.regle === regle)?.formule);
+
 /* ------------------------------------------------------------------ formats */
 const FR = d3.formatLocale({decimal: ",", thousands: " ", grouping: [3], currency: ["", " €"], minus: "−"});
 const n0 = FR.format(",.0f"), n1 = FR.format(",.1f");
@@ -171,7 +174,7 @@ function calculer() {
     const ref = par(p.deficit_reference), biais = par(p.biais_reference);
     return {id: p.id, nom: p.programme, court: p.programme.replace(/\s+20\d\d.*$/, ""), position: p.position_parti,
       scrutin: p.scrutin, annee: num((p.scrutin.match(/\d{4}/) || [0])[0]),
-      annonce: p.solde_annonce === "" ? null : num(p.solde_annonce), depart: sum(lignes, r => num(r.independant)),
+      annonce: p.solde_annonce === "" ? null : num(p.solde_annonce), depart: sum(lignes.filter(r => !montantCalcule(r.regle)), r => num(r.independant)),
       sources: sourcesDepart(lignes), corrige: c, p10: num(t.p10), p90: num(t.p90), pts_pib: -c / pib * 100,
       ref, refId: p.deficit_reference, refLib: desc(p.deficit_reference).replace(/\s*\(.*$/, "").replace(/,.*$/, ""),
       biais, biaisLib: (desc(p.biais_reference).match(/à \d ans?/) || [""])[0],
@@ -664,9 +667,9 @@ function tableProgrammes() {
   table($("#tb-app"), [
     {t: "Mesure", f: r => r.ligne},
     {t: "Annoncé par le parti", num: true, f: r => r.annonce_parti === "" ? "—" : sg(num(r.annonce_parti))},
-    {t: "Indépendant", num: true, f: r => sg(num(r.independant))},
+    {t: "Indépendant", num: true, f: r => montantCalcule(r.regle) ? "—" : sg(num(r.independant))},
     {t: "Source", f: r => r.source_independant},
-    {t: "Après correction", num: true, f: r => [sg(r.corrige), " ", btnPourquoi("application_lignes", r.id, r.ligne)], cls: r => signCls(r.corrige - num(r.independant))},
+    {t: "Après correction", num: true, f: r => [sg(r.corrige), " ", btnPourquoi("application_lignes", r.id, r.ligne)], cls: r => signCls(r.corrige - (montantCalcule(r.regle) ? 0 : num(r.independant)))},
     {t: "Règle", f: r => r.regle},
     {t: "Justification", f: r => r.justification},
     {t: "Autres chiffrages", f: r => r.autres_estimations},
