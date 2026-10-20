@@ -1,0 +1,40 @@
+id_aveugle,ligne,type,montant
+A01,Abroger la loi asile et immigration,Dépense,-1.3
+A02,Augmenter de 10 % le point d'indice des fonctionnaires,Dépense,-20
+A03,Augmenter le SMIC à 1 600 € net,Dépense,-19
+A04,Avances à 0 % sur 1 ou 2 ans pour les PME-TPE en difficulté (pôle public bancaire),Dépense,-3.5
+A05,Bloquer les prix des produits de première nécessité,Dépense,-9
+A06,Construction des places de prison manquantes (environ 12 000 places du plan 15 000),Dépense,-1.5
+A07,Construire 200 000 logements publics par an,Dépense,-2.1
+A08,"Cotisations vieillesse +0,25 point par an pendant 5 ans et modulation des cotisations patronales",Recette,6.3
+A09,Embaucher des enseignants pour réduire le nombre d'élèves par classe,Dépense,-6.8
+A10,Exonération d’impôt sur le revenu des jeunes de moins de 30 ans,Recette,-3.7
+A11,Fonds de solidarité pour la reprise à 0 % des charges financières des TPE-PME,Dépense,-1.3
+A12,Garantie universelle des loyers,Dépense,-2.3
+A13,Généraliser le service national universel d'ici 2026,Dépense,-3.6
+A14,"Gratuité intégrale à l'école (cantine, fournitures, transports, périscolaire)",Dépense,-13
+A15,Groupe : budget de la culture à 1 % du PIB et du sport à 1 % du budget de l'État,Dépense,-20.2
+A16,"Groupe : tarifs accessibles et gratuité ciblée dans les transports publics + TVA à 5,5 % sur les transports en commun",Dépense,-1.2
+A17,Indexer les retraites sur les salaires,Dépense,-13.4
+A18,Indexer les salaires sur l'inflation (agents publics),Dépense,-10.5
+A19,Leasing social : 100 000 véhicules électriques par an,Dépense,-1.3
+A20,"Loi intégrale contre les violences sexistes et sexuelles (budget porté à 2,6 Md€)",Dépense,-2.1
+A21,Plan de recrutement et de revalorisation des professionnels du soin et du médico-social,Dépense,-4.6
+A22,Porter l'AAH au niveau du SMIC,Dépense,-7.3
+A23,Prêt public à taux zéro transformé en subvention pour les couples qui ont un troisième enfant,Dépense,-12.6
+A24,Réforme de la politique de l’asile,Économie,1.2
+A25,Relancer le logement social (annuler les coupes HLM),Dépense,-1.3
+A26,Relancer les emplois aidés pour les associations,Dépense,-2.6
+A27,Renforcer la taxe sur les transactions financières,Recette,3
+A28,"Revalorisation du métier d’enseignant, du recrutement à la fin de carrière",Dépense,-5.8
+A29,"Revaloriser les agents des services publics (hypothèse du chiffreur : point d'indice +2 points, 2 Md€ par point)",Dépense,-4
+A30,Revaloriser les APL de 10 %,Dépense,-1.5
+A31,Service public de la petite enfance : 500 000 places en crèche ou autre mode de garde,Dépense,-5.7
+A32,"Soumettre à cotisation dividendes, participation, épargne salariale, rachats d'actions, heures supplémentaires",Recette,6.3
+A33,Soutenir la filière bio et l'agroécologie,Dépense,-2.4
+A34,Soutien financier supplémentaire à l’apprentissage et à l’alternance (environ 100 € par mois et par apprenti),Dépense,-1.2
+A35,Suppression de la fiscalité sur les transmissions de TPE/PME/ETI contre un engagement de conservation de 10 ans,Recette,-5.3
+A36,Suppression des impôts sur l’héritage pour les classes populaires et moyennes,Recette,-1
+A37,"Supprimer la taxe de 10 % sur les factures d'énergie (accise sur l'électricité, TICFE)",Recette,-8.8
+A38,Surcotisation sur les hauts salaires,Recette,2.5
+A39,Taxe kilométrique sur les produits importés,Recette,1

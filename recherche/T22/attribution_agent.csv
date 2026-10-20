@@ -1,0 +1,40 @@
+id_aveugle,famille,famille_nouvelle,justification,issue_connue
+A01,politique_migratoire,"Mesures qui changent les règles de l'asile et de l'immigration (accueil, droits, procédures) et leurs coûts ou économies.",La mesure change les règles applicables aux étrangers et aux demandeurs d'asile.,oui
+A02,masse_salariale_publique,,Hausse du point d'indice des fonctionnaires.,oui
+A03,smic_cout_direct,,Hausse du SMIC dont le coût public direct est ici chiffré.,oui
+A04,aides_entreprises,,Avances à taux nul ciblées sur les PME-TPE en difficulté : aide publique ciblée aux entreprises.,oui
+A05,controle_prix,,Blocage des prix des produits de première nécessité.,oui
+A06,investissement_public,,Construction d'équipements publics (places de prison).,oui
+A07,investissement_public,,Programme public de construction de logements.,oui
+A08,cotisations_sociales_taux,,Hausse et modulation des taux de cotisations vieillesse et patronales.,oui
+A09,masse_salariale_publique,,Hausse des effectifs d'enseignants de la fonction publique.,non
+A10,impot_revenu,,Exonération d'impôt sur le revenu pour une tranche d'âge : changement du barème de l'IR.,oui
+A11,aides_entreprises,,Fonds public de prise en charge des charges financières ciblé sur les TPE-PME.,non
+A12,aides_logement,"Aides publiques au logement des ménages autres que les prestations sous condition de ressources (garantie des loyers, aides à l'accession).",Dispositif public de garantie des loyers pour les locataires.,oui
+A13,credits_sectoriels,"Hausse des crédits de fonctionnement ou d'intervention d'une politique publique ou création d'un service public (culture, sport, justice des femmes, jeunesse, petite enfance…), hors rémunérations générales, prestations et plans d'investissement.",Financement d'un dispositif public (service national universel) par des crédits budgétaires.,oui
+A14,gratuite_service_public,"Gratuité ou baisse des tarifs payés par les usagers d'un service public (école, transports…), y compris par la TVA sur ces tarifs.",Gratuité pour les familles des services liés à l'école.,oui
+A15,credits_sectoriels,"Hausse des crédits de fonctionnement ou d'intervention d'une politique publique ou création d'un service public (culture, sport, justice des femmes, jeunesse, petite enfance…), hors rémunérations générales, prestations et plans d'investissement.",Le groupe relève les budgets de la culture et du sport.,oui
+A16,gratuite_service_public,"Gratuité ou baisse des tarifs payés par les usagers d'un service public (école, transports…), y compris par la TVA sur ces tarifs.",Le groupe baisse le prix payé par les usagers des transports publics (tarifs et TVA).,non
+A17,indexation_prestations,,Changement de la règle d'indexation des pensions de retraite.,oui
+A18,masse_salariale_publique,,Indexation des rémunérations des agents publics sur l'inflation.,oui
+A19,aides_transition_ecologique,"Subventions publiques à la transition écologique des ménages ou des producteurs (véhicules propres, agriculture biologique, agroécologie…).",Subvention à la location de véhicules électriques pour les ménages.,oui
+A20,credits_sectoriels,"Hausse des crédits de fonctionnement ou d'intervention d'une politique publique ou création d'un service public (culture, sport, justice des femmes, jeunesse, petite enfance…), hors rémunérations générales, prestations et plans d'investissement.",Hausse du budget d'une politique publique (lutte contre les violences sexistes et sexuelles).,oui
+A21,masse_salariale_publique,,Recrutements et revalorisations des personnels du soin et du médico-social financés sur fonds publics.,non
+A22,revalorisation_prestation,"Hausse discrétionnaire du montant d'une prestation existante, au-delà de sa règle d'indexation (AAH, APL…).",Hausse du montant de l'allocation aux adultes handicapés.,oui
+A23,aides_logement,"Aides publiques au logement des ménages autres que les prestations sous condition de ressources (garantie des loyers, aides à l'accession).",Transformation d'un prêt public à l'accession en subvention aux ménages.,oui
+A24,politique_migratoire,"Mesures qui changent les règles de l'asile et de l'immigration (accueil, droits, procédures) et leurs coûts ou économies.",Réforme des règles de l'asile.,non
+A25,investissement_public,,Rétablissement des moyens de construction du logement social.,non
+A26,emplois_aides,Contrats aidés et autres emplois subventionnés par l'État chez des employeurs non marchands (associations…).,Financement public de contrats aidés dans les associations.,non
+A27,taxe_transactions_financieres,"Taxe sur les transactions financières (achats de titres, opérations intrajournalières…).",Renforcement de la taxe sur les transactions financières.,non
+A28,masse_salariale_publique,,Revalorisation des rémunérations des enseignants.,non
+A29,masse_salariale_publique,,Hausse du point d'indice des agents publics.,non
+A30,revalorisation_prestation,"Hausse discrétionnaire du montant d'une prestation existante, au-delà de sa règle d'indexation (AAH, APL…).",Hausse de 10 % du montant des aides personnelles au logement.,oui
+A31,credits_sectoriels,"Hausse des crédits de fonctionnement ou d'intervention d'une politique publique ou création d'un service public (culture, sport, justice des femmes, jeunesse, petite enfance…), hors rémunérations générales, prestations et plans d'investissement.",Création d'un service public de la petite enfance avec de nouvelles places d'accueil.,oui
+A32,exoneration_remuneration,,"Le groupe soumet à cotisations des rémunérations et revenus aujourd'hui exonérés (participation, épargne salariale, heures supplémentaires, dividendes).",oui
+A33,aides_transition_ecologique,"Subventions publiques à la transition écologique des ménages ou des producteurs (véhicules propres, agriculture biologique, agroécologie…).",Soutien public à l'agriculture biologique et à l'agroécologie.,non
+A34,aides_entreprises,,Aide financière ciblée sur l'apprentissage et l'alternance.,non
+A35,succession,,Exonération des droits de mutation à titre gratuit sur les transmissions d'entreprises.,oui
+A36,succession,,Baisse des droits de succession pour une partie des ménages.,non
+A37,taxe_electricite_gaz,,Suppression de l'accise sur l'électricité.,non
+A38,cotisations_sociales_taux,,Hausse du taux de cotisation sur la part haute des salaires.,non
+A39,taxe_importations,"Taxes sur les biens importés (taxe kilométrique, ajustement carbone aux frontières, droits de douane).",Nouvelle taxe assise sur les produits importés.,non
