@@ -1,6 +1,6 @@
 # T15 — Règle de sélection des mesures « ménages » par parti
 
-Projet, version 0.1 du 14 octobre 2026, **à valider avant toute recherche dans les programmes**.
+Projet, version 0.2 du 20 octobre 2026 (version 0.1 du 14 octobre 2026), **à valider avant toute recherche dans les programmes**.
 
 ## 0. But et principe
 
@@ -38,6 +38,8 @@ Une mesure est **calculée** si elle remplit les quatre critères. Sinon, elle e
 3. **Visible dans la grille** : elle change le revenu disponible d'au moins une situation de la grille actuelle (section 5). La grille est figée avant l'inventaire, pour qu'on ne puisse pas l'adapter aux mesures d'un parti.
 4. **Simulable** : elle s'exprime par un paramètre d'OpenFisca-France ou par un type de réforme de `scripts/distributif.py`. Un nouveau type est permis s'il est écrit de façon générale, testé, et utilisable tel quel pour la mesure d'un autre parti.
 
+**Exception « prix » (version 0.2)** : une mesure qui change le taux de TVA ou d'accise, ou le prix TTC, de l'électricité, du gaz, du fioul ou des carburants est calculée par le type `prix` de `scripts/distributif.py`, si le programme fixe le taux ou la variation de prix. Le critère 1 est alors remplacé par « change directement le prix d'un poste de consommation que l'enquête Budget de famille isole ». Le résultat est une baisse (ou hausse) de dépenses, affichée à part du revenu disponible, avec une fourchette de répercussion dans les prix (`rep_energie_logement_baisse`, `rep_carburants_baisse` dans `data/raw/parametres_bareme.csv`, même règle pour tous). Les autres mesures sur les prix (alimentation, produits de première nécessité, gel des prix) restent `canal_prix` : la liste des produits ou l'effet sur les prix n'est pas assez précis, ou la consommation n'est pas isolée par taux de TVA.
+
 ## 4. Catégories des mesures non calculées
 
 Elles sont toutes listées pour chaque parti, à côté du résultat, avec une citation.
@@ -46,7 +48,7 @@ Elles sont toutes listées pour chaque parti, à côté du résultat, avec une c
 |---|---|---|
 | `imprecise` | « baisser l'impôt des classes moyennes » sans barème | « Pas assez précise pour être calculée » |
 | `hors_grille` | mesure pour les moins de 30 ans, les étudiants, les locataires (aides au logement), les indépendants, les chômeurs, les personnes handicapées | « Ne concerne pas les situations du simulateur » |
-| `canal_prix` | TVA, prix de l'énergie, carburants, péages | « Passe par les prix : non calculée » |
+| `canal_prix` | TVA ou prix hors énergie (alimentation, produits de première nécessité), gel des prix, péages ; énergie sans taux ni variation précis | « Passe par les prix : non calculée » |
 | `canal_retraite_age` | âge de départ, durée de cotisation | « Change l'âge de départ, pas le revenu d'une année : non calculée » |
 | `canal_patrimoine` | droits de succession, impôt sur la fortune, taxe foncière | « Porte sur le patrimoine : non calculée » |
 | `canal_entreprises` | impôt sur les sociétés, cotisations patronales, aides aux entreprises | « Pèse d'abord sur les entreprises : effet sur les foyers incertain » |
@@ -102,6 +104,7 @@ C'est la grille actuelle de `distributif.py` (468 situations) :
 | Date | Version | Modification | Motif | Programmes retraités |
 |---|---|---|---|---|
 | 14/10/2026 | 0.1 | Rédaction | — | aucun |
+| 20/10/2026 | 0.2 | Exception « prix » (§ 3) : TVA et accises sur l'énergie calculées hors OpenFisca ; `canal_prix` restreint au reste | Recherche T20 (répercussion, consommation des ménages) | exemples 2024 : RN (TVA sur l'énergie) et Ensemble (accise sur l'électricité) ajoutés à « Mon foyer » ; NFP inchangé (gel des prix : reste `canal_prix`) |
 
 ## 9. Ce que cette règle ne garantit pas
 

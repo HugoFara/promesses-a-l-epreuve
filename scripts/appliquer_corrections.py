@@ -15,7 +15,7 @@ from datetime import date
 from pathlib import Path
 
 RAW = Path("data/raw")
-CLES = {"programmes_stabilite_fr": "millesime"}
+CLES = {"programmes_stabilite_fr": "millesime", "regles": "regle"}
 
 
 def norm(v):

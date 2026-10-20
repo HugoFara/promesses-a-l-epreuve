@@ -736,6 +736,9 @@ function vueEquilibre() {
 /* Simulateurs « Mon foyer » et accueil : la grille précalculée (distributif_grille.csv) contient toutes les
    combinaisons des formulaires ; on filtre la situation choisie, sans aucun calcul dans le navigateur. */
 const uniqNum = (rs, c) => [...new Set(rs.map(r => r[c]))].sort((x, y) => num(x) - num(y));
+// Mesures « prix » (TVA, taxes sur l'énergie) : baisse de dépenses estimée hors OpenFisca, avec sa fourchette
+const parPrix = r => r.canal === "prix";
+const fourchettePrix = r => `de ${eur(num(r.gain_bas))} à ${eur(num(r.gain_haut))} par an selon la part de la baisse qui passe dans les prix`;
 function origineReforme(id) {
   const ref = D.reformes.find(r => r.id === id);
   const [f, lid] = (ref?.ligne_liee || "").split(" ");
@@ -777,7 +780,8 @@ function vueAccueil() {
       out.append(h("li", {class: "foyer-row " + (g > 0 ? "gain" : "perte")},
         h("div", {}, h("strong", {}, m?.libelle_simple || r.reforme), h("div", {class: "small muted"}, "Proposé par : " + (m?.porteur || "—"))),
         h("div", {class: "amt " + (g > 0 ? "pos" : "neg")}, `${sg(g / 12, n0)} € par mois`),
-        h("div", {class: "per"}, `soit ${sg(g, n0)} € par an (${g > 0 ? "gain" : "perte"} de revenu après impôts et aides)`)));
+        h("div", {class: "per"}, parPrix(r) ? `soit ${sg(g, n0)} € par an de dépenses en moins (estimation, ${fourchettePrix(r)})`
+          : `soit ${sg(g, n0)} € par an (${g > 0 ? "gain" : "perte"} de revenu après impôts et aides)`)));
     });
     out.hidden = !touche.length;
     $("#acc-neutre").hidden = !neutre.length;
@@ -798,7 +802,8 @@ function vueAccueil() {
     ", ", h("a", {href: "#/journal"}, "un journal de chaque correction"), " et ", lien(DEPOT, "le code et les données ouverts"), ".");
   $("#acc-limites").textContent = `Seules ${D.reformes.length} mesures sont calculées pour l'instant. Elles viennent de : ${liste(porteurs)}. ` +
     `Celles des autres partis ne le sont pas encore. Calcul simplifié avec le logiciel public OpenFisca, sur les règles de 2026, ` +
-    `pour un foyer sans revenus du capital ni aide au logement. Chaque mesure est calculée seule : les effets ne s'additionnent pas.`;
+    `pour un foyer sans revenus du capital ni aide au logement. Les baisses de taxes sur l'énergie sont estimées à part, d'après les ` +
+    `dépenses moyennes de foyers comparables : un ordre de grandeur. Chaque mesure est calculée seule : les effets ne s'additionnent pas.`;
 }
 
 /** « Aussi dans ces propositions, non calculé pour vous » : mesures des mêmes porteurs qui touchent les ménages mais
@@ -826,7 +831,9 @@ function vueFoyer() {
       out.append(h("li", {class: "foyer-row " + cls},
         h("div", {}, h("strong", {}, ref.get(r.reforme)?.libelle || r.reforme), o ? h("div", {class: "small muted"}, "Mesure étudiée dans : " + o) : null),
         h("div", {class: "amt " + (g > 0 ? "pos" : g < 0 ? "neg" : "muted")}, g === 0 ? "Aucun effet" : sg(g, n0) + " €"),
-        g !== 0 ? h("div", {class: "per"}, `par an, soit ${sg(g / 12, n0)} € par mois (${sg(num(r.gain_pct))} % du revenu)`) : null));
+        g !== 0 ? h("div", {class: "per"}, parPrix(r)
+          ? `par an de dépenses en moins, soit ${sg(g / 12, n0)} € par mois. Estimation : ${fourchettePrix(r)}`
+          : `par an, soit ${sg(g / 12, n0)} € par mois (${sg(num(r.gain_pct))} % du revenu)`) : null));
     });
   };
 

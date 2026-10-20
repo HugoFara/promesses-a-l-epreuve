@@ -25,16 +25,18 @@ check("C2 erreur moyenne t+1 hors crises (pt PIB)", statistics.mean(e1), -0.60)
 check("C2 erreur moyenne t+3 hors crises (pt PIB)", statistics.mean(e3), -1.93)
 check("C2 n t+3 hors crises", len(e3), 15)
 # Couche 3
-check("C3 nb estimations", len(rows("elasticites.csv")), 78)
+check("C3 nb estimations", len(rows("elasticites.csv")), 140)  # 78 + 36 répercussions (T20) + 26 tests de paramètres (T21), 20/10/2026
 # Application 2024
 a = rows("application_lignes.csv")
-for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -150.5, -159.5), ("Ensemble 2024", -18.1, -25.3), ("RN 2024", -63.8, -60.2)]:
+# Spread 3 → 2,5 pb par point de dette (T21, 20/10/2026) : lignes nfp_taux, ens_taux, rn24_taux
+for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -149.9, -158.9), ("Ensemble 2024", -18.0, -25.3), ("RN 2024", -63.6, -60.0)]:
     l = [r for r in a if r["programme"] == prog]
     check(f"App {prog} indépendant", sum(float(r["independant"]) for r in l), exp_i, 0.1)
     check(f"App {prog} corrigé", sum(float(r["independant"]) * float(r["facteur"]) * float(r["facteur_reference"]) for r in l), exp_c, 0.1)
 # Paniers
 k = rows("paniers.csv")
-for v, em, ef in [("LFI intégral", -111.2, 38.9), ("Ensemble", -14.7, 7.5)]:
+# Effet emploi du SMIC 1,67 → 0,47 (eps_smic −0,17, T21, 20/10/2026)
+for v, em, ef in [("LFI intégral", -110.0, 38.9), ("Ensemble", -14.7, 7.5)]:
     l = [r for r in k if r["variante"] == v]
     s = lambda role: sum(float(r["statique"]) * float(r["facteur"]) * float(r["facteur_reference"]) * float(r["facteur_interaction"] or 1) for r in l if r["role"].startswith(role))
     check(f"Panier {v} mesures", s("Mesure"), em, 0.1)

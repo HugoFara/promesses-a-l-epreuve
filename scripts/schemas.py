@@ -40,6 +40,8 @@ class MesureCout(Ligne):
     comportement_inclus_ex_ante: Annotated[Optional[Literal["oui", "non", "inconnu"]], BeforeValidator(_vide_none)] = None
     citation_comportement: OptStr = None; annee_ex_ante: OptStr = None; annee_ex_post: OptStr = None
     realise_publie_le: OptStr = None
+    # T21 : code pays (CA, CA-BC, US…) des mesures étrangères ; vide = France. Jugées à part (validation.py)
+    pays: OptStr = None
 
     @field_validator("inclus_stats", mode="before")
     @classmethod
@@ -229,8 +231,17 @@ class CalibrationInstitut(Ligne):
 
 class ReformeDistributive(Ligne):
     id: str; libelle: str; libelle_simple: str; porteur: str
-    type: Literal["parametre", "option_bareme_capital", "smic_net_cible", "gel_pensions"]
+    type: Literal["parametre", "option_bareme_capital", "smic_net_cible", "gel_pensions", "prix"]
     cible: OptStr = None; valeur: OptStr = None; ligne_liee: str; url: Url; confiance: Confiance; note: OptStr = None
+    # type prix (T20) : paramètre de parametres_bareme.csv donnant la part de la baisse de taxe passée dans les prix
+    repercussion: OptStr = None
+
+
+class ConsommationMenage(Ligne):
+    """Dépense d'un poste de consommation par catégorie de ménage, telle que publiée (T20, calcul par les prix)."""
+    id: str; decoupage: Literal["decile_niveau_vie", "type_menage", "ensemble"]; categorie: str; poste: str; libelle: str
+    valeur: float; unite: Literal["euros_par_menage_an"]; annee: str; url: Url; titre: str; citation: str; page: str
+    confiance: Confiance; note: OptStr = None
 
 
 class VarianteSensibilite(Ligne):
@@ -323,6 +334,7 @@ SCHEMAS = {
     "ifrap_nfp_2024": PosteIfrap,
     "calibration_instituts": CalibrationInstitut,
     "distributif_reformes": ReformeDistributive,
+    "consommation_menages": ConsommationMenage,
     "variantes_sensibilite": VarianteSensibilite,
     "validation_attribution": AttributionValidation,
     "montee_en_charge": MonteeEnCharge,

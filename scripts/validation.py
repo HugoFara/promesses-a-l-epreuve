@@ -21,8 +21,9 @@ import statistics
 
 from moteur import FORMULES, lire, noms_parametres, num
 
-# Réalisés qui ne sont pas des observations : un chiffrage administratif à comportement constant ne peut ni confirmer
-# ni contredire une règle de comportement. Couche 1 : mesures_cout.type_ex_post = administratif. Chiffrages d'instituts
+# Réalisés qui ne sont pas des observations : un chiffrage administratif à comportement constant, ou une réestimation
+# de la mesure fondue dans un impôt existant, ne peut ni confirmer ni contredire une règle de comportement. Couche 1 :
+# mesures_cout.type_ex_post ≠ observe (convention : recherche/validation/README.md, 20/10/2026). Chiffrages d'instituts
 # de la baisse de l'IS à 25 % : réalisé = chiffrage officiel de la mesure votée (recherche/T10b/rapport.md).
 INSTITUTS_NON_OBSERVES = {"inst_08", "inst_09", "inst_10"}
 
@@ -104,9 +105,10 @@ def main():
     for r in lire("mesures_cout.csv"):
         a = attrib[("mesures_officielles", r["id"])]
         depart = float(r["ex_ante"]) * float(r["deflateur_ex_ante"])
-        source = "officiel" if r["inclus_stats"] == "1" else "officiel (hors statistique principale)"
+        # Mesures étrangères (T21) : sous-échantillon à part, jamais mêlé aux chiffrages officiels français
+        source = ("étranger" if r["pays"] not in ("", "FR") else "officiel") + ("" if r["inclus_stats"] == "1" else " (hors statistique principale)")
         ajouter(source, r["id"], r["mesure"], depart, float(r["ex_post_central"]), a["regle"], a["issue_connue"],
-                observe=r["type_ex_post"] != "administratif", drapeaux=r["drapeaux"], selection=r["selection"])
+                observe=r["type_ex_post"] == "observe", drapeaux=r["drapeaux"], selection=r["selection"])
     # 2. Effets promis : départ = 1 (l'annonce), réalisé = ratio réalisé / annoncé
     for r in lire("mesures_effets.csv"):
         if not r["ratio_central"]:
@@ -179,11 +181,13 @@ def main():
         ("Effets annoncés", [l for l in lignes if l["source"] == "effet annoncé"]),
         ("  dont issue inconnue de l'agent d'attribution", [l for l in lignes if l["source"] == "effet annoncé" and l["issue_connue"] == "non"]),
         ("Chiffrages d'instituts (tous)", [l for l in lignes if l["source"].startswith("institut")]),
+        ("Mesures étrangères (T21), à part", [l for l in lignes if l["source"] == "étranger"]),
     ]
     for ch in sorted({l["source"] for l in lignes if l["source"].startswith("institut")}):
         groupes.append((f"  {ch}", [l for l in lignes if l["source"] == ch]))
     for regle in sorted({l["regle"] for l in lignes} - {"Aucune"}):
-        groupes.append((f"Règle : {regle}", [l for l in lignes if l["regle"] == regle and "hors statistique" not in l["source"]]))
+        groupes.append((f"Règle : {regle}", [l for l in lignes if l["regle"] == regle and "hors statistique" not in l["source"]
+                                             and l["source"] != "étranger"]))
     out = [x for x in (resume(n, s) for n, s in groupes) if x]
     with open("validation_resume.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(out[0]), lineterminator="\n")
@@ -194,15 +198,17 @@ def main():
     statuts = []
     for regle in sorted(f):
         tous = [l for l in lignes if l["regle"] == regle and abs(l["facteur"] - 1) > 1e-9 and "hors statistique" not in l["source"]]
+        etr = [l for l in tous if l["source"] == "étranger" and l["realise_observe"]]
+        tous = [l for l in tous if l["source"] != "étranger"]
         sel = [l for l in tous if l["realise_observe"]]
         if regle in ("Aucune",):
             continue
         if not tous:
-            st, note = "non testée", "aucune mesure passée de ce type dans le backtest"
+            st, note = "non testée", f"aucune mesure {'française ' if etr else ''}passée de ce type dans le backtest"
         elif regle in NON_CONCLUANTES:
             st, note = "non concluante", f"{len(sel)} cas ; {NON_CONCLUANTES[regle]}"
         elif not sel:
-            st, note = "non concluante", f"{len(tous)} cas, mais aucun réalisé observé (chiffrages administratifs à comportement constant)"
+            st, note = "non concluante", f"{len(tous)} cas, mais aucun réalisé observé (chiffrages administratifs ou réestimations)"
         elif regle in RESTREINTES:
             a, d = sum(l["verdict"] == "amélioré" for l in sel), sum(l["verdict"] == "dégradé" for l in sel)
             st, note = "non testée (restreinte)", f"{RESTREINTES[regle]} (version d'origine : {a} améliorée(s), {d} dégradée(s))"
@@ -214,7 +220,7 @@ def main():
                   "confirmée" if a > d and m1 < m0 else "contredite" if d > a and m1 > m0 else "mitigée")
             note = f"{a} améliorée(s), {d} dégradée(s) ; erreur médiane {m0:.0f} % → {m1:.0f} %"
             if len(tous) > len(sel):
-                note += f" ({len(tous) - len(sel)} cas à réalisé administratif écarté(s))"
+                note += f" ({len(tous) - len(sel)} cas à réalisé non observé écarté(s))"
             inc = [l for l in sel if l["issue_connue"] == "non"]
             if inc:
                 ai, di = sum(l["verdict"] == "amélioré" for l in inc), sum(l["verdict"] == "dégradé" for l in inc)
@@ -223,6 +229,13 @@ def main():
                          f"{statistics.median(abs(l['erreur_nous_pct']) for l in inc):.0f} %")
             else:
                 note += " ; aucun cas dont l'agent d'attribution ignorait l'issue"
+        if etr:
+            # Le statut ne repose que sur les cas français ; les cas étrangers sont rapportés à côté
+            ae, de = sum(l["verdict"] == "amélioré" for l in etr), sum(l["verdict"] == "dégradé" for l in etr)
+            note += (f" ; cas étrangers, hors statut ({len(etr)}, {', '.join(sorted({l['id'].split('_')[0] for l in etr}))}) : "
+                     f"{ae} améliorée(s), {de} dégradée(s), erreur médiane "
+                     f"{statistics.median(abs(l['erreur_depart_pct']) for l in etr):.0f} % → "
+                     f"{statistics.median(abs(l['erreur_nous_pct']) for l in etr):.0f} %")
         statuts.append({"regle": regle, "statut": st, "n": len(sel), "note": note})
     with open("validation_regles.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(statuts[0]), lineterminator="\n")

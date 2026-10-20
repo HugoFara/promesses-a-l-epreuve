@@ -5,7 +5,7 @@ Chiffrages d'instituts | règle : Réforme structurelle,1,-107.7,-91.9,-107.7,-9
 Chiffrages d'instituts | règle : Taux de recours,1,88.2,53.2,88.2,53.2
 Chiffrages d'instituts | règle : Élasticité IS,3,-1.9,-7.9,-13.1,-19.1
 Chiffrages d'instituts | règle : Élasticité patrimoine,4,-6.3,-7.5,-15.5,-16.7
-"Chiffrages officiels, statistique principale",55,3.1,-0.6,-2.4,2.9
+"Chiffrages officiels, statistique principale",55,3.1,-0.6,-2.4,3.0
 "Chiffrages officiels, statistique principale | règle : Aucune",14,4.7,4.7,6.0,6.0
 "Chiffrages officiels, statistique principale | règle : Nouvelle assiette : risque juridique",5,-62.3,-46.5,-49.7,-33.9
 "Chiffrages officiels, statistique principale | règle : Recette ponctuelle",6,6.7,106.7,17.2,117.2
@@ -17,4 +17,4 @@ Chiffrages d'instituts | règle : Élasticité patrimoine,4,-6.3,-7.5,-15.5,-16.
 "Chiffrages officiels, statistique principale | règle : Élasticité patrimoine",5,-6.3,-9.3,-23.9,-25.3
 "Chiffrages officiels, statistique principale | règle : Élasticité revenus",3,7.5,17.5,-5.0,5.0
 "Chiffrages officiels, statistique principale | règle : Élasticité succession",1,-66.7,-56.7,-66.7,-56.7
-"Chiffrages officiels, statistique principale | règle : Élasticité électricité",1,12.5,4.8,12.5,4.8
+"Chiffrages officiels, statistique principale | règle : Élasticité électricité",1,12.5,10.1,12.5,10.1

@@ -11,10 +11,12 @@ print(c[['id','ex_ante_comparable','ex_post_central','ratio','ecart_pct','cause_
 # Statistique principale : mesures incluses (hors dispositifs énergie exclus) ; variantes pour la sensibilité.
 # Les mesures de T18 (selection = test_regles) ont été choisies parce qu'une règle de comportement s'y applique : elles
 # ne représentent pas l'ensemble des chiffrages officiels et restent hors de la statistique principale.
+# Les mesures étrangères de T21 (pays renseigné) testent les règles à part : jamais dans ces échantillons.
 gen=c.selection=='generale'
+fr=c.pays.isna()|(c.pays=='FR')
 echantillons={'principal (inclus_stats = 1)': (c.inclus_stats==1)&gen, 'toutes (hors test des règles)': gen,
               'ex post observés seulement': (c.inclus_stats==1)&gen&(c.type_ex_post=='observe'),
-              'y compris mesures choisies pour tester les règles': c.inclus_stats==1}
+              'y compris mesures choisies pour tester les règles': (c.inclus_stats==1)&fr}
 stats=[]
 for nom,m in echantillons.items():
     e=c.ecart_pct[m].abs()

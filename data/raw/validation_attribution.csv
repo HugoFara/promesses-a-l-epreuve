@@ -156,3 +156,24 @@ effets_annonces,fraude_lfi2013,Effet promis,Recettes attendues de la lutte contr
 effets_annonces,pass_sport_benef,Taux de recours,Nombre de bénéficiaires d'une aide utilisée à la demande.,oui
 effets_annonces,prepare_emploi_meres,Effet promis,Changement de comportement attendu (retour à l'emploi).,non
 effets_annonces,prepare_partage,Effet promis,Changement de comportement attendu (partage du congé entre parents).,oui
+mesures_officielles,tva_7pct_2012,Aucune,"Hausse d'un taux de TVA sur une assiette existante et connue (barème), sans effet de comportement annoncé dans le chiffrage.",non
+mesures_officielles,tva_resto_7pct_2012,Aucune,"Relèvement de taux de TVA sur l'assiette connue de la restauration, chiffrage mécanique sans effet économique promis.",non
+mesures_officielles,tva_hausse_2014,Aucune,Relèvement des taux intermédiaire et normal de TVA sur des assiettes existantes : changement de barème au chiffrage mécanique.,non
+mesures_officielles,tva_logement_social_10_2018,Aucune,"Changement de taux de TVA sur une assiette connue (logement social), sans effet de comportement attendu dans le chiffrage.",non
+mesures_officielles,tva_presse_en_ligne_2018,Aucune,"Aménagement d'assiette d'un taux de TVA existant, chiffré mécaniquement sans effet économique annoncé.",non
+mesures_officielles,tva_zoos_2018,Aucune,"Baisse de taux de TVA sur une assiette connue et étroite, sans effet de comportement attendu.",non
+mesures_officielles,tva_equitation_2024,Aucune,"Baisse de taux de TVA sur une activité à l'assiette connue, coût mécanique de dépense fiscale.",non
+mesures_officielles,bc_carbon_tax_2008_09,Élasticité carburants,"Taxe carbone prélevée sur les combustibles et carburants fossiles : la recette dépend de la réaction des volumes consommés au prix, comme une accise sur les carburants.",oui
+mesures_officielles,bc_carbon_tax_2009_10,Élasticité carburants,"Hausse programmée de la taxe carbone sur les combustibles fossiles, assimilable à une hausse d'accise sur les carburants.",oui
+mesures_officielles,bc_carbon_tax_2010_11,Élasticité carburants,"Hausse programmée de la taxe carbone sur les combustibles fossiles, assimilable à une hausse d'accise sur les carburants.",oui
+mesures_officielles,ca_fuel_charge_2019_20,Élasticité carburants,"Redevance par tonne de CO2 perçue sur les combustibles et carburants, de même nature qu'une accise sur les carburants.",non
+mesures_officielles,ca_fuel_charge_ab_2019_20,Élasticité carburants,"Redevance sur les combustibles appliquée en Alberta, de même nature qu'une accise sur les carburants.",non
+mesures_officielles,ca_fuel_charge_2020_21,Élasticité carburants,"Hausse de la redevance sur les combustibles (30 $/t), de même nature qu'une hausse d'accise sur les carburants.",non
+mesures_officielles,ca_fuel_charge_ab_2020_21,Élasticité carburants,"Redevance sur les combustibles en Alberta en année pleine, de même nature qu'une accise sur les carburants.",non
+mesures_officielles,es_smi_2019_emploi,Effet emploi du SMIC,Hausse du salaire minimum dont l'indicateur est le nombre d'emplois perdus au voisinage du minimum.,oui
+mesures_officielles,de_mindestlohn_2015_emploi,Effet emploi du SMIC,Introduction d'un salaire minimum légal dont l'indicateur est le nombre d'emplois perdus au voisinage du minimum.,oui
+mesures_officielles,p117_2020,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",oui
+mesures_officielles,p117_2023,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",oui
+mesures_officielles,p117_2024,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",non
+mesures_officielles,p117_2025,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",non
+mesures_officielles,us_rachats_1pct_fy2024,Taxe sur les rachats d'actions,"Taxe d'accise sur les rachats d'actions par les sociétés cotées, exactement le cas visé par la règle.",non

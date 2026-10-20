@@ -10,6 +10,14 @@
 
 **Circularité.** Deux paramètres sont calibrés sur des mesures de l'échantillon : `facteur_reforme` (retraites 2010 et 2023) et `ratio_effet_promis` (CICE, TEPA, ISF, PFU). Pour ces mesures, le facteur est recalculé sans elles (leave-one-out). L'élasticité du capital (0,77) a été estimée sur 2008-2017 : le PFU de 2018 est hors échantillon.
 
+**Nature du réalisé** (`type_ex_post`, convention du 20/10/2026, après T20) :
+
+- `observe` : montant constaté pour la mesure elle-même, isolable dans les comptes : recette d'un prélèvement propre (contribution, majoration déclarée à part), dépense d'un dispositif identifié, montants versés aux bénéficiaires ;
+- `reestimation` : la mesure est fondue dans un impôt ou une dépense existante (changement de taux ou d'assiette, dépense fiscale), et son coût après coup est un nouveau chiffrage de l'administration ou d'un évaluateur ; un coût de dépense fiscale lu dans les Voies et moyens en fait partie ;
+- `administratif` : montant budgétaire ou enveloppe qui reprend la prévision.
+
+Seuls les cas `observe` jugent une règle (statut ci-dessous). Les autres restent dans l'erreur des chiffrages de départ (couche 1), où ils sont signalés.
+
 **Statuts** (`data/validation_regles.csv`) : confirmée (plus d'améliorations que de dégradations et erreur médiane réduite), contredite (l'inverse), mitigée, non concluante (réalisés qui ne sont pas des observations), non testée.
 
 Code : `scripts/validation.py`. Sorties : `data/validation_mesures.csv`, `validation_resume.csv`, `validation_regles.csv`, `confiance_programmes.csv`.

@@ -1,17 +1,29 @@
-menage,reforme,libelle,annee_legislation,revenu_disponible_avant,revenu_disponible_apres,gain_annuel,gain_pct
-"Salarié au SMIC, célibataire",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,20165,20165,0,0.0
-"Salarié au SMIC, célibataire",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,20165,20165,0,0.0
-"Salarié au SMIC, célibataire",smic_1600,SMIC à 1 600 € net par mois,2026,20165,21457,1293,6.41
-"Salarié au SMIC, célibataire",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,20165,20165,0,0.0
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,36404,36278,-126,-0.35
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),fin_pfu,Suppression du PFU (revenus du capital au barème),2026,36404,36404,0,0.0
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),smic_1600,SMIC à 1 600 € net par mois,2026,36404,36404,0,0.0
-Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,36404,35883,-521,-1.43
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,60476,60476,0,0.0
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,60476,60216,-260,-0.43
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",smic_1600,SMIC à 1 600 € net par mois,2026,60476,60476,0,0.0
-"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,60476,60476,0,0.0
-"Famille monoparentale, 1 enfant, SMIC",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,25513,25513,0,0.0
-"Famille monoparentale, 1 enfant, SMIC",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,25513,25513,0,0.0
-"Famille monoparentale, 1 enfant, SMIC",smic_1600,SMIC à 1 600 € net par mois,2026,25513,26916,1403,5.5
-"Famille monoparentale, 1 enfant, SMIC",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,25513,25513,0,0.0
+menage,reforme,libelle,annee_legislation,canal,revenu_disponible_avant,revenu_disponible_apres,gain_annuel,gain_bas,gain_haut,gain_pct
+"Salarié au SMIC, célibataire",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,revenu,20165,20165,0,0,0,0.0
+"Salarié au SMIC, célibataire",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,revenu,20165,20165,0,0,0,0.0
+"Salarié au SMIC, célibataire",smic_1600,SMIC à 1 600 € net par mois,2026,revenu,20165,21457,1293,1293,1293,6.41
+"Salarié au SMIC, célibataire",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,revenu,20165,20165,0,0,0,0.0
+"Salarié au SMIC, célibataire",tva_carburants_55,"TVA de 20 % à 5,5 % sur les carburants et le fioul (effet par les prix)",2026,prix,20165,20165,98,16,98,0.49
+"Salarié au SMIC, célibataire",tva_elec_gaz_55,"TVA de 20 % à 5,5 % sur l'électricité et le gaz (effet par les prix)",2026,prix,20165,20165,143,17,143,0.71
+"Salarié au SMIC, célibataire",elec_accise_reduite,Électricité −15 % : accise maintenue au tarif réduit (effet par les prix),2026,prix,20165,20165,43,5,46,0.21
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,revenu,36404,36278,-126,-126,-126,-0.35
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),fin_pfu,Suppression du PFU (revenus du capital au barème),2026,revenu,36404,36404,0,0,0,0.0
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),smic_1600,SMIC à 1 600 € net par mois,2026,revenu,36404,36404,0,0,0,0.0
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,revenu,36404,35883,-521,-521,-521,-1.43
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),tva_carburants_55,"TVA de 20 % à 5,5 % sur les carburants et le fioul (effet par les prix)",2026,prix,36404,36404,280,45,280,0.77
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),tva_elec_gaz_55,"TVA de 20 % à 5,5 % sur l'électricité et le gaz (effet par les prix)",2026,prix,36404,36404,233,28,233,0.64
+Couple de retraités (pensions 2 000 + 1 300 € bruts/mois),elec_accise_reduite,Électricité −15 % : accise maintenue au tarif réduit (effet par les prix),2026,prix,36404,36404,73,8,78,0.2
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,revenu,60476,60476,0,0,0,0.0
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,revenu,60476,60216,-260,-260,-260,-0.43
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",smic_1600,SMIC à 1 600 € net par mois,2026,revenu,60476,60476,0,0,0,0.0
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,revenu,60476,60476,0,0,0,0.0
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",tva_carburants_55,"TVA de 20 % à 5,5 % sur les carburants et le fioul (effet par les prix)",2026,prix,60476,60476,150,24,150,0.25
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",tva_elec_gaz_55,"TVA de 20 % à 5,5 % sur l'électricité et le gaz (effet par les prix)",2026,prix,60476,60476,237,28,237,0.39
+"Cadre célibataire (4 SMIC, 5 000 € de dividendes)",elec_accise_reduite,Électricité −15 % : accise maintenue au tarif réduit (effet par les prix),2026,prix,60476,60476,71,8,75,0.12
+"Famille monoparentale, 1 enfant, SMIC",abat_3000,Plafond de l'abattement de 10 % sur les pensions ramené à 3 000 €,2026,revenu,25513,25513,0,0,0,0.0
+"Famille monoparentale, 1 enfant, SMIC",fin_pfu,Suppression du PFU (revenus du capital au barème),2026,revenu,25513,25513,0,0,0,0.0
+"Famille monoparentale, 1 enfant, SMIC",smic_1600,SMIC à 1 600 € net par mois,2026,revenu,25513,26916,1403,1403,1403,5.5
+"Famille monoparentale, 1 enfant, SMIC",gel_pensions,Gel des pensions au-dessus de 1 281 € bruts par mois (PLFSS 2027),2026,revenu,25513,25513,0,0,0,0.0
+"Famille monoparentale, 1 enfant, SMIC",tva_carburants_55,"TVA de 20 % à 5,5 % sur les carburants et le fioul (effet par les prix)",2026,prix,25513,25513,132,21,132,0.52
+"Famille monoparentale, 1 enfant, SMIC",tva_elec_gaz_55,"TVA de 20 % à 5,5 % sur l'électricité et le gaz (effet par les prix)",2026,prix,25513,25513,170,20,170,0.67
+"Famille monoparentale, 1 enfant, SMIC",elec_accise_reduite,Électricité −15 % : accise maintenue au tarif réduit (effet par les prix),2026,prix,25513,25513,49,5,52,0.19

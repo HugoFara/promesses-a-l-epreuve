@@ -13,5 +13,5 @@ h_retraite,Âge de départ à la retraite,≈20 % des économies compensées par
 h_emploi,Dispositifs emploi et accompagnement,"Effets nets proches de 0 (RSA rénové, CEJ, emplois francs, revenu de base)",Ne pas inscrire d'économie de second tour,rsa_15h cej emplois_francs ubi_fi
 h_smic,SMIC et assurance chômage,"Emploi −0,17 par % de SMIC ; durée indemnisée 0,2–0,3","Effets modérés, à chiffrer explicitement",smic ac_duree ac_sjr
 h_macro,Bouclage macro,"Multiplicateur dépense 0,8 (an 1), impôts 0,3–0,4 ; semi-élasticité du solde 0,6",≈40 % du gain d'une coupe de dépense perdu la 1re année,mult_dep mult_imp semi_elast
-h_taux,Taux d'intérêt,"+100 pb = +3,2 Md€ à 1 an, +33 Md€ à 9 ans ; ≈3 pb de spread par point de dette",Scénario de stress +25 pb obligatoire,taux_100pb spread_dette
+h_taux,Taux d'intérêt,"+100 pb = +3,2 Md€ à 1 an, +33 Md€ à 9 ans ; ≈2,5 pb de spread par point de dette",Scénario de stress +25 pb obligatoire,taux_100pb spread_dette
 h_credibilite,Crédibilité de la trajectoire,"Sans certification indépendante : 0,5 à 1 pt d'optimisme","Ajouter 0,5 à 1 pt de déficit aux soldes non certifiés (≈2 pts à 3 ans selon le backtest)",ifi_biais frein_ch

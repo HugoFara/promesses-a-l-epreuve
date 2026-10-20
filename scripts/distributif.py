@@ -2,13 +2,20 @@
 
 Lancer avec l'environnement OpenFisca du clone local (../openfisca-france, installé en mode éditable) :
     bash ../scripts/distributif.sh   (depuis data/, ou via run_all.sh)
-Entrées : data/raw/distributif_reformes.csv (paramètres des réformes, sourcés).
+Entrées : data/raw/distributif_reformes.csv (paramètres des réformes, sourcés) ; pour les réformes « prix » (T20) :
+          consommation_menages.csv, parametres_bareme.csv (seuils de déciles, répercussion), moteur_parametres.csv (dp_elec).
 Sorties : data/distributif_menages.csv (gain ou perte de revenu disponible, €/an, par ménage type et réforme) ;
           data/distributif_grille.csv (même calcul sur une grille de situations, lue par le simulateur du site).
 
 Les ménages types sont des conventions (multiples du SMIC, montants ronds), pas des données : ils servent à
 montrer qui gagne et qui perd, pas à chiffrer un coût agrégé. Les effets par décile demandent une
 microsimulation sur données d'enquête (ERFS, accessible via le CASD) : hors de portée ici.
+
+Réformes « prix » (TVA, accises) : OpenFisca ne décrit pas la consommation. Leur effet est une baisse de dépense,
+calculée à part et jamais ajoutée au revenu disponible : dépense du poste × variation du prix TTC × part de la baisse
+passée dans les prix (fourchette bas-haut). Dépense du poste = profil Budget de famille 2017 selon le décile de
+niveau de vie × rapport du type de ménage à la moyenne, ramené au niveau moyen de 2024 (SDES). Conventions de
+séparabilité (décile × type), pas d'effet propre de l'âge : recherche/T20/rapport.md.
 """
 import csv
 import warnings
@@ -142,8 +149,12 @@ def simuler_grille(reformes):
     ids = list(cas["individus"])
     net = sim.calculate_add("salaire_net", ANNEE) + sim.calculate_add("retraite_nette", ANNEE)
     net_ref = {i: net[ids.index(i)] / 12 for i in ids}
+    uc = sim.calculate("unites_consommation", ANNEE)
+    depense, params, seuils = contexte_prix()
     apres = {}
     for r in reformes:
+        if r["type"] == "prix":
+            continue
         tbs, cas_r = appliquer(r, cas)
         apres[r["id"]] = SimulationBuilder().build_from_entities(tbs, cas_r).calculate_add("revenu_disponible", ANNEE)
     out = []
@@ -151,9 +162,16 @@ def simuler_grille(reformes):
         base = {**attr, "net_mensuel_reference": round(float(net_ref[f"m{k}_a0"])),
                 "revenu_disponible_avant": round(float(avant[k]))}
         base["id"] = "_".join(str(attr[c]) for c in ("statut", "composition", "enfants", "niveau", "capital"))
+        d, t = decile(float(avant[k]) / float(uc[k]), seuils), type_bdf(attr["composition"], attr["enfants"])
         for r in reformes:
-            g = float(apres[r["id"]][k] - avant[k])
-            out.append({**base, "reforme": r["id"], "gain_annuel": round(g), "gain_pct": round(g / float(avant[k]) * 100, 2)})
+            if r["type"] == "prix":
+                bas, g, haut = effet_prix(r, depense, params, d, t)
+                canal = "prix"
+            else:
+                g = bas = haut = float(apres[r["id"]][k] - avant[k])
+                canal = "revenu"
+            out.append({**base, "reforme": r["id"], "canal": canal, "gain_annuel": round(g), "gain_bas": round(bas),
+                        "gain_haut": round(haut), "gain_pct": round(g / float(avant[k]) * 100, 2)})
     return out
 
 
@@ -184,6 +202,76 @@ def smic_net_mensuel():
 def lire_reformes():
     with open("raw/distributif_reformes.csv", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
+
+
+def lire_raw(nom):
+    with open(f"raw/{nom}.csv", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
+# Réformes « prix » ---------------------------------------------------------------------------------------------
+# Type de ménage de l'enquête Budget de famille (TF105) selon la composition du foyer
+def type_bdf(composition, enfants):
+    if composition == "seul":
+        return "Familles monoparentales" if enfants else "Personnes seules"
+    return "Couples avec enfants" if enfants else "Couples sans enfant"
+
+
+def consommation():
+    """Fonction (poste, décile 1-10, type de ménage) → dépense annuelle TTC en euros 2024."""
+    rs = lire_raw("consommation_menages")
+    dec = {(r["poste"], int(r["categorie"].split()[-1])): float(r["valeur"]) for r in rs
+           if r["decoupage"] == "decile_niveau_vie" and r["categorie"] != "Ensemble"}
+    typ = {(r["poste"], r["categorie"]): float(r["valeur"]) for r in rs if r["decoupage"] == "type_menage"}
+    moy = {r["poste"]: float(r["valeur"]) for r in rs if r["decoupage"] == "decile_niveau_vie" and r["categorie"] == "Ensemble"}
+    sdes = {r["poste"]: float(r["valeur"]) for r in rs if r["decoupage"] == "ensemble"}
+    # Mise au niveau de 2024 : dépense moyenne SDES 2024 / dépense moyenne BdF 2017, par groupe de postes
+    niveau = {"energie_logement": sdes["energie_logement"] / moy["045"], "carburants": sdes["carburants"] / moy["0722"]}
+
+    def depense(poste, d, t):
+        k = niveau["carburants" if poste == "0722" else "energie_logement"]
+        return dec[(poste, d)] * typ[(poste, t)] / moy[poste] * k
+    return depense
+
+
+def decile(niveau_vie, seuils):
+    return 1 + sum(niveau_vie >= s_ for s_ in seuils)
+
+
+def variation_prix(valeur, params):
+    """« tva:t0:t1 » → (1 + t1) / (1 + t0) − 1 ; « prix:id » → paramètre (bas, central, haut) de moteur_parametres."""
+    genre, *x = valeur.split(":")
+    if genre == "tva":
+        t0, t1 = map(float, x)
+        v = (1 + t1) / (1 + t0) - 1
+        return v, v, v
+    return params[x[0]]
+
+
+def effet_prix(r, depense, params, d, t):
+    """Gain annuel (bas, central, haut) d'une réforme « prix » pour un foyer du décile d et du type t."""
+    postes = r["cible"].split(";")
+    dep = sum(depense(p, d, t) for p in postes if p != "0450")
+    if "0450" in postes:
+        # Électricité et gaz non dissociables : comptés en entier si les deux énergies sont visées
+        dep += depense("0450", d, t)
+    elif "0451" in postes or "0452" in postes:
+        # sinon au prorata de l'énergie visée
+        e, g = depense("0451", d, t), depense("0452", d, t)
+        dep += depense("0450", d, t) * (e if "0451" in postes else g) / (e + g)
+    dp = variation_prix(r["valeur"], params)
+    rho = params[r["repercussion"]]
+    gains = sorted(-dp[i] * rho[i] * dep for i in range(3))
+    return gains[0], gains[1], gains[2]
+
+
+def contexte_prix():
+    # Variations de prix (dp_elec, partagée avec le chiffrage du solde) et répercussions (rep_*, propres à ce calcul)
+    bareme = lire_raw("parametres_bareme")
+    params = {r["id"]: tuple(float(r[c] or r["val_central"]) for c in ("val_bas", "val_central", "val_haut"))
+              for r in lire_raw("moteur_parametres") + bareme if r["val_central"]}
+    seuils = [float(r["val_central"]) for r in bareme if r["id"].startswith("nv_d")]
+    return consommation(), params, sorted(seuils)
 
 
 def appliquer(r, cas):
@@ -218,28 +306,40 @@ def appliquer(r, cas):
                 for m in pen:
                     pen[m] = round(pen[m] / (1 + inflation), 2)
         return TBS, cas
-    raise ValueError(r["type"])
+    raise ValueError(r["type"])  # les réformes « prix » ne passent pas par OpenFisca (effet_prix)
 
 
 def main():
     reformes = lire_reformes()
+    depense, params, seuils = contexte_prix()
     out = []
     for nom, cas in MENAGES:
         cas = option_optimale(cas)
-        avant = simuler(TBS, cas)
+        sim = SimulationBuilder().build_from_entities(TBS, cas)
+        avant = float(sim.calculate_add("revenu_disponible", ANNEE).sum())
+        d = decile(avant / float(sim.calculate("unites_consommation", ANNEE).sum()), seuils)
+        m = cas["menages"]["m"]
+        t = type_bdf("seul" if not m["conjoint"] else "couple", len(m["enfants"]))
         for r in reformes:
-            tbs, cas_r = appliquer(r, cas)
-            apres = simuler(tbs, cas_r)
-            out.append({"menage": nom, "reforme": r["id"], "libelle": r["libelle"], "annee_legislation": ANNEE,
+            if r["type"] == "prix":
+                bas, g, haut = effet_prix(r, depense, params, d, t)
+                apres, canal = avant, "prix"
+            else:
+                tbs, cas_r = appliquer(r, cas)
+                apres = simuler(tbs, cas_r)
+                g = bas = haut = apres - avant
+                canal = "revenu"
+            out.append({"menage": nom, "reforme": r["id"], "libelle": r["libelle"], "annee_legislation": ANNEE, "canal": canal,
                         "revenu_disponible_avant": round(avant), "revenu_disponible_apres": round(apres),
-                        "gain_annuel": round(apres - avant), "gain_pct": round((apres - avant) / avant * 100, 2)})
+                        "gain_annuel": round(g), "gain_bas": round(bas), "gain_haut": round(haut),
+                        "gain_pct": round(g / avant * 100, 2)})
     with open("distributif_menages.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, list(out[0]), lineterminator="\n")
         w.writeheader()
         w.writerows(out)
     g = simuler_grille(reformes)
     cols = ["id", "statut", "composition", "enfants", "niveau", "capital", "net_mensuel_reference",
-            "revenu_disponible_avant", "reforme", "gain_annuel", "gain_pct"]
+            "revenu_disponible_avant", "reforme", "canal", "gain_annuel", "gain_bas", "gain_haut", "gain_pct"]
     with open("distributif_grille.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, cols, lineterminator="\n")
         w.writeheader()
