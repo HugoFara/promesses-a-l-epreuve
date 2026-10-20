@@ -488,6 +488,16 @@
         <p class="small muted" id="nb-elast" aria-live="polite"></p>
         <div class="tbl-wrap tall" id="tb-elast"></div>
       </div></details>
+      <details class="acc"><summary>Pour aller plus loin : l'effet sur votre foyer des mesures qui passent par les prix</summary><div class="acc-body">
+        <p class="prose">Une baisse de TVA ou de taxe sur l'énergie ne change pas votre revenu : elle change ce que vous payez. Le logiciel <a class="term" href="#/lexique/openfisca">OpenFisca</a>, qui calcule les impôts et les prestations, ne décrit pas vos achats. Ces mesures sont donc calculées à part, dans « Mon foyer » :</p>
+        <ul class="prose">
+          <li><strong>Dépense du foyer</strong> pour le produit visé (électricité, gaz, carburants) : celle des foyers comparables (même niveau de vie, même type de ménage) dans l'enquête Budget de famille 2017 de l'Insee, ramenée au niveau de 2024 avec les dépenses moyennes publiées par le ministère de la Transition écologique (SDES). Le niveau de vie du foyer vient du calcul d'OpenFisca.</li>
+          <li><strong>Variation du prix</strong> : celle que produit la mesure sur le prix toutes taxes comprises.</li>
+          <li><strong>Part de la baisse répercutée dans les prix</strong> : toute la baisse au centre, comme on l'a observé en France (tarifs réglementés de l'électricité, remise sur les carburants de 2022) ; la valeur basse vient de baisses de TVA dans d'autres pays européens, où les prix n'ont reculé que d'une petite partie de la baisse dans les premiers mois. C'est pourquoi le résultat est affiché avec sa fourchette.</li>
+        </ul>
+        <p class="prose">Effet = dépense × variation du prix × part répercutée. Les mesures de prix sans taxe (blocage des prix, gratuité des premiers kilowattheures, plafonnement des frais bancaires…) ne sont pas calculées : à leur place, on indique la part du budget des ménages qu'elles touchent.</p>
+        <p class="prose small muted">Sources et valeurs : <a href="../data/consommation_menages.csv" download>consommation_menages.csv</a> (dépenses par poste), <a href="../data/parametres_bareme.csv" download>parametres_bareme.csv</a> (parts répercutées, seuils de niveau de vie), <a href="../data/distributif_reformes.csv" download>distributif_reformes.csv</a> (mesures calculées).</p>
+      </div></details>
     </div>
 
     <h2>Les limites</h2>
@@ -496,6 +506,7 @@
       <li><strong>Des coûts réels parfois incertains.</strong> Quand les évaluations divergent, on retient une valeur centrale. Pour les retraites, le coût « réel » est une réestimation, pas une économie constatée.</li>
       <li><strong>Des études étrangères.</strong> Certaines réactions des contribuables sont mesurées à l'étranger (Danemark, Suisse, États-Unis) et se transposent mal en France.</li>
       <li><strong>Le chiffreur de départ pèse lourd.</strong> <span data-k="lim_chiffreurs"></span> Les corrections ne changent le résultat que de quelques milliards et <strong>ne réduisent pas l'écart entre chiffreurs</strong> : <span data-k="lim_ecart"></span> C'est le chiffrage de départ qui détermine le résultat.</li>
+      <li><strong>Mesures qui passent par les prix : un ordre de grandeur.</strong> L'effet d'une baisse de TVA ou de taxe sur l'énergie est calculé avec la dépense moyenne de foyers comparables, pas la vôtre, et la structure des achats de 2017. On ne compte pas les achats supplémentaires quand le prix baisse. La part de la baisse vraiment répercutée dans les prix est incertaine.</li>
       <li><strong>Des déficits révisés.</strong> Les déficits réels utilisés sont les séries actuelles d'Eurostat, révisées depuis leur première publication.</li>
     </ul>
 

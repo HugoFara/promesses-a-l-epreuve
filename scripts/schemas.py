@@ -260,7 +260,10 @@ class MonteeEnCharge(Ligne):
 
 class NonChiffreFoyer(Ligne):
     """Mesure d'un porteur qui touche les ménages mais n'est pas simulée (« Aussi dans ce programme, non chiffré pour vous »)."""
-    porteur: str; ordre: int; mesure: str; qui: str; raison: str; source: str; url: Url; page: OptStr = None; confiance: Confiance
+    porteur: str; ordre: int; mesure: str; qui: str; raison: str
+    # Postes du Budget de famille visés (« 01;045 ») : part du budget concernée, pour les mesures qui passent par les prix
+    postes: OptStr = None
+    source: str; url: Url; page: OptStr = None; confiance: Confiance
 
 
 class Historique(Ligne):

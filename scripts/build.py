@@ -112,6 +112,11 @@ porteurs = {r["porteur"] for r in donnees["distributif_reformes"]}
 for r in donnees["non_chiffre_foyer"]:
     if r["porteur"] not in porteurs:
         erreurs.append(f"non_chiffre_foyer : porteur sans mesure simulée « {r['porteur']} » (distributif_reformes.csv)")
+postes_conso = {r["poste"] for r in donnees["consommation_menages"] if r["decoupage"] == "decile_niveau_vie"}
+for r in donnees["non_chiffre_foyer"]:
+    for p in filter(None, (r["postes"] or "").split(";")):
+        if p not in postes_conso:
+            erreurs.append(f"non_chiffre_foyer : poste inconnu {p} ({r['mesure']}, consommation_menages.csv)")
 ids_paniers = {r["id"] for r in donnees["paniers"]}
 for r in donnees["montee_en_charge"]:
     if r["id"] not in ids_paniers | ids_app:

@@ -14,7 +14,7 @@ const SOURCES = {
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
   validation_regles: "validation_regles", validation_attribution: "validation_attribution", distributif: "distributif_menages", grille: "distributif_grille", reformes: "distributif_reformes",
   idees: "idees", idees_chiffres: "idees_chiffres", projref: "projection_reference",
-  non_chiffre: "non_chiffre_foyer", journal: "historique",
+  non_chiffre: "non_chiffre_foyer", conso: "consommation_menages", journal: "historique",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
 };
 
@@ -818,7 +818,25 @@ function nonChiffre(box, porteurs) {
     h("details", {class: "data-toggle"}, h("summary", {}, "Aussi dans ces propositions, non calculé pour vous"),
       porteurs.filter(p => rs.some(r => r.porteur === p)).map(p => [h("h3", {class: "small"}, p),
         h("ul", {class: "small"}, rs.filter(r => r.porteur === p).sort((a, b) => num(a.ordre) - num(b.ordre)).map(r =>
-          h("li", {}, h("strong", {}, r.mesure), ` (${r.qui.toLowerCase()}). ${r.raison}. `, lien(r.url, "Source"))))]).flat()));
+          h("li", {}, h("strong", {}, r.mesure), ` (${r.qui.toLowerCase()}). ${r.raison}. `, partBudgetTexte(r.postes), lien(r.url, "Source"))))]).flat()));
+}
+
+/** Part de la consommation des ménages touchée par une mesure qui passe par les prix (« 01;045 »), d'après le Budget de
+    famille 2017 (consommation_menages.csv), pour l'ensemble des ménages et pour les déciles 1 et 10 de niveau de vie. */
+function partBudget(postes, categorie) {
+  const v = poste => num(D.conso.find(r => r.decoupage === "decile_niveau_vie" && r.categorie === categorie && r.poste === poste)?.valeur);
+  const ps = postes.split(";");
+  let dep = sum(ps, v);
+  // Factures d'électricité et de gaz communes (0450) : réparties au prorata, comme dans le calcul par les prix
+  const e = ps.includes("0451"), g = ps.includes("0452");
+  if ((e || g) && !ps.includes("045")) dep += e && g ? v("0450") : v("0450") * v(e ? "0451" : "0452") / (v("0451") + v("0452"));
+  return dep / v("CTOTALE") * 100;
+}
+function partBudgetTexte(postes) {
+  if (!postes) return "";
+  const p = c => FR.format(",.1f")(partBudget(postes, c)) + "\u00a0%";
+  return `Part du budget des ménages concernée : ${p("Ensemble")} en moyenne (${p("Décile 1")} pour les 10 % les plus modestes, ` +
+    `${p("Décile 10")} pour les 10 % les plus aisés ; Budget de famille 2017). `;
 }
 
 function vueFoyer() {
