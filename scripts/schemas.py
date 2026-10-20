@@ -193,6 +193,7 @@ class StatutReference2027(Ligne):
     fichier: Literal["application_lignes", "paniers"]; id_ligne: str; ligne: str; statut_reference: Statut
     texte: OptStr = None; montant_reference_2027: OptFloat = None; facteur_suggere: float; url: OptStr = None
     citation: OptStr = None; page: OptStr = None; confiance: Confiance; note: str; raison_ecart: OptStr = None
+    mesure_panier: OptStr = None  # même mesure dans un panier 2027 (paniers.csv, id) : statuts 2027 comparés par garde_fous
 
 
 class ParametreBareme(Ligne):

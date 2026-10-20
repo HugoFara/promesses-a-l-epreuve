@@ -70,7 +70,10 @@ for nom in ("application_lignes", "paniers"):
 # Audit n° 19 : une ligne « absente » ne devrait pas avoir de montant de référence 2027 non nul (statut_reference_2027.csv),
 # sauf exception expliquée dans raison_ecart (montant qui porte sur une mesure voisine, pas sur la ligne)
 actuel = {(f, r["id"]): r for f in ("application_lignes", "paniers") for r in rows(f"{f}.csv")}
-for r in rows("statut_reference_2027.csv"):
+registre = rows("statut_reference_2027.csv")
+# Paniers par mesure : l'id publié porte la variante (l_smic_i, l_smic_a) ; mesure_panier, non (l_smic)
+paniers_mesure = {i.rsplit("_", 1)[0]: r for (f, i), r in actuel.items() if f == "paniers"}
+for r in registre:
     ligne = actuel.get((r["fichier"], r["id_ligne"]), {})
     deja_traitee = ligne.get("statut_reference") != "absente" or float(ligne.get("facteur_reference") or 1) < 1
     if r["fichier"] == "application_lignes":
@@ -84,6 +87,22 @@ for r in rows("statut_reference_2027.csv"):
                  or abs(float(ligne.get("facteur_reference") or 1) - float(r["facteur_suggere"] or 1)) > 1e-9)
         if ecart and not r.get("raison_ecart"):
             erreurs.append(f"RÉFÉRENCE {r['id_ligne']} : statut ou facteur différent de T1 sans raison_ecart")
+    # Même mesure dans un programme 2024 et un panier 2027 (#8) : un seul statut par rapport à la référence 2027
+    panier = paniers_mesure.get(r.get("mesure_panier") or "")
+    if r.get("mesure_panier") and not panier:
+        erreurs.append(f"RÉFÉRENCE {r['id_ligne']} : mesure_panier « {r['mesure_panier']} » inconnue (paniers.csv)")
+    elif panier and panier["statut_reference"] != r["statut_reference"] and not r.get("raison_ecart"):
+        erreurs.append(f"RÉFÉRENCE {r['id_ligne']} : statut 2027 « {r['statut_reference']} », panier {r['mesure_panier']} "
+                       f"« {panier['statut_reference']} », sans raison_ecart")
+
+# Convention de l'application 2024 (#8) : statut_reference = écart au droit de juin 2024 (référence des chiffreurs) ;
+# le statut par rapport à la référence 2027 est dans note_reference et dans statut_reference_2027.csv
+au_registre = {r["id_ligne"] for r in registre if r["fichier"] == "application_lignes"}
+for r in rows("application_lignes.csv"):
+    if r["id"] not in au_registre:
+        erreurs.append(f"RÉFÉRENCE application_lignes {r['id']} : statut 2027 absent de statut_reference_2027.csv")
+    if not (r.get("note_reference") or "").startswith("Statut par rapport à la référence 2027"):
+        erreurs.append(f"RÉFÉRENCE application_lignes {r['id']} : note_reference sans statut 2027")
 
 # Profil pluriannuel (audit, § 4.2) : dans la projection (paniers et programmes de 2027), une famille dont une ligne a une
 # montée en charge doit en avoir une pour toutes ses lignes ; sinon le coût de l'une suit les années et pas celui de l'autre

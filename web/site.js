@@ -1202,9 +1202,12 @@ function pourquoi(fichier, id) {
         [["Mode", m.mode === "moteur" ? "formule du moteur" : "facteur forfaitaire"], ["Facteur forfaitaire de la ligne", n2(num(m.facteur_forfait))],
          ["Facteur du moteur", n2(f) + (num(m.ecart_facteur_pct) ? ` (écart ${sg(num(m.ecart_facteur_pct))} %)` : "")],
          ["Loi votée seule", sg(num(m.corrige_loi_votee))], ["En 2028", sg(num(m.corrige_2028))],
-         ["Statut de référence", l.statut_reference || "—"], ["Fiabilité de la référence", l.confiance_reference || "—"],
+         ...(fichier === "paniers" ? [["Statut de référence", l.statut_reference || "—"]]
+           : [["Par rapport au droit de juin 2024 (référence retenue)", l.statut_reference || "—"],
+              ["Par rapport à la référence 2027 (pour information)", (l.note_reference || "").replace(/^Statut par rapport à la référence 2027 \([^)]*\)\s*:\s*/, "") || "—"]]),
+         ["Fiabilité de la référence", l.confiance_reference || "—"],
          ["Autres chiffrages", l.autres_estimations || "—"], ["Qui paie", l.qui_paie || "—"], ["Incertitude", l.incertitude || "—"]]
-          .filter(([, v]) => v && v !== "—").map(([k, v]) => [h("dt", {}, k), h("dd", {}, v)])),
+          .filter(([, v]) => v && v !== "—").flatMap(([k, v]) => [h("dt", {}, k), h("dd", {}, v)])),
       paramsRegle(m.regle)),
     citerContester(fichier + ":" + id, `${l.ligne} (${m.groupe}) : ${sg(c)} milliards d'euros par an après correction ` +
       `(chiffrage de départ ${sg(dep)}, ${src} ; entre ${sg(num(m.p10))} et ${sg(num(m.p90))} dans 8 cas sur 10).`));

@@ -279,6 +279,7 @@ a.term:hover { color: var(--primary); }
 .pq-dl { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; margin: .5rem 0; }
 .pq-dl dt { color: var(--text-muted); }
 .pq-dl dd { margin: 0; }
+@media (max-width: 30rem) { .pq-dl { grid-template-columns: 1fr; gap: 0; } .pq-dl dd { margin-bottom: .4rem; overflow-wrap: anywhere; } }
 
 /* Pied de page */
 .footer { border-top: 3px solid var(--primary); background: var(--bg-alt); padding: 2rem 0; font-size: .925rem; }
