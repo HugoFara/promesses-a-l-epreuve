@@ -1174,7 +1174,7 @@ function pourquoi(fichier, id) {
   const etapes = [
     ["Chiffrage de départ", sg(dep)],
     f !== 1 ? ["Règle « " + m.regle + " »", "× " + n2(f)] : null,
-    fr !== 1 ? ["Part pas encore votée", "× " + n2(fr)] : null,
+    fr !== 1 ? [fichier === "paniers" ? "Part pas encore votée" : "Part qui change le droit de juin 2024", "× " + n2(fr)] : null,
     fi !== 1 ? ["Recoupements", "× " + n2(fi)] : null,
     ["Après correction", sg(c)],
   ].filter(Boolean);
@@ -1190,7 +1190,9 @@ function pourquoi(fichier, id) {
       : h("p", {}, `On applique la règle « ${m.regle} », qui multiplie le montant par ${n2(f)}. `, h("span", {class: "muted"}, "Ce sur quoi elle repose : " + (R.base || "") + ".")),
     l.justification && l.justification !== R.base ? h("p", {}, "Pour cette mesure : " + l.justification + ".") : null,
     m.mode === "forfait" ? h("p", {class: "small muted"}, `Facteur forfaitaire : la formule détaillée attend encore des paramètres (${m.parametres_manquants.split(/\s+/).join(", ")}).`) : null,
-    fr !== 1 ? h("p", {}, `Une partie de la mesure est déjà prévue par la loi ou les budgets 2027 : seuls ${pc(fr * 100)} sont comptés, pour ne pas les compter deux fois.`, l.note_reference ? h("span", {class: "small muted"}, " " + l.note_reference) : null) : null,
+    fr !== 1 && fichier === "paniers" ? h("p", {}, `Une partie de la mesure est déjà prévue par la loi ou les budgets 2027 : seuls ${pc(fr * 100)} sont comptés, pour ne pas les compter deux fois.`, l.note_reference ? h("span", {class: "small muted"}, " " + l.note_reference) : null) : null,
+    fr !== 1 && fichier !== "paniers" ? h("p", {}, `Par rapport au droit de juin 2024, référence des chiffreurs, seuls ${pc(fr * 100)} du chiffrage correspondent à un changement et sont comptés. `,
+      h("span", {class: "small muted"}, (l.source_reference || "").split(" — ")[0] + ".")) : null,
     fi !== 1 ? h("p", {}, `Cette mesure recoupe d'autres mesures du même programme (même impôt ou même assiette) : son montant est multiplié par ${n2(fi)}.`) : null,
     l.risque_juridique ? (() => {
       const [texte, url = ""] = (l.source_juridique || "").split(" — ");
@@ -1211,7 +1213,8 @@ function pourquoi(fichier, id) {
          ["Facteur du moteur", n2(f) + (num(m.ecart_facteur_pct) ? ` (écart ${sg(num(m.ecart_facteur_pct))} %)` : "")],
          ["Loi votée seule", sg(num(m.corrige_loi_votee))], ["En 2028", sg(num(m.corrige_2028))],
          ...(fichier === "paniers" ? [["Statut de référence", l.statut_reference || "—"]]
-           : [["Par rapport au droit de juin 2024 (référence retenue)", l.statut_reference || "—"],
+           : [["Par rapport au droit de juin 2024 (référence retenue)",
+                {absente: "mesure nouvelle", partielle: "en partie déjà dans ce droit", votée: "déjà dans ce droit"}[l.statut_reference] || l.statut_reference || "—"],
               ["Par rapport à la référence 2027 (pour information)", (l.note_reference || "").replace(/^Statut par rapport à la référence 2027 \([^)]*\)\s*:\s*/, "") || "—"]]),
          ["Fiabilité de la référence", l.confiance_reference || "—"],
          ["Autres chiffrages", l.autres_estimations || "—"], ["Qui paie", l.qui_paie || "—"], ["Incertitude", l.incertitude || "—"]]
