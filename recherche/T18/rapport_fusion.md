@@ -1,5 +1,7 @@
 # T18, phase 2 : fusion, contrôles et fichiers aveugles
 
+**État au 01/11/2026.** Intégré le 16/10/2026 (commit `f32e017`, décrit dans `rapport.md` § 6). Statut des 27 points du § 6 : voir la ligne qui suit la liste et `recherche/T27/suivi.md`.
+
 Fusion faite le 16/10/2026, à partir de `parts/` (non modifié). Règles gelées au commit `0b4175f`. Cette phase ne fait **pas** l'attribution des règles (phase 3). Elle ne calcule pas non plus la statistique « avant et après la règle », qui dépend de cette attribution.
 
 ## 1. Fichiers produits
@@ -385,6 +387,8 @@ Elles sont tirées des notes des quatre groupes et des contrôles ci-dessus.
     - B : contribution d'IS à 10,7 % ; CSPE ; Voies et moyens, tome I (TSN, TICFE) ;
     - C : complémentaire santé solidaire, ex post du surcoût ; NEB du CAS « véhicules propres » ; assurance chômage 2023 ; garantie jeunes ;
     - D : fiscalité du tabac 2018-2020 (OFDT) ; évaluation préalable du suramortissement 2019 ; objectif Duflot ; emplois de la réforme de l'assurance chômage 2019.
+
+**État des 27 points au 01/11/2026.** Le point 1 est réglé avant la phase 3 (section suivante). Les points 3 à 5, 7 à 9, 12 à 14, 17, 18 et 21 à 24 sont repris dans `recherche/T27/suivi.md` (groupe 2, G2.1 à G2.10) et réglés le 01/11/2026 (`794046b`, bilan au § 9), sauf la version restreinte de « Taux de recours » (point 21), toujours non testée. Le point 27 reste ouvert (G6.4). Les autres points ne sont pas repris dans `recherche/T27/suivi.md` : leur traitement à l'intégration du 16/10/2026 se lit dans `data/raw/historique.csv`.
 
 ## Ajout avant la phase 3 (16/10/2026)
 

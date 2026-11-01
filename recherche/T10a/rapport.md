@@ -1,5 +1,7 @@
 # T10a : extension de la couche 1 (backtest mesure par mesure)
 
+**État au 01/11/2026.** Intégré le 14/10/2026 (commit `aa99a89`, premier commit du dépôt ; `historique.csv`, 14/10/2026). Décisions du § 6 : le point 1 est réglé à l'intégration (lignes `low` écartées). Le point 2 est réglé le 01/11/2026 (`794046b`, drapeau `credit_vote`) : voir `recherche/T27/suivi.md` (§ 9, G2.7). Le point 5 reste ouvert : `recherche/T27/suivi.md` (G6.5). Pour les points 3 et 4, aucune décision écrite n'a été retrouvée.
+
 Date d'accès de toutes les sources : 2026-10-14. Toutes les sources primaires lues sont archivées dans `sources/T10a/`, soit 54 fichiers dont le sha256 a été vérifié. Ils sont listés dans `sources.csv`.
 
 ## 1. Résultat

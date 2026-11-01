@@ -1,5 +1,7 @@
 # T10b : calibration des chiffreurs sur les programmes d'Emmanuel Macron (2017 et 2022)
 
+**État au 01/11/2026.** Intégré le 14/10/2026 (commit `aa99a89`, premier commit du dépôt : `calibration_instituts.csv`). Décisions du § 8 : point 1, pas de facteur par chiffreur ; l'incertitude par ligne est le paramètre `erreur_ligne` (n = 22). Les points 2 et 3 sont écrits le 01/11/2026 (`794046b`) : voir `recherche/T27/suivi.md` (§ 9, G2.10). Le point 4 reste ouvert : `recherche/T27/suivi.md` (G6.3).
+
 Date d'accès de toutes les sources : 2026-10-14.
 
 Fichiers :

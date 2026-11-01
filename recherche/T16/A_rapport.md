@@ -1,5 +1,7 @@
 # T16, volet A : État et institutions
 
+**État au 01/11/2026.** Intégré le 14/10/2026 (commits `6821ffd` et `4eb6328`, cartes « idées qui reviennent »), puis le 15/10/2026 (`e1334e6`, sélection des idées) et le 01/11/2026 (`b56076e`). Décisions : les points 2 (règle appliquée aux fonctionnaires) et 5 (solde net avec l'UE en 2025) sont réglés le 01/11/2026 : voir `recherche/T27/suivi.md` (§ 11, G4.2 et G4.4).
+
 Agent de recherche, 14 octobre 2026. Chiffres détaillés : `A_chiffres.csv` (86 lignes). Sources archivées : `sources/T16/A/` (27 fichiers), index `A_sources.csv`.
 
 Conventions. Les montants sont en Md€ ou M€ courants. Une économie améliore le solde (signe +). Les lignes `calcul` du CSV sont des valeurs dérivées par moi : leur méthode est donnée dans `note`. Repère utilisé ci-dessous : le déficit public de 2025 est de 152,5 Md€ (Insee Première n° 2106). La conversion en pourcentage du déficit ou en euros par habitant reste à faire par l'intégrateur, avec `projection_reference.csv`.

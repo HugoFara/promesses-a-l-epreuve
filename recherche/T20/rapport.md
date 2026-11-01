@@ -1,5 +1,7 @@
 # T20 : TVA et taxes sur la consommation, effet sur les foyers et sur le solde
 
+**État au 01/11/2026.** Intégré le 20/10/2026 (commits `e17e777` et `08728d3`, § 9 de ce rapport). Les phrases « Brouillon », « Rien n'est intégré » et « Rien n'est tranché » (§ 6) datent d'avant. Le § 5, point 10, est dépassé : depuis `e17e777`, `validation.py` ne juge plus une règle que sur les cas `observe`. Décisions : les § 6.2 à 6.5 sont tranchés (`recherche/T27/suivi.md`, § 8). La part fiscale du § 9 est simulée le 01/11/2026 (`eaf26a7`, § 10, G3.3). Le § 6.1 (TVA hors énergie) reste ouvert : `recherche/T27/suivi.md` (G6.7).
+
 Brouillon au 20/10/2026, après la fusion (étape 2 de la consigne). L'attribution à l'aveugle (étape 3) reste à faire. Consigne : `CONSIGNE.md`. Détail de la collecte : `parts/notes_A.md`, `notes_B.md`, `notes_C.md`. Rien n'est intégré à `data/`.
 
 Règles gelées (§ 0) : les sha256 de `data/raw/regles.csv` et `data/raw/moteur_regles.csv` sont toujours ceux de la consigne. La règle T15 (version 0.1) n'est pas modifiée.

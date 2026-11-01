@@ -1,5 +1,7 @@
 # T18 : tester les règles de correction sur de nouvelles mesures passées
 
+**État au 01/11/2026.** Intégré le 16/10/2026 (commit `f32e017`, § 6 de ce rapport ; résultat sur les cas d'issue inconnue publié par `da031a6`). Les phrases « rien n'est intégré » (ci-dessous) et « non tranchées » (§ 3) datent d'avant cette intégration. Décisions du § 5 : l'indicateur de « Recette ponctuelle » est choisi le 01/11/2026 (`794046b`) ; la seconde collecte reste ouverte. Voir `recherche/T27/suivi.md` (§ 9, G2.9 ; G6.4) et, pour les 27 points, la ligne d'état de `rapport_fusion.md` § 6.
+
 Rapport au 16/10/2026. Consigne : `CONSIGNE.md`. Détail de la collecte : `parts/notes_[A-D].md`. Fusion, contrôles et décisions en suspens : `rapport_fusion.md`. Rien n'est intégré à `data/` ; la phase 4 (intégration) reste à décider.
 
 ## 1. Ce qui a été fait

@@ -1,5 +1,7 @@
 # T16, volet C (fiscalité) : rapport de recherche
 
+**État au 01/11/2026.** Intégré le 14/10/2026 (commits `6821ffd` et `4eb6328`, cartes « idées qui reviennent »), puis le 15/10/2026 (`e1334e6`) et le 01/11/2026 (`b56076e`). Décisions : les points 2 (fraude, famille « effet promis »), 3 (coût d'un centime, calcul recoupé) et 4 (héritages, « Élasticité succession ») sont réglés le 01/11/2026 ; le point 5 attend l'utilisateur. Voir `recherche/T27/suivi.md` (§ 11, G4.1, G4.3, G4.5 et G4.6).
+
 Date : 14 octobre 2026. Fichiers : `C_chiffres.csv` (68 lignes), `C_sources.csv` (30 sources archivées dans `sources/T16/C/`).
 
 Règles suivies : chaque chiffre du CSV vient d'un document lu et archivé. Une valeur « dérivée » (calcul simple sur un chiffre lu) est marquée comme telle et notée `medium`. Les chiffres lus seulement dans une source qui en cite une autre sont notés `medium`. Les chiffres politiques ou militants sont notés `low`.

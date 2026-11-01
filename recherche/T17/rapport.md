@@ -1,5 +1,7 @@
 # T17 – Programmes RN 2024 et LR 2024 : mesures, revirements et chiffrages par institut
 
+**État au 01/11/2026.** Intégré le 15/10/2026 (commit `cc78772`, § 11 de ce rapport), puis découpé par T22 le 20/10/2026 (`f90db2e`). Le § 11 tranche la plupart des points du § 9. Points du § 6 : le 1 et le 4 sont réglés le 01/11/2026 (`794046b`, famille `impot_revenu_large`, champ de « Élasticité IS ») ; le 2 est tranché par T23 (`2c0948c`, 20/10/2026), mais la justification reste à réécrire ; le 3 est traité par T26 (`0ff7a16`). Voir `recherche/T27/suivi.md` (§ 8, § 9, G5.1 et G5.2).
+
 Date d'accès de toutes les sources : 2026-10-15. Fichiers produits :
 
 - `application_lignes_proposees.csv` : 22 lignes `rn24_*`, en-tête actuel de `data/raw/application_lignes.csv` (avec `famille` et `exception_symetrie`) ;

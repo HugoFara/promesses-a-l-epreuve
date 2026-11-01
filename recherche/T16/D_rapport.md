@@ -1,5 +1,7 @@
 # T16-D — Sources publiques attestant que les idées reviennent dans les cahiers citoyens (2019)
 
+**État au 01/11/2026.** Intégré le 15/10/2026 (commit `e1334e6`) : la règle de sélection s'appuie sur la synthèse publique de 2019 (au moins 5 000 mentions), comme le propose le point 2 ; la TTF sort. Ce rapport n'a pas de point repris dans `recherche/T27/suivi.md`.
+
 Date d'accès : 14 octobre 2026. Fichiers : `D_syntheses_2019.csv` (38 lignes), `D_sources.csv` (13 fichiers), archives dans `sources/T16/D/`.
 
 ## 1. Résultat principal

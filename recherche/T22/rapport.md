@@ -1,5 +1,7 @@
 # T22 : découpage des lignes « Autres » des programmes 2024 (fusion)
 
+**État au 01/11/2026.** Intégré le 20/10/2026 (commit `f90db2e`, § 8 de ce rapport ; complément du même jour : `b54faeb`). Le § 8 tranche les § 5.1, 5.2 et 5.8. Les § 5.4 à 5.7 et le PTZ du § 5.3 sont traités par T26 le 01/11/2026 (`0ff7a16`). Restent à écrire les fragilités de `nfp_indexation_salaires`, `nfp_point_indice` (§ 5.3) et `rn24_heritage` : voir `recherche/T27/suivi.md` (§ 8 et G5.9). La base des mesures d'asile, laissée ouverte au § 8, est traitée par T23 (`2c0948c`, 20/10/2026) et T24 (`0a905e8`, 22/10/2026).
+
 Fusion faite le 2026-10-20, à partir des collectes de `parts/` (non modifiées). Règle de découpage : `CONSIGNE.md` § 1, appliquée telle qu'écrite. Chiffreur de référence : Institut Montaigne pour les cinq lignes mères. Montants en Md€ par an, signe du solde (négatif = creuse le déficit). Montants mères : `data/raw/application_lignes.csv` (sha256 `6b13f3ff…4b84`, identique au gel du § 0).
 
 ## 1. Fichiers produits

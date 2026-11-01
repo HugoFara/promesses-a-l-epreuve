@@ -1,5 +1,7 @@
 # T16, volet B (protection sociale) : rapport de recherche
 
+**État au 01/11/2026.** Intégré le 14/10/2026 (commits `6821ffd` et `4eb6328`, cartes « idées qui reviennent »), puis le 15/10/2026 (`e1334e6`) et le 01/11/2026 (`b56076e`, règle du site sous chaque carte). Décisions : le point 5 (repère « € par habitant ») attend l'utilisateur : voir `recherche/T27/suivi.md` (§ 11, G4.6).
+
 Date d'accès de toutes les sources : 14 octobre 2026. Les chiffres sont dans `B_chiffres.csv` (50 lignes). Les sources archivées sont dans `sources/T16/B/` (22 fichiers) et indexées dans `B_sources.csv`. Signe : les montants sont des économies ou des recettes, donc ils améliorent le solde (signe positif au sens des consignes).
 
 Les deux sources clés sont nouvelles pour le projet : les **annexes du PLFSS 2027** (en particulier l'annexe 9, évaluations préalables) et celles du **PLFSS 2026**, publiées sur securite-sociale.fr (`/la-secu-en-detail/loi-de-financement/annee-en-cours` et `/annees-passees/plfss-2026.html`). Elles ne figurent pas sur le dossier de l'Assemblée nationale.

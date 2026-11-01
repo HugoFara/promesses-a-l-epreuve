@@ -387,3 +387,11 @@ Corrections : `G3/corrections_parametres.csv` ; scripts `distributif.py`, `proje
 | G4.6 | En attente de l'utilisateur ; proposition : clore, le « % du déficit » suffit | — |
 
 Choix de l'intégrateur à signaler : « recettes attendues du plan contre la fraude » (1 Md€) dans la famille `effet_promis`, comme `ens_fraude` (× 0,33).
+
+## 12. Bilan du groupe 5 (01/11/2026)
+
+- G5.1, G5.3, G5.4, G5.5, G5.8, G5.9 : 20 corrections de textes publiés (`G5/corrections_notes.csv`), aucune valeur chiffrée ne change ; `nfp_indexation_salaires` et `nfp_point_indice` passent en confiance medium (fragilité dite). G5.2 était déjà fait (G2.1).
+- G5.4 : note de `l_bandeaux_i` au registre alignée sur celle du panier (`G5/corrections_registre.csv`).
+- G5.6 : 32 lignes de `calibration_instituts.csv`, « non jugeable » (journal écrit à la main).
+- G5.7 : ligne d'état datée en tête de 14 rapports ; T21 point 6 (G6.10) clos sans action. 10 points de `T18/rapport_fusion.md` § 6 hors de ce suivi renvoient au journal du 16/10.
+- Reste à vérifier : la prolongation du gel du SMIC de référence est dite « proposée par le PLFSS 2027 » dans plusieurs fichiers, mais la citation lue vient du PLF 2027 (art. 49). Si elle passe par le PLFSS, le rejet à l'Assemblée la touche aussi. La date d'examen au Sénat (09/11) ne vient que d'une source secondaire. Carte `etrangers_prestations` : proposition dans `G5/notes.md`, non appliquée.

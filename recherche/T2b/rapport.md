@@ -1,5 +1,7 @@
 # T2b : sources primaires des couches 2 et 3
 
+**État au 01/11/2026.** Intégré le 14/10/2026 (commit `aa99a89`, premier commit du dépôt ; `historique.csv`, 14/10/2026). Décisions du § 5 : les points 1, 4, 5 et 8 sont appliqués à cette date, comme l'interpolation du point 6 (`charges_bw_1216`). Les points 3 et 7 sont réglés le 01/11/2026 (`0ff7a16`), les points 2 et 6 aussi (`eaf26a7`). Voir `recherche/T27/suivi.md` (§ 8 ; § 10 pour G3.4 et G3.5). Les recherches du § 4 restent ouvertes : `recherche/T27/suivi.md` (G6.6).
+
 Date d'accès de toutes les sources : 2026-10-14. Outils : curl, WebFetch et WebSearch, sans navigateur. Fichiers produits :
 - `corrections.csv` : 31 lignes ;
 - `nouvelles_elasticites.csv` : 15 estimations ;

@@ -1,5 +1,7 @@
 # T21 : tester les règles sans cas ou avec trop peu de cas (brouillon)
 
+**État au 01/11/2026.** Intégré le 20/10/2026 (commit `e17e777`, § 8 de ce rapport). Décisions du § 6 : les points 1 à 5, 7, 9 à 12 et 14 sont tranchés (`recherche/T27/suivi.md`, § 8). Les points 8 et 13 sont réglés le 01/11/2026 (`794046b`) : voir `recherche/T27/suivi.md` (§ 9, G2.3 et G2.10). Point 6 : les deux cas SMIC restent des tests de paramètre (§ 8) ; le millésime de l'AIReF n'est pas choisi, car le cas ne sert à aucun chiffre. Ce point est clos sans action (`recherche/T27/suivi.md`, G6.10). L'élargissement de l'échantillon (§ 4) reste ouvert : `recherche/T27/suivi.md` (G6.3).
+
 Fusion faite le 20/10/2026, à partir de `parts/` (non modifié). Règles et paramètres gelés au commit `686902b` : les sha256 de `data/raw/regles.csv` et `data/raw/moteur_regles.csv` à ce commit sont ceux de la consigne. Les valeurs gelées viennent de `git show 686902b:…`, pas de l'arbre de travail (modifié depuis par T20). Les facteurs centraux ont été recalculés avec `facteurs_centraux()` de `scripts/validation.py` dans sa version gelée.
 
 Ce brouillon ne contient pas l'attribution à l'aveugle (phase 3). Les écarts « après la règle » utilisent la règle pressentie par les groupes de collecte. Ils sont donc provisoires.

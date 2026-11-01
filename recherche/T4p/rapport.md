@@ -1,5 +1,7 @@
 # T4p : paramètres de barème pour le moteur de calcul (accès 2026-10-14)
 
+**État au 01/11/2026.** Intégré le 14/10/2026 (commit `aa99a89`, premier commit du dépôt ; `historique.csv`, 14/10/2026). Décisions : les points 1, 3, 5, 6 et 7 sont tranchés (`recherche/T27/suivi.md`, § 8). Les points 2 (Smic de juin 2026) et 4 (CEHR sur tout le dividende) sont réglés le 01/11/2026 (`eaf26a7`) : voir `recherche/T27/suivi.md` (§ 10, G3.1 et G3.2).
+
 ## Livrables
 
 - `parametres_moteur.csv` : 131 paramètres, colonnes `id,parametre,val_bas,val_central,val_haut,unite,annee,url,citation,page,confiance,note`. Confiance : 109 high, 15 medium, 7 low.
