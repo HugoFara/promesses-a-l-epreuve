@@ -157,6 +157,9 @@ class LignePanier(Ligne):
     statut_reference: Optional[Statut] = None; source_reference: OptStr = None
     facteur_reference: float = 1.0; note_reference: OptStr = None; confiance_reference: Annotated[Optional[Confiance], BeforeValidator(_vide_none)] = None; note_confiance: OptStr = None
     facteur_reference_bas: OptFloat = None; facteur_reference_haut: OptFloat = None; facteur_reference_2028: OptFloat = None
+    # Variante « loi votée seule » d'une ligne « partielle » dont le recoupement vient en partie d'un PLF/PLFSS 2027 (T26) ;
+    # vide : 1 pour une ligne « proposée », facteur_reference sinon
+    facteur_reference_loi_votee: OptFloat = None
     facteur_interaction: OptFloat = None; facteur_interaction_bas: OptFloat = None; facteur_interaction_haut: OptFloat = None
     recours_complet_suppose: Annotated[Optional[Literal["oui", "non"]], BeforeValidator(_vide_none)] = None
     source_recours: OptStr = None

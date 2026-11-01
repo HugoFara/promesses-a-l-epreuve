@@ -66,6 +66,10 @@ for nom in ("application_lignes", "paniers"):
             erreurs.append(f"DOUBLE COMPTE {lid} : mesure {statut} comptée au facteur total {total:g}")
         if statut == "partielle" and f_ref >= 1 and not r.get("note_reference"):
             erreurs.append(f"DOUBLE COMPTE {lid} : mesure partielle sans décote ni explication")
+        # Variante « loi votée seule » (T26) : une décote qui vient en partie d'un projet de budget 2027 a son facteur sans ce projet
+        if (nom == "paniers" and statut == "partielle" and f_ref < 1 and not r.get("facteur_reference_loi_votee")
+                and any(t in (r.get("source_reference") or "") for t in ("PLF 2027", "PLFSS 2027"))):
+            erreurs.append(f"LOI VOTÉE {lid} : recoupement en partie tiré d'un PLF/PLFSS 2027, facteur_reference_loi_votee vide")
         if statut in ("votée", "proposée", "partielle") and not r.get("source_reference"):
             erreurs.append(f"DOUBLE COMPTE {lid} : statut {statut} sans source")
         if not statut:

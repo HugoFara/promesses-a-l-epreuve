@@ -16,6 +16,7 @@ const SOURCES = {
   idees: "idees", idees_chiffres: "idees_chiffres", projref: "projection_reference",
   non_chiffre: "non_chiffre_foyer", conso: "consommation_menages", journal: "historique",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
+  instituts: "chiffrages_instituts",
 };
 
 // Fichiers proposés au téléchargement (vue Méthode), avec une description lisible.
@@ -1164,6 +1165,16 @@ function statutRegle(regle) {
   return [h("h3", {}, "Cette règle est-elle fiable ?"), h("p", {}, badge("Règle " + v.statut, k), " ", phrase), h("p", {class: "small muted"}, v.note)];
 }
 
+/** Horizon du montant retenu pour une ligne de programme 2024 : la ligne de chiffrages_instituts.csv du même chiffreur
+    et du même montant ; null si elle n'est pas unique (calcul du site, médiane). Les horizons ne sont pas harmonisés (T26). */
+function horizonChiffrage(l) {
+  const src = (l.source_independant || "").toLowerCase(), v = num(l.independant);
+  const c = (D.instituts || []).filter(x => x.id_ligne === l.id && x.usage === "ligne" && x.horizon &&
+    src.includes(x.chiffreur.toLowerCase()) && Math.abs(num(x.valeur) - v) < 0.051);
+  // « par an », « Md€/an » : aucune année dite, rien à afficher
+  return c.length === 1 && /\d|cumul|horizon/i.test(c[0].horizon) ? c[0].horizon : null;
+}
+
 function pourquoi(fichier, id) {
   const m = D.moteur.find(r => r.fichier === fichier && r.id === id);
   const l = (fichier === "paniers" ? D.paniers : D.application).find(r => r.id === id);
@@ -1185,6 +1196,8 @@ function pourquoi(fichier, id) {
     h("h3", {}, "1. Le point de départ"),
     h("p", {}, `Chiffrage retenu au départ : ${impact(dep)}.`),
     h("p", {class: "small"}, "Source : " + src + ". ", lien(l.url, "Consulter la source"), " ", l.confiance ? badge(...(CF[l.confiance] || [l.confiance])) : null),
+    (hz => hz ? h("p", {class: "small"}, `Horizon du montant, selon le chiffreur : ${hz}. `,
+      h("span", {class: "muted"}, "Les chiffreurs ne donnent pas tous leur montant pour la même année ; il n'est pas ramené à 2027.")) : null)(fichier === "paniers" ? null : horizonChiffrage(l)),
     h("h3", {}, "2. La correction"),
     m.regle === "Aucune" ? h("p", {}, "Aucune correction : " + (R.base || "").replace(/^./, x => x.toLowerCase()) + ".")
       : h("p", {}, `On applique la règle « ${m.regle} », qui multiplie le montant par ${n2(f)}. `, h("span", {class: "muted"}, "Ce sur quoi elle repose : " + (R.base || "") + ".")),

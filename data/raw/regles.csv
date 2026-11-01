@@ -1,7 +1,7 @@
 regle,facteur,variable,references,base
 Aucune,1,0,,Coût mécanique : pas d'élasticité applicable
 Médiane des estimations,1,0,,Facteur 1 appliqué à la médiane des chiffrages indépendants
-Taux d'intérêt,1,0,taux_100pb spread_dette,Ligne déjà calculée (spread × dette) : pas de correction supplémentaire
+Taux d'intérêt,1,0,taux_100pb spread_dette,Ligne déjà calculée (spread × dette) : pas de correction supplémentaire. Une ligne dont le montant du chiffreur contient déjà un surcoût de taux sort de l'assiette de ce calcul
 Règle d'or,1,0,,Investissement financé par emprunt : compté à part (déficit volontaire)
 Recette ponctuelle,0,0,,Recette non récurrente : nulle dans un solde 2027
 Déjà dans la référence,0,0,,Mesure entièrement comprise dans la référence (double compte)
@@ -9,7 +9,7 @@ Déjà en partie dans la référence,,1,,Fraction non encore votée ; facteur pr
 Effet promis,0.333,0,cice_emploi tepa_heures,"Effets promis divisés par 3 (backtest couche 1 : CICE ≈0,3 ; TEPA ≈0)"
 Réforme structurelle,0.8,0,woerth_2010 retraites_2023,"Décote de mise en œuvre, à prix constants : retraites 2023 0,82 ; retraites 2010 0,86"
 Nouvelle assiette,0.8,0,woerth_2010 retraites_2023,Même décote que les réformes structurelles (assiette nouvelle sans précédent)
-Substitution retraites,0.8,0,retraite_report,≈20 % du coût compensé par moins de chômage et d'invalidité (Rabaté-Rochut)
+Substitution retraites,0.8,0,retraite_report,"≈20 % du coût compensé par moins de chômage et d'invalidité (Rabaté-Rochut). La décote des réformes passées (0,842) ne s'y ajoute pas : l'écart de la réforme de 2010 vient de ce même report vers le chômage et l'invalidité, celui de 2023 de concessions propres à son adoption (réestimation de la Cour des comptes, pas un réalisé)"
 Taux de recours,0.65,0,nr_rsa,"Prestation à la demande : recours ≈65 % comme le RSA. NE S'APPLIQUE QUE si le chiffrage de départ suppose un recours complet (colonne recours_complet_suppose = oui, vérifiée dans la source) : les chiffrages officiels intègrent déjà un recours partiel (validation, 14/10/2026)"
 Élasticité capital,0.45,0,capital_fr dividendes_fr pfu,"Backtest flat tax −55 % ; élasticité ≈0,77"
 Élasticité patrimoine,0.97,0,isf_departs isf_bunching_fr isf_ifi wealth_nl wealth_dk,"Horizon 3 ans, preuves françaises : ISF→IFI coûté 3 % sous son chiffrage statique (backtest), départs nets ≈0,4 % de la base par an, élasticités aux seuils non significatives ; réponses étrangères de long terme (−14 % à −30 %) en borne haute"

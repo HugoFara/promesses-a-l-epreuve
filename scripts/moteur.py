@@ -15,7 +15,8 @@ Incertitude :
   (part_commune_erreur) est commune à toutes les lignes d'un même chiffreur, tronqué à ±90 % ;
 - une même mesure reçoit le même tirage dans toutes les variantes de panier.
 Les lignes « Investissement (règle d'or) » sont comptées à part (composante investissement), hors solde.
-Variante « loi votée seule » : les lignes au statut « proposée » ne sont plus décotées (facteur de référence 1).
+Variante « loi votée seule » : les lignes au statut « proposée » ne sont plus décotées (facteur de référence 1) ; une ligne
+« partielle » dont le recoupement vient en partie d'un PLF/PLFSS 2027 prend facteur_reference_loi_votee (T26).
 """
 import csv
 import math
@@ -135,7 +136,8 @@ def main():
             f_int = 1.0 if f_int is None else f_int
             f_int_dist = facteur_tire((fichier, base_id, "int"), num(r.get("facteur_interaction_bas")), f_int,
                                       num(r.get("facteur_interaction_haut")))
-            f_ref_vote = 1.0 if r.get("statut_reference") == "proposée" else f_ref
+            f_ref_lv = num(r.get("facteur_reference_loi_votee"))
+            f_ref_vote = f_ref_lv if f_ref_lv is not None else (1.0 if r.get("statut_reference") == "proposée" else f_ref)
             f_ref_2028 = num(r.get("facteur_reference_2028"))
             f_ref_2028 = f_ref if f_ref_2028 is None else f_ref_2028
             f_forfait = float(r["facteur"])
