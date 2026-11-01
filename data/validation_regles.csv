@@ -1,10 +1,10 @@
 regle,statut,n,note
 Déjà dans la référence,non testée,0,aucune mesure passée de ce type dans le backtest
 Effet emploi du SMIC,non testée,0,aucune mesure passée de ce type dans le backtest
-Effet promis,confirmée,13,"10 améliorée(s), 3 dégradée(s) ; erreur médiane 82 % → 29 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 0 dégradée(s), erreur médiane 100 % → 29 %"
+Effet promis,confirmée,14,"10 améliorée(s), 4 dégradée(s) ; erreur médiane 76 % → 29 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 1 dégradée(s), erreur médiane 100 % → 29 %"
 Médiane des estimations,non testée,0,aucune mesure passée de ce type dans le backtest
 Nouvelle assiette,confirmée,5,"4 améliorée(s), 1 dégradée(s) ; erreur médiane 62 % → 46 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 1 dégradée(s), erreur médiane 25 % → 41 %"
-Recette ponctuelle,confirmée,6,"indicateur « recette encore perçue à N+2 » : la règle a raison pour 5 cas sur 6 (4 sur 6 si l'on compte la taxe de risque systémique doublée qui prend le relais de la contribution de 2012) ; le STDR rapportait encore 2,5 Md€ à N+2"
+Recette ponctuelle,confirmée,6,"indicateur « recette encore perçue à N+2 » : la règle a raison pour 5 cas sur 6 (4 sur 6 si l'on compte la taxe de risque systémique doublée qui prend le relais de la contribution de 2012) ; le STDR rapportait encore 2,5 Md€ à N+2 ; cas étrangers, hors statut (1, uk) : 1 améliorée(s), 0 dégradée(s), erreur médiane 69 % → 31 %"
 Règle d'or,non testée,0,aucune mesure passée de ce type dans le backtest
 Réforme structurelle,trop peu de cas,2,"1 améliorée(s), 1 dégradée(s) ; erreur médiane 78 % → 78 % ; aucun cas dont l'agent d'attribution ignorait l'issue"
 Substitution retraites,trop peu de cas,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 14 % → 6 % (1 cas à réalisé non observé écarté(s)) ; aucun cas dont l'agent d'attribution ignorait l'issue"

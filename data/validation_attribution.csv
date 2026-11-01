@@ -181,3 +181,8 @@ mesures_officielles,prime_conversion_2018,Aucune,Subvention à l'achat de véhic
 mesures_officielles,prime_conversion_2019,Aucune,"Même dispositif de subvention aux ménages pour la transition écologique, conditions seulement modifiées.",oui
 mesures_officielles,garantie_jeunes_2017,Aucune,"Allocation sous condition de ressources (famille prestation_nouvelle, règle Taux de recours) mais la règle ne s'applique que si le chiffrage suppose un recours complet, ce que les chiffrages officiels ne font pas : raison forte pour Aucune.",non
 mesures_officielles,tabac_droits_2018,Aucune,"Aucune famille ne couvre les accises sur le tabac (carburants et électricité hors sujet, effet_promis vise un changement de comportement promis) : poste non détaillé, pas de correction.",oui
+mesures_officielles,fraude_plan_2026,Effet promis,"Recette attendue d'un changement de comportement des fraudeurs et d'un meilleur contrôle, sans assiette ni coût mécanique.",non
+mesures_officielles,urssaf_travail_dissimule_2023,Effet promis,"Objectif de redressements attendu d'une action de contrôle, donc d'un effet promis et non d'un calcul mécanique.",non
+mesures_officielles,uk_accord_suisse_2013,Recette ponctuelle,"Prélèvement libératoire unique sur des avoirs non déclarés, recette non récurrente par nature.",oui
+mesures_officielles,uk_mtd_tva_2019,Effet promis,Gain de recouvrement de TVA attendu d'un changement de comportement des assujettis (moins d'erreurs) après obligation numérique.,non
+mesures_officielles,uk_hmrc_conformite_sr2010,Effet promis,"Recettes supplémentaires attendues d'un surcroît de moyens de contrôle, soit un effet comportemental promis.",oui
