@@ -142,6 +142,11 @@ for nom, url_cols in (("mesures_cout", ("source_ex_ante", "source_ex_post")), ("
         if not all(r[c].startswith("http") for c in url_cols) or not r["confiance"]:
             erreurs.append(f"TRAÇABILITÉ {nom} {r.get('id') or r.get('millesime')} : URL ou confiance manquante")
 
+# Cartes « idées » (T27 G4.1) : la famille d'un chiffre existe, et seul un chiffre de la source (pas une ligne du moteur) en a une
+for r in rows("idees_chiffres.csv"):
+    if r.get("famille") and (r["famille"] not in familles or r.get("ligne_moteur")):
+        erreurs.append(f"FAMILLE idees_chiffres {r['idee']}/{r['ordre']} : famille « {r['famille']} » inconnue ou sur une ligne du moteur")
+
 for a in alertes:
     print("alerte ", a)
 for e in erreurs:

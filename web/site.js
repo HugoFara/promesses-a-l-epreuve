@@ -17,7 +17,7 @@ const SOURCES = {
   projpar: "projection_parametres", projvar: "projection_variantes",
   non_chiffre: "non_chiffre_foyer", conso: "consommation_menages", journal: "historique",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
-  instituts: "chiffrages_instituts",
+  instituts: "chiffrages_instituts", familles: "familles",
 };
 
 // Fichiers proposés au téléchargement (vue Méthode), avec une description lisible.
@@ -946,6 +946,17 @@ function vueIdees() {
       ? `Annoncé : ${md(num(m.montant))}. Après correction du site : ${md(seul)} (fourchette de ${n1(num(m.p10))} à ${n1(num(m.p90))}).`
       : `Annoncé : ${md(num(m.montant))}. Après correction du site, mesure prise seule : environ ${md(seul)}.`};
   };
+  // Règle du site appliquée au chiffre d'une carte (T27 G4.1) : celle de la famille de la mesure, même facteur que dans les
+  // programmes (facteur du moteur quand une ligne utilise la règle, sinon facteur de regles.csv)
+  const regleCarte = c => {
+    const fam = c.famille && D.familles.find(x => x.famille === c.famille);
+    if (!fam) return null;
+    const R = fam.regle, m = D.moteur.find(x => x.regle === R), def = D.regles_def.find(x => x.regle === R);
+    const f = m ? num(m.facteur_moteur) : num(def?.facteur);
+    if (!Number.isFinite(f)) return null;
+    return f === 1 ? `Règle du site («\u00a0${R}\u00a0») : aucune correction pour ce type de mesure.`
+      : `Avec la règle du site («\u00a0${R}\u00a0», ×\u00a0${n2(f)}) : ${montant(num(c.valeur) * f, c.unite)}.`;
+  };
   const liste = $("#idees-liste"), apercu = []; liste.textContent = "";
   Object.entries(GROUPES_IDEES).forEach(([g, titre]) => {
     const idees = D.idees.filter(i => i.groupe === g).sort((a, b) => num(a.ordre) - num(b.ordre));
@@ -966,7 +977,8 @@ function vueIdees() {
           const v = num(c.valeur);
           principaux.append(h("p", {class: "idee-chiffre"}, h("span", {class: "val"}, montant(v, c.unite)),
             h("span", {class: "lib"}, c.libelle + (c.nature === "calcul" ? " (calcul du site)" : "")),
-            repere(v, c) ? h("span", {class: "rep"}, repere(v, c)) : null));
+            repere(v, c) ? h("span", {class: "rep"}, repere(v, c)) : null,
+            regleCarte(c) ? h("span", {class: "rep"}, regleCarte(c)) : null));
         }
       });
       const origine = [i.cahiers === "oui" ? h("span", {}, `Proposition « ${i.cahiers_proposition} » relevée ${n0(num(i.cahiers_mentions))} fois dans les cahiers citoyens et courriers du Grand débat de 2019 (`,
@@ -981,7 +993,8 @@ function vueIdees() {
           tous.append(h("li", {}, h("strong", {}, c.libelle), ` : ${montant(num(c.valeur), c.unite)} (${c.annee}). `,
             c.nature !== "officiel" ? badge({estimation: "estimation", calcul: "calcul du site", militant: "estimation militante"}[c.nature] || c.nature, c.nature === "militant" ? "warn" : "") : null,
             " ", lien(c.url, c.titre || "source"), c.page ? `, ${c.page}` : "",
-            c.citation ? h("span", {class: "muted"}, ` : « ${c.citation} »`) : null));
+            c.citation ? h("span", {class: "muted"}, ` : « ${c.citation} »`) : null,
+            regleCarte(c) ? h("span", {}, " " + regleCarte(c)) : null));
         }
       });
       ul.append(h("li", {class: "card idee", id: "idee-" + i.id},

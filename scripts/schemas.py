@@ -309,6 +309,8 @@ class IdeeChiffre(Ligne):
     repere: Literal["oui", "non"]  # comparé au déficit : rendement ou coût d'une mesure, pas la taille d'une dépense existante
     nature: Literal["officiel", "estimation", "calcul", "militant", "moteur"]
     ligne_moteur: OptStr = None; valeur: OptFloat = None; unite: OptStr = None; annee: OptStr = None
+    # Famille de la mesure chiffrée (familles.csv) : la carte affiche aussi le chiffre avec la règle du site (T27 G4.1)
+    famille: OptStr = None
     url: OptStr = None; titre: OptStr = None; citation: OptStr = None; page: OptStr = None
     confiance: Annotated[Optional[Confiance], BeforeValidator(_vide_none)] = None; note: OptStr = None
 
