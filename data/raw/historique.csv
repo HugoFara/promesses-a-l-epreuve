@@ -869,3 +869,49 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-11-01,application_programmes,rn27,*,,(1 nouvelles lignes),T29 : programme RN 2027,recherche/T29/RN/notes.md
 2026-11-01,statut_reference_2027,"rn27_agences, rn27_ame, rn27_annul_abattement, rn27_annul_pensions, rn27_apprentissage, rn27_armateurs, rn27_asile, rn27_audiovisuel, rn27_autres_dep_ecart, rn27_autres_dep_reste, rn27_autres_eco_ecar",*,,(35 nouvelles lignes),T29 : programme RN 2027,recherche/T29/RN/notes.md
 2026-11-01,montee_en_charge,rn27_retraites,*,,(5 nouvelles lignes),T29 : programme RN 2027,recherche/T29/RN/notes.md
+2026-11-01,application_lignes,lr27_cotis_vieillesse,*,,"-8.2 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_heures_sup,*,,"-4 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_prevention,*,,"-3.7 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_c3s,*,,"-3.2 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_apprentis,*,,"-3.2 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_delai_medecin,*,,"-3 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_succession,*,,"-2.8 (Élasticité succession, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_prisons,*,,"-2.2 (Aucune, référence 0.76)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_tribunaux,*,,"-1.9 (Aucune, référence 0.5)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_donations,*,,"-1.7 (Élasticité succession, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_emploi_domicile,*,,"-1.6 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_af_23,*,,"-1.4 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_consultation,*,,"-1.3 (Aucune, référence 0)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_epr,*,,"-1.2 (Aucune, référence 0)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_tva_elec,*,,"-1.2 (Élasticité électricité, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_af_premier,*,,"-1.1 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_logement_social,*,,"-1.1 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_forces_ordre,*,,"-1.0 (Aucune, référence 0.5)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_recherche,*,,"-1.0 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_retraites,*,,"4.6 (Substitution retraites, référence 0.41)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_fonctionnaires,*,,"5.9 (Réforme structurelle, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_chomage,*,,"3.2 (Aucune, référence 0.5)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_residence,*,,"2.1 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_autres_dep_reste,*,,"-6.8 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_autres_eco_reste,*,,"0.7 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_fraude,*,,"15 (Effet promis, référence 0.933)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_niches,*,,"5 (Médiane des estimations, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_aides_entreprises,*,,"15 (Aucune, référence 0.73)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_collectivites,*,,"3.5 (Réforme structurelle, référence 0.5)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_organismes,*,,"1.5 (Réforme structurelle, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_immobilier,*,,"2.5 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_etat_actionnaire,*,,"3 (Recette ponctuelle, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_defense,*,,"-6 (Aucune, référence 0)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_handicap,*,,"-1.7 (Aucune, référence 0.59)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_audiovisuel,*,,"-2.5 (Aucune, référence 0)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_cvae,*,,"-2.0 (Aucune, référence 0.5)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_forfait_social,*,,"-2.0 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_ifrap_reste,*,,"-0.2 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_annul_pensions,*,,"-4.0 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_annul_abattement,*,,"-1.4 (Aucune, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_lignes,lr27_taux,*,,"-0.1 (Taux d'intérêt, référence 1)",T29 : programme LR 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/LR/notes.md
+2026-11-01,application_programmes,lr27,*,,(1 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md
+2026-11-01,statut_reference_2027,"lr27_af_23, lr27_af_premier, lr27_aides_entreprises, lr27_annul_abattement, lr27_annul_pensions, lr27_apprentis, lr27_audiovisuel, lr27_autres_dep_reste, lr27_autres_eco_reste, lr27_c3s, lr27_chomage,",*,,(41 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md
+2026-11-01,montee_en_charge,lr27_retraites,*,,(5 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md
+2026-11-01,chiffrages_instituts,"lr27_af_23, lr27_af_premier, lr27_aides_entreprises, lr27_apprentis, lr27_audiovisuel, lr27_autres_dep_reste, lr27_autres_eco_reste, lr27_c3s, lr27_chomage, lr27_collectivites, lr27_consultation, lr27",*,,(69 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md
+2026-11-01,totaux_instituts,"Candidate (V. Pécresse), Fondation iFRAP, Institut Montaigne",*,,(3 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md

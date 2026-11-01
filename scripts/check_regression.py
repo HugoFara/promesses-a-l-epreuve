@@ -42,7 +42,8 @@ calc = {r["regle"] for r in rows("moteur_regles.csv") if r["formule"] in ("emplo
 # Baisses d'IR larges du RN (part fiscale, jeunes) hors du champ « Élasticité revenus » (T27 G2.1) : RN −52,86 → −53,57
 # Médecins en formation en partie dans le droit de juin 2024 (T26 § 8) : ens_autres_dep_reste 0,863 → 0,853, Ensemble −20,15 → −20,12
 for prog, exp_i, exp_c in [("NFP 2024 (LFI)", -149.9, -157.6), ("Ensemble 2024", -18.0, -20.12), ("RN 2024", -63.4, -53.57),
-                             ("RN 2027 (programme 2024)", -68.8, -59.53)]:  # RN 2027 : T29, programme 2024 jugé par rapport à la référence 2027
+                             ("RN 2027 (programme 2024)", -68.8, -59.53),
+                             ("LR 2027 (programme 2022)", -9.5, -19.94)]:  # RN 2027 : T29, programme 2024 jugé par rapport à la référence 2027
     l = [r for r in a if r["programme"] == prog]
     check(f"App {prog} indépendant", sum(float(r["independant"]) for r in l if r["regle"] not in calc), exp_i, 0.1)
     check(f"App {prog} corrigé", sum(float(r["independant"]) * float(r["facteur"]) * float(r["facteur_reference"]) for r in l), exp_c, 0.1)
