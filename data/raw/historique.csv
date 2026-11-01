@@ -915,3 +915,43 @@ date,fichier,id,colonne,ancienne,nouvelle,raison,source
 2026-11-01,montee_en_charge,lr27_retraites,*,,(5 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md
 2026-11-01,chiffrages_instituts,"lr27_af_23, lr27_af_premier, lr27_aides_entreprises, lr27_apprentis, lr27_audiovisuel, lr27_autres_dep_reste, lr27_autres_eco_reste, lr27_c3s, lr27_chomage, lr27_collectivites, lr27_consultation, lr27",*,,(69 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md
 2026-11-01,totaux_instituts,"Candidate (V. Pécresse), Fondation iFRAP, Institut Montaigne",*,,(3 nouvelles lignes),T29 : programme LR 2027 (programme 2022),recherche/T29/LR/notes.md
+2026-11-01,application_lignes,ps27_smic,*,,"-4.1 (Aucune, référence 0)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_chomage_universelle,*,,"-4.8 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_chomage_abrogation,*,,"-2 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_enseignants,*,,"-7.3 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_mixite,*,,"-2 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_retraites,*,,"-8.2 (Substitution retraites, référence 0.878)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_min_vieillesse,*,,"-2.6 (Aucune, référence 0.769)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_soignants,*,,"-1.9 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_accueil_enfant,*,,"-2.5 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_logements_sociaux,*,,"-7.5 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_armee,*,,"-2 (Aucune, référence 0.5)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_policiers,*,,"-1.1 (Aucune, référence 0.5)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_vss,*,,"-1 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_co2_industrie,*,,"-2 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_recherche,*,,"-8.4 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_capital_jeunes,*,,"-4.1 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_minimum_jeunesse,*,,"-2.7 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_conge_paternite,*,,"-1.2 (Aucune, référence 0.5)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_depenses_nefastes,*,,"2 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_autres_dep_reste,*,,"-3.0623 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_tva_carburants,*,,"-6.56 (Élasticité carburants, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_tva_elec_gaz,*,,"-3.74 (Élasticité électricité, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_tva_train_reemploi,*,,"-2 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_salaires_1_20,*,,"9.1 (Élasticité IS, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_egalite_penalites,*,,"20 (Effet promis, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_flat,*,,"1.8 (Élasticité capital, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_isf,*,,"3 (Élasticité patrimoine, référence 0.967)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_successions,*,,"6.3 (Élasticité succession, référence 0.881)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_multinationales,*,,"6 (Médiane des estimations, référence 0.917)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_fraude,*,,"5 (Effet promis, référence 0.8)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_niches_ecologiques,*,,"7 (Élasticité carburants, référence 0.956)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_niches,*,,"18 (Médiane des estimations, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_annul_pensions,*,,"-4 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_annul_abattement,*,,"-1.4 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_annul_ij,*,,"-0.965 (Aucune, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_lignes,ps27_taux,*,,"-0.1 (Taux d'intérêt, référence 1)",T29 : programme PS 2027 (programme 2022) jugé par rapport à la référence 2027,recherche/T29/PS/notes.md
+2026-11-01,application_programmes,ps27,*,,(1 nouvelles lignes),T29 : programme PS 2027 (programme 2022),recherche/T29/PS/notes.md
+2026-11-01,statut_reference_2027,"ps27_accueil_enfant, ps27_annul_abattement, ps27_annul_ij, ps27_annul_pensions, ps27_armee, ps27_autres_dep_reste, ps27_capital_jeunes, ps27_chomage_abrogation, ps27_chomage_universelle, ps27_co2_indu",*,,(36 nouvelles lignes),T29 : programme PS 2027 (programme 2022),recherche/T29/PS/notes.md
+2026-11-01,montee_en_charge,ps27_retraites,*,,(5 nouvelles lignes),T29 : programme PS 2027 (programme 2022),recherche/T29/PS/notes.md
+2026-11-01,chiffrages_instituts,"ps27_accueil_enfant, ps27_armee, ps27_autres_dep_reste, ps27_capital_jeunes, ps27_chomage_abrogation, ps27_chomage_universelle, ps27_co2_industrie, ps27_conge_paternite, ps27_depenses_nefastes, ps27_e",*,,(51 nouvelles lignes),T29 : programme PS 2027 (programme 2022),recherche/T29/PS/notes.md
