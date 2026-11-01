@@ -3,7 +3,8 @@
 Entrées (data/) : projection_reference.csv (trajectoire du gouvernement : croissance, déflateur, solde ; dette publiée
                   pour contrôle ; ajustements stock-flux), projection_parametres.csv, moteur_lignes.csv, montee_en_charge.csv,
                   application_programmes.csv (programmes d'une élection de 2027, projetés comme les paniers).
-Sorties (data/) : projection.csv (scénario × année), projection_controle.csv.
+Sorties (data/) : projection.csv (scénario × année), projection_controle.csv,
+                  projection_variantes.csv (variante × scénario × année ; le central reste projection.csv).
 
 Mécanique, par année t (Md€ ; ratios en % du PIB) :
   PIB_t      = PIB publié (PLF 2027 pour 2026-2027), sinon PIB_{t-1} × (1 + croissance réelle) × (1 + déflateur)
@@ -21,6 +22,11 @@ Mécanique, par année t (Md€ ; ratios en % du PIB) :
   spread_u   = 3 pb × écart de dette au scénario de référence (points de PIB)
   part refinancée(k) : profil AFT/Sénat (+100 pb = 3,2 Md€ à 1 an, 19,1 à 5 ans, 32,6 à 9 ans, rapportés à 32,6).
 La dette publiée par le gouvernement n'entre pas dans le calcul : elle sert de contrôle (critère T5).
+
+Variantes (projection_variantes.csv), mêmes scénarios hors « Référence du gouvernement » (sans biais) :
+  « Biais mesuré sur la première publication (EFB) » : biais_t1_efb et biais_t3_efb au lieu de biais_t1 et biais_t3
+  (réalisé = estimation du printemps T+1 de la Commission, et non la série actuelle d'Eurostat ; T27 G3.4,
+  recherche/T27/G3/efb.md).
 """
 import csv
 
@@ -55,11 +61,15 @@ def part_refinancee(k):
     return float(np.interp(k, _k, _v))
 
 
-def biais(t):
+BIAIS_CENTRAL = ("biais_t1", "biais_t3")
+VARIANTES_BIAIS = {"Biais mesuré sur la première publication (EFB)": ("biais_t1_efb", "biais_t3_efb")}
+
+
+def biais(t, ids=BIAIS_CENTRAL):
     h = t - PLF
     if h <= 0:
         return 0.0
-    return float(np.interp(h, [1, 3], [P["biais_t1"], P["biais_t3"]]))  # constant au-delà de 3 ans (np.interp borne)
+    return float(np.interp(h, [1, 3], [P[ids[0]], P[ids[1]]]))  # constant au-delà de 3 ans (np.interp borne)
 
 
 def reference():
@@ -73,13 +83,14 @@ def reference():
 DETTE_REF = reference()
 
 
-def trajectoire(impact, choc_pb=0.0, avec_biais=True, invest=None):
-    """impact : dict année -> Md€ (négatif = creuse le déficit), aux prix de 2027 ; invest : idem (emprunt)."""
+def trajectoire(impact, choc_pb=0.0, avec_biais=True, invest=None, biais_ids=BIAIS_CENTRAL):
+    """impact : dict année -> Md€ (négatif = creuse le déficit), aux prix de 2027 ; invest : idem (emprunt) ;
+    biais_ids : paramètres du biais à 1 et 3 ans (central par défaut)."""
     out, dette, spreads = [], DETTE_REF[A0], {}
     for t in ANNEES[1:]:
         def_ref = -float(REF[t]["solde_pct"]) / 100 * PIB[t]
         sfa = float(REF[t]["sfa_pct"] or 0) / 100 * PIB[t]
-        b = -biais(t) / 100 * PIB[t] if avec_biais else 0.0
+        b = -biais(t, biais_ids) / 100 * PIB[t] if avec_biais else 0.0
         ech = PIB[t] / PIB[2027]
         imp = -(impact.get(t, impact.get(2028, 0.0)) if t >= 2027 else 0.0) * ech
         inv = -((invest or {}).get(min(t, 2028), 0.0) if t >= 2027 else 0.0) * ech
@@ -94,6 +105,13 @@ def trajectoire(impact, choc_pb=0.0, avec_biais=True, invest=None):
                     "biais_pct": round(b / PIB[t] * 100, 2), "impact_md": round(-imp, 1), "investissement_md": round(-inv, 1),
                     "interets_sup_md": round(interets, 1), "pib_md": round(PIB[t])})
     return out
+
+
+def ecrire(nom, lignes):
+    with open(nom, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, list(lignes[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(lignes)
 
 
 def main():
@@ -122,10 +140,11 @@ def main():
         nom = g if g in progs_2027 else f"Panier {g}"
         scenarios += [(nom, imp, 0.0, True, inv), (f"{nom}, stress +25 pb", imp, choc, True, inv)]
     lignes = [{"scenario": nom, **r} for nom, imp, ch, ab, inv in scenarios for r in trajectoire(imp, ch, ab, inv)]
-    with open("projection.csv", "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, list(lignes[0]), lineterminator="\n")
-        w.writeheader()
-        w.writerows(lignes)
+    ecrire("projection.csv", lignes)
+    # Variantes du biais : mêmes scénarios, sortie distincte (le central reste projection.csv)
+    variantes = [{"variante": v, "scenario": nom, **r} for v, ids in VARIANTES_BIAIS.items()
+                 for nom, imp, ch, ab, inv in scenarios if ab for r in trajectoire(imp, ch, ab, inv, ids)]
+    ecrire("projection_variantes.csv", variantes)
 
     # Contrôle T5 : sans biais ni programme, la dette calculée reproduit la dette publiée du PLF
     ref = {r["annee"]: r for r in trajectoire({}, avec_biais=False)}
@@ -134,15 +153,16 @@ def main():
                 for t in ANNEES[1:]
                 for ind, v in (("deficit_pct", -num(REF[t]["solde_pct"])), ("dette_pct", num(REF[t]["dette_pct"])))
                 if v is not None and REF[t]["extrapole"] == "0"]
-    with open("projection_controle.csv", "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, list(controle[0]), lineterminator="\n")
-        w.writeheader()
-        w.writerows(controle)
+    ecrire("projection_controle.csv", controle)
     for c in controle:
         print(f"contrôle {c['annee']} {c['indicateur']:<12} calculé {c['calcule']:>6}  PLF {c['plf']:>6}  écart {c['ecart']:+.2f}")
     for nom in dict.fromkeys(l["scenario"] for l in lignes):
         traj = [l for l in lignes if l["scenario"] == nom]
         print(f"{nom:<40}" + " ".join(f"{l['annee']}:{l['deficit_pct']:>5.1f}/{l['dette_pct']:>5.1f}" for l in traj))
+    for v in VARIANTES_BIAIS:
+        traj = [l for l in variantes if l["variante"] == v and l["scenario"] == "Référence corrigée du biais"]
+        print(f"variante « {v} », référence corrigée : "
+              + " ".join(f"{l['annee']}:{l['deficit_pct']:>5.1f}/{l['dette_pct']:>5.1f}" for l in traj))
 
 
 if __name__ == "__main__":

@@ -30,7 +30,7 @@ application_lignes,nfp_superprofits,NFP 2024 (LFI),total,Recette ponctuelle,mote
 application_lignes,nfp_isf,NFP 2024 (LFI),total,Élasticité patrimoine,moteur,3.5,0.97,0.97,1.0,1.0,0.0,True,3.4,3.4,3.4,2.37,4.23,
 application_lignes,nfp_succession,NFP 2024 (LFI),total,Élasticité succession,forfait,9.0,0.9,0.9,1.0,1.0,0.0,True,8.1,8.1,8.1,5.8,10.39,t0_succession t1_succession
 application_lignes,nfp_ir,NFP 2024 (LFI),total,Élasticité revenus,forfait,4.7,0.9,0.9,1.0,1.0,0.0,True,4.23,4.23,4.23,3.04,5.42,t0_revenus t1_revenus
-application_lignes,nfp_flat,NFP 2024 (LFI),total,Élasticité capital,moteur,3.2,0.45,0.437,1.0,1.0,-2.9,True,1.4,1.4,1.4,0.84,1.93,
+application_lignes,nfp_flat,NFP 2024 (LFI),total,Élasticité capital,moteur,3.2,0.45,0.437,1.0,1.0,-2.9,True,1.4,1.4,1.4,0.8,1.89,
 application_lignes,nfp_cotis_dividendes,NFP 2024 (LFI),total,Aucune,moteur,6.3,1.0,1.0,1.0,1.0,0.0,True,6.3,6.3,6.3,4.53,8.07,
 application_lignes,nfp_cotis_vieillesse,NFP 2024 (LFI),total,Aucune,moteur,6.3,1.0,1.0,1.0,1.0,0.0,True,6.3,6.3,6.3,4.51,8.1,
 application_lignes,nfp_ttf,NFP 2024 (LFI),total,Aucune,moteur,3.0,1.0,1.0,1.0,1.0,0.0,True,3.0,3.0,3.0,2.16,3.85,
@@ -97,7 +97,7 @@ paniers,l_autonomie_i,LFI intégral,Mesure phare,Taux de recours,moteur,-12.3,0.
 paniers,l_eco_i,LFI intégral,Mesure phare,Aucune,moteur,-30.0,1.0,1.0,1.0,1.0,0.0,True,-30.0,-30.0,-30.0,-38.51,-21.33,
 paniers,l_zucman_i,LFI intégral,Financement,Nouvelle assiette,moteur,5.5,0.8,0.842,0.98,0.65,5.2,True,2.95,2.95,2.95,1.8,4.23,
 paniers,l_isf_i,LFI intégral,Financement,Élasticité patrimoine,moteur,4.5,0.97,0.97,0.978,1.0,0.0,True,4.27,4.27,4.27,2.97,5.33,
-paniers,l_pfu_i,LFI intégral,Financement,Élasticité capital,moteur,3.4,0.45,0.437,1.0,1.0,-2.9,True,1.49,1.49,1.49,0.88,2.05,
+paniers,l_pfu_i,LFI intégral,Financement,Élasticité capital,moteur,3.4,0.45,0.437,1.0,1.0,-2.9,True,1.49,1.49,1.49,0.85,2.0,
 paniers,l_succ_i,LFI intégral,Financement,Élasticité succession,forfait,8.8,0.9,0.9,0.91,1.0,0.0,True,7.21,7.21,7.21,5.19,9.33,t0_succession t1_succession
 paniers,l_surtaxe_i,LFI intégral,Financement,Élasticité IS,moteur,7.0,0.94,0.94,0.286,1.0,0.0,True,1.88,6.58,6.58,1.25,2.31,
 paniers,l_rachats_i,LFI intégral,Financement,Taxe sur les rachats d'actions,moteur,8.4,0.126,0.1262,1.0,1.0,0.2,True,1.06,1.06,1.06,0.6,2.67,

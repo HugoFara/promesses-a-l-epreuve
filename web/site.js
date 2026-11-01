@@ -14,6 +14,7 @@ const SOURCES = {
   projection: "projection", projection_controle: "projection_controle", validation_resume: "validation_resume",
   validation_regles: "validation_regles", validation_attribution: "validation_attribution", distributif: "distributif_menages", grille: "distributif_grille", reformes: "distributif_reformes",
   idees: "idees", idees_chiffres: "idees_chiffres", projref: "projection_reference",
+  projpar: "projection_parametres", projvar: "projection_variantes",
   non_chiffre: "non_chiffre_foyer", conso: "consommation_menages", journal: "historique",
   meta: "meta", regles_def: "regles", moteur_regles: "moteur_regles", moteur_parametres: "moteur_parametres",
   instituts: "chiffrages_instituts",
@@ -32,6 +33,7 @@ const FICHIERS = [
   ["moteur_totaux", "Résultats corrigés et fourchettes"],
   ["sensibilite_chiffreurs", "Résultats selon l'organisme de chiffrage"],
   ["projection", "Trajectoires de dette et de déficit 2026-2032"],
+  ["projection_variantes", "Trajectoires avec le dépassement habituel mesuré sur la première publication des déficits (variante)"],
   ["validation_resume", "Test de la méthode sur le passé"],
   ["distributif_menages", "Effet sur les foyers types"],
   ["distributif_grille", "Effet sur toutes les situations du simulateur « Mon foyer »"],
@@ -201,6 +203,11 @@ function calculer() {
     const rs = D.sensibilite.filter(r => r.programme === p && r.statut === "indépendant");
     return rs.length < 2 ? null : `pour ${p}, ${n1(etendue(rs, "complete_statique"))} milliards d'euros d'écart avant correction, ${n1(etendue(rs, "complete_corrige"))} après`;
   }).filter(Boolean).join(" ; ") + ".";
+  // Limites : biais mesuré sur la première publication des déficits (variante, projection_variantes.csv), le central restant la série actuelle
+  const pp = id => Math.abs(num(D.projpar.find(x => x.id === id)?.valeur));
+  const finCorr = rs => rs.filter(r => r.scenario === "Référence corrigée du biais").sort((a, b) => num(a.annee) - num(b.annee)).at(-1);
+  const [fc, fv] = [finCorr(D.projection), finCorr(D.projvar.filter(r => /première publication/.test(r.variante)))];
+  if (fc && fv) K.lim_efb = `Mesuré sur leur première publication (estimation de la Commission européenne au printemps suivant), le dépassement habituel des programmes de stabilité serait de ${pts(pp("biais_t1_efb"))} à un an et ${pts(pp("biais_t3_efb"))} à trois ans au lieu de ${n1(pp("biais_t1"))} et ${n1(pp("biais_t3"))}, et la dette de ${fc.annee} de la prévision corrigée de ${n1(num(fv.dette_pct))} % du PIB au lieu de ${n1(num(fc.dette_pct))} % : cette variante est publiée à part (projection_variantes.csv), le site garde la série actuelle.`;
   const att = D.validation_attribution, connus = att.filter(r => r.issue_connue === "oui").length;
   const oc = sousGroupe("Chiffrages officiels, statistique principale", "dont issue connue");
   const oi = sousGroupe("Chiffrages officiels, statistique principale", "dont issue inconnue");

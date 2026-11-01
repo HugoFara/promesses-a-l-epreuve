@@ -33,8 +33,15 @@ ANNEE = "2026"  # législation de référence disponible dans OpenFisca (fin 202
 # appliquées sur les trois années : effet en régime permanent, pas la seule première année.
 ANNEES = [str(int(ANNEE) - 2), str(int(ANNEE) - 1), ANNEE]
 TBS = FranceTaxBenefitSystem()
-_P = TBS.parameters(f"{ANNEE}-01-01")
-SMIC_BRUT_MENSUEL = round(_P.marche_travail.salaire_minimum.smic.smic_b_horaire * 151.67, 2)
+# SMIC de référence des ménages types et de la grille : celui en vigueur à la date du calcul, soit depuis la
+# revalorisation du 1er juin 2026 (12,31 €/h, 1 867,02 € brut par mois ; parametres_bareme.csv, smic_brut_2026_juin),
+# et non celui de janvier 2026 (T27 G3.1). Taux horaire lu dans OpenFisca à cette date ; mensualisation légale
+# 35 h × 52 / 12, celle des montants publiés (service-public F2300, Insee).
+DATE_SMIC = f"{ANNEE}-06-01"
+SMIC_BRUT_MENSUEL = round(TBS.parameters(DATE_SMIC).marche_travail.salaire_minimum.smic.smic_b_horaire * 35 * 52 / 12, 2)
+with open("raw/parametres_bareme.csv", encoding="utf-8") as _fh:
+    _SMIC_SOURCE = next(float(r["val_central"]) for r in csv.DictReader(_fh) if r["id"] == "smic_brut_2026_juin")
+assert SMIC_BRUT_MENSUEL == _SMIC_SOURCE, f"SMIC d'OpenFisca au {DATE_SMIC} ({SMIC_BRUT_MENSUEL}) ≠ smic_brut_2026_juin ({_SMIC_SOURCE})"
 
 
 def mois(an):

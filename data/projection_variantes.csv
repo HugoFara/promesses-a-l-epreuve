@@ -1,0 +1,43 @@
+variante,scenario,annee,extrapole,deficit_pct,dont_investissement_pct,dette_pct,biais_pct,impact_md,investissement_md,interets_sup_md,pib_md
+Biais mesuré sur la première publication (EFB),Référence corrigée du biais,2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),Référence corrigée du biais,2027,0,5.43,-0.0,122.1,0.43,0.0,0.0,0.0,3135
+Biais mesuré sur la première publication (EFB),Référence corrigée du biais,2028,0,4.99,-0.0,123.8,1.08,0.0,0.0,0.6,3220
+Biais mesuré sur la première publication (EFB),Référence corrigée du biais,2029,0,4.59,-0.0,125.1,1.72,0.0,0.0,2.4,3308
+Biais mesuré sur la première publication (EFB),Référence corrigée du biais,2030,1,4.68,-0.0,126.4,1.72,0.0,0.0,5.4,3401
+Biais mesuré sur la première publication (EFB),Référence corrigée du biais,2031,1,4.78,-0.0,127.7,1.72,0.0,0.0,8.9,3497
+Biais mesuré sur la première publication (EFB),Référence corrigée du biais,2032,1,4.88,-0.0,129.1,1.72,0.0,0.0,12.9,3595
+Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2027,0,5.46,-0.0,122.1,0.43,0.0,0.0,0.9,3135
+Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2028,0,5.06,-0.0,123.9,1.08,0.0,0.0,2.8,3220
+Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2029,0,4.7,-0.0,125.3,1.72,0.0,0.0,5.9,3308
+Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2030,1,4.83,-0.0,126.7,1.72,0.0,0.0,10.4,3401
+Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2031,1,4.97,-0.0,128.2,1.72,0.0,0.0,15.6,3497
+Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2032,1,5.11,-0.0,129.8,1.72,0.0,0.0,21.1,3595
+Biais mesuré sur la première publication (EFB),Panier LFI intégral,2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),Panier LFI intégral,2027,0,7.68,-0.0,124.3,0.43,-70.5,0.0,0.0,3135
+Biais mesuré sur la première publication (EFB),Panier LFI intégral,2028,0,7.25,-0.0,128.3,1.08,-69.2,0.0,4.0,3220
+Biais mesuré sur la première publication (EFB),Panier LFI intégral,2029,0,6.98,-0.0,131.9,1.72,-71.9,0.0,9.5,3308
+Biais mesuré sur la première publication (EFB),Panier LFI intégral,2030,1,7.23,-0.0,135.5,1.72,-75.1,0.0,16.9,3401
+Biais mesuré sur la première publication (EFB),Panier LFI intégral,2031,1,7.48,-0.0,139.2,1.72,-78.0,0.0,25.6,3497
+Biais mesuré sur la première publication (EFB),Panier LFI intégral,2032,1,7.76,-0.0,143.2,1.72,-81.2,0.0,35.2,3595
+Biais mesuré sur la première publication (EFB),"Panier LFI intégral, stress +25 pb",2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),"Panier LFI intégral, stress +25 pb",2027,0,7.71,-0.0,124.3,0.43,-70.5,0.0,0.9,3135
+Biais mesuré sur la première publication (EFB),"Panier LFI intégral, stress +25 pb",2028,0,7.31,-0.0,128.4,1.08,-69.2,0.0,6.1,3220
+Biais mesuré sur la première publication (EFB),"Panier LFI intégral, stress +25 pb",2029,0,7.09,-0.0,132.1,1.72,-71.9,0.0,13.0,3308
+Biais mesuré sur la première publication (EFB),"Panier LFI intégral, stress +25 pb",2030,1,7.37,-0.0,135.8,1.72,-75.1,0.0,21.9,3401
+Biais mesuré sur la première publication (EFB),"Panier LFI intégral, stress +25 pb",2031,1,7.67,-0.0,139.8,1.72,-78.0,0.0,32.3,3497
+Biais mesuré sur la première publication (EFB),"Panier LFI intégral, stress +25 pb",2032,1,7.99,-0.0,143.9,1.72,-81.2,0.0,43.4,3595
+Biais mesuré sur la première publication (EFB),Panier Ensemble,2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),Panier Ensemble,2027,0,5.66,-0.0,122.3,0.43,-7.2,0.0,0.0,3135
+Biais mesuré sur la première publication (EFB),Panier Ensemble,2028,0,5.23,-0.0,124.3,1.08,-7.3,0.0,1.0,3220
+Biais mesuré sur la première publication (EFB),Panier Ensemble,2029,0,4.84,-0.0,125.8,1.72,-7.5,0.0,3.1,3308
+Biais mesuré sur la première publication (EFB),Panier Ensemble,2030,1,4.94,-0.0,127.3,1.72,-7.8,0.0,6.6,3401
+Biais mesuré sur la première publication (EFB),Panier Ensemble,2031,1,5.05,-0.0,128.9,1.72,-8.0,0.0,10.7,3497
+Biais mesuré sur la première publication (EFB),Panier Ensemble,2032,1,5.17,-0.0,130.5,1.72,-8.2,0.0,15.2,3595
+Biais mesuré sur la première publication (EFB),"Panier Ensemble, stress +25 pb",2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),"Panier Ensemble, stress +25 pb",2027,0,5.69,-0.0,122.3,0.43,-7.2,0.0,0.9,3135
+Biais mesuré sur la première publication (EFB),"Panier Ensemble, stress +25 pb",2028,0,5.3,-0.0,124.4,1.08,-7.3,0.0,3.1,3220
+Biais mesuré sur la première publication (EFB),"Panier Ensemble, stress +25 pb",2029,0,4.95,-0.0,126.0,1.72,-7.5,0.0,6.6,3308
+Biais mesuré sur la première publication (EFB),"Panier Ensemble, stress +25 pb",2030,1,5.09,-0.0,127.7,1.72,-7.8,0.0,11.6,3401
+Biais mesuré sur la première publication (EFB),"Panier Ensemble, stress +25 pb",2031,1,5.24,-0.0,129.4,1.72,-8.0,0.0,17.3,3497
+Biais mesuré sur la première publication (EFB),"Panier Ensemble, stress +25 pb",2032,1,5.4,-0.0,131.3,1.72,-8.2,0.0,23.4,3595
