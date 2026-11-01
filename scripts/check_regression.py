@@ -25,7 +25,7 @@ check("C2 erreur moyenne t+1 hors crises (pt PIB)", statistics.mean(e1), -0.60)
 check("C2 erreur moyenne t+3 hors crises (pt PIB)", statistics.mean(e3), -1.93)
 check("C2 n t+3 hors crises", len(e3), 15)
 # Couche 3
-check("C3 nb estimations", len(rows("elasticites.csv")), 140)  # 78 + 36 répercussions (T20) + 26 tests de paramètres (T21), 20/10/2026
+check("C3 nb estimations", len(rows("elasticites.csv")), 141)  # 78 + 36 répercussions (T20) + 26 tests de paramètres (T21), 20/10/2026 ; + nr_css_rsa (T27 G6.6)
 # Application 2024
 a = rows("application_lignes.csv")
 # Lignes dont le moteur calcule le montant (statique conventionnel −1) : hors total « indépendant »

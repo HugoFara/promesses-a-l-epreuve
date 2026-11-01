@@ -177,3 +177,7 @@ mesures_officielles,p117_2023,Taux d'intérêt,"Charge d'intérêts de la dette 
 mesures_officielles,p117_2024,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",non
 mesures_officielles,p117_2025,Taux d'intérêt,"Charge d'intérêts de la dette de l'État, dépendant des taux et de l'inflation retenus dans le scénario du PLF.",non
 mesures_officielles,us_rachats_1pct_fy2024,Taxe sur les rachats d'actions,"Taxe d'accise sur les rachats d'actions par les sociétés cotées, exactement le cas visé par la règle.",non
+mesures_officielles,prime_conversion_2018,Aucune,Subvention à l'achat de véhicules propres pour les ménages : coût mécanique sans élasticité propre à la famille.,oui
+mesures_officielles,prime_conversion_2019,Aucune,"Même dispositif de subvention aux ménages pour la transition écologique, conditions seulement modifiées.",oui
+mesures_officielles,garantie_jeunes_2017,Aucune,"Allocation sous condition de ressources (famille prestation_nouvelle, règle Taux de recours) mais la règle ne s'applique que si le chiffrage suppose un recours complet, ce que les chiffrages officiels ne font pas : raison forte pour Aucune.",non
+mesures_officielles,tabac_droits_2018,Aucune,"Aucune famille ne couvre les accises sur le tabac (carburants et électricité hors sujet, effet_promis vise un changement de comportement promis) : poste non détaillé, pas de correction.",oui
