@@ -363,3 +363,15 @@ Laissés ouverts par `recherche/T26/rapport_integrateur.md` § 8 et § 9, ou rel
 | G3.2 (fait en passant) | CEHR sur 100 % du dividende (RFR) : central de `t1_capital` conforme ; la borne basse France Stratégie ne correspond pas au droit (à traiter au groupe 3) | — |
 
 Reste ouvert : 3 cas de plus à recours complet (RSA jeunes, chèque bois, aide aux étudiants : hypothèse de recours à confirmer), coût réalisé de la CMU-C 2000.
+
+## 10. Bilan du groupe 3 (01/11/2026)
+
+| Point | Fait | Effet |
+|---|---|---|
+| G3.1 | « Mon foyer » prend le Smic en vigueur depuis le 1/6/2026 (OpenFisca 176.1.4, contrôlé contre `parametres_bareme.csv`) ; dit dans « Limites de ce calcul » | `smic_1600` : salarié au Smic 1 293 → 982 €/an ; monoparental 1 403 → 1 092 |
+| G3.2 | CEHR sur 100 % du dividende (RFR, BOFiP) : central de `t1_capital` confirmé, borne basse 42,54 % → 45,34 % (CEHR 3 %) | fourchettes de `nfp_flat` et `l_pfu_i` seulement |
+| G3.3 | `rn24_part_fiscale` simulée (2e enfant à une part, plafond de 1 807 € par demi-part) ; retirée de `non_chiffre_foyer.csv` | couple, 2 enfants : 0 à 1 807 €/an. À vérifier : gain non croissant avec le revenu entre 1,5 et 2 Smic (883 € puis 850 €), probablement un effet de seuil |
+| G3.4 | Variante du biais mesuré sur la première publication (EFB) : −0,43 à 1 an, −1,72 à 3 ans ; `data/projection_variantes.csv` ; phrase dans « Méthode » | central inchangé ; dette 2032 corrigée 129,1 % au lieu de 130,3 % dans la variante |
+| G3.5 | `h_charges` : Crépon-Desplatz daté, `charges_bw_smic` ajouté | texte seulement |
+
+Corrections : `G3/corrections_parametres.csv` ; scripts `distributif.py`, `projection.py` ; historique tenu à la main pour les fichiers hors `appliquer_corrections.py`.
