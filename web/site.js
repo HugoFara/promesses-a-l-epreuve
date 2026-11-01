@@ -494,11 +494,13 @@ function drawInc() {
 function PROJ() {
   const pal = ["--s2", "--s4", "--s3", "--s6", "--s1"];
   let i = 0;
-  const refs = n => /^Référence/.test(n) ? 0 : 1;
+  const refs = n => /^Référence/.test(n) ? 0 : /^Panier /.test(n) ? 2 : 1;  // références, programmes des partis, scénarios du site
   return [...new Set(D.projection.map(r => r.scenario))].filter(n => !/, stress /.test(n)).sort((a, b) => refs(a) - refs(b) || alpha(a, b)).map(n =>
     n === "Référence du gouvernement" ? {n, c: css("--s5"), court: "Gouvernement", leg: "Prévision du gouvernement"}
     : n === "Référence corrigée du biais" ? {n, c: css("--text"), court: "Gouvernement corrigé", leg: "Prévision corrigée de l'optimisme habituel"}
-    : {n, c: css(pal[i++ % pal.length]), court: n.replace(/^Panier /, ""), leg: "Scénario " + n.replace(/^Panier /, "")});
+    // Deux natures à ne pas confondre : programme d'un parti (application_lignes) ou scénario construit par le site (paniers)
+    : /^Panier /.test(n) ? {n, c: css(pal[i++ % pal.length]), court: n.replace(/^Panier /, ""), panier: true, leg: "Scénario du site : " + n.replace(/^Panier /, "")}
+    : {n, c: css(pal[i++ % pal.length]), court: n, panier: false, leg: "Programme " + n});
 }
 const projNom = (n, stress) => {
   if (!stress) return n;
@@ -1024,7 +1026,10 @@ function vueDemain() {
   const bref = $("#bref-demain"); bref.textContent = "";
   if (gouv) bref.append(h("li", {}, `Selon la trajectoire du gouvernement prolongée, la dette serait de ${n0(gouv.fin.v)} % du PIB en ${gouv.fin.a}.`));
   if (corr) bref.append(h("li", {}, `Si les objectifs sont manqués comme d'habitude, elle atteindrait plutôt ${n0(corr.fin.v)} %.`));
-  if (autres.length) bref.append(h("li", {}, "Avec les scénarios : " + autres.map(s => `${s.court} ${n0(s.fin.v)} %`).join(", ") + "."));
+  const liste = ss => ss.map(s => `${s.court} ${n0(s.fin.v)} %`).join(", ");
+  const progs = autres.filter(s => !s.panier), pans = autres.filter(s => s.panier);
+  if (progs.length) bref.append(h("li", {}, "Avec les programmes des partis (leurs derniers programmes chiffrés, jugés par rapport au budget 2027) : " + liste(progs) + "."));
+  if (pans.length) bref.append(h("li", {}, "Avec les scénarios construits par ce site (mesures phares de 2024 et financements choisis par nous, pas des programmes) : " + liste(pans) + "."));
   bref.append(h("li", {}, "Au-delà de 2029, ces chiffres prolongent simplement les tendances : ils sont indicatifs."));
   $$("input[name=ind], #f-stress").forEach(i => i.onchange = drawProj);
   const nt = $("#nt-proj");
