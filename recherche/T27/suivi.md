@@ -406,3 +406,11 @@ Choix de l'intégrateur à signaler : « recettes attendues du plan contre la fr
 | G6.7 | Table TVA par poste COICOP (`G6/divers/tva_coicop.csv`, 67 postes) prête ; code de « Mon foyer » non fait. À vérifier avant de coder : taux des margarines en 2026 (20 % ou 5,5 %) | aucun pour l'instant |
 | G6.9 | Note de `ttf_relevement_2025` réécrite (0,3 → 0,4 % au 1/4/2025, LFI 2025 art. 98) | aucun |
 | G6.1, G6.2, G6.8 | Décisions de l'utilisateur (tickets #3 et #7 ; cas-types à ajouter à « Mon foyer ») | — |
+
+## 14. Décisions de l'utilisateur (01/11/2026)
+
+- G6.3 : `erreur_ligne` gardée à 14,9 % ; 22,2 % cité en variante (note du paramètre et page « Méthode », « Les limites »).
+- G4.6 : repère « € par habitant » abandonné ; le « % du déficit » suffit.
+- G6.1 (ticket #3, effets macroéconomiques) : à faire, en dernier (difficile et souvent partisan).
+- G6.2 (ticket #7) : les autres partis n'ont pas publié de programme 2026 ; se servir de leurs programmes précédents, grands partis en priorité.
+- G6.8 : ajouter des cas-types à « Mon foyer » en gardant l'interface simple : barre de recherche, champs qui n'apparaissent qu'au besoin, calcul affiché à mesure que l'utilisateur coche.
