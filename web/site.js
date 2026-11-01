@@ -919,6 +919,9 @@ const STATUTS_IDEES = {
   en_partie: ["En partie en place ou proposée", "info"], non_prevue: ["Non prévue", ""],
   contraire_traites: ["Impossible sans changer les règles européennes", "warn"],
 };
+// Du plus avancé au moins faisable (tri « Ce qui est le plus avancé »), et couleur du graphique des idées
+const ORDRE_STATUTS = ["deja_en_vigueur", "proposee_budget_2027", "en_partie", "non_prevue", "contraire_traites"];
+const COULEUR_STATUT = {deja_en_vigueur: "--ok", proposee_budget_2027: "--s1", en_partie: "--s3", non_prevue: "--s5", contraire_traites: "--warn"};
 function montant(v, unite) {
   // Les signes des sources (solde « −7,9 », marge « −12,6 ») sont portés par le libellé : on affiche la valeur absolue
   const u = (unite || "").replace(/\s*\(plus de\)/, ""), plus = /plus de/.test(unite || "") ? "plus de " : "";
@@ -1009,15 +1012,48 @@ function vueIdees() {
           h("h4", {}, "Tous les chiffres et leurs sources"), tous))));
       // Vue d'ensemble : le premier chiffre principal de chaque idée
       const c0 = cs.find(c => c.principal === "oui"), r0 = c0?.ligne_moteur ? moteur(c0) : null;
-      apercu.push({g: titre, i, st, cls, txt: !c0 ? "—" : r0 ? md(r0.v) + " par an" : montant(num(c0.valeur), c0.unite)});
+      // Montant de la mesure, comparable d'une idée à l'autre : chiffres qui prévoient un rendement ou un coût (famille ou
+      // ligne du moteur), pas la taille d'une dépense existante ; le plus élevé, signé (coût négatif pour les baisses)
+      // chiffres principaux de la carte d'abord ; les autres (variantes, mesures voisines) seulement à défaut
+      const val = c => c.ligne_moteur ? moteur(c)?.v : enMd(num(c.valeur), c.unite);
+      const chiffrees = cs.filter(c => (c.famille || c.ligne_moteur) && Number.isFinite(val(c)) && val(c) > 0);
+      const retenus = chiffrees.some(c => c.principal === "oui") ? chiffrees.filter(c => c.principal === "oui") : chiffrees;
+      const mes = retenus.map(val);
+      // Un chiffre unitaire (coût d'un centime) n'est pas le coût de l'idée entière : le dire sur le graphique
+      const unite = retenus.find(c => /centime/i.test(c.libelle)) ? " (coût d'un centime de baisse)" : "";
+      const m = mes.length ? d3.max(mes) * (g === "baisses" ? -1 : 1) : null;
+      const lo = mes.length ? d3.min(mes) : null, fort = lo !== null && d3.max(mes) / lo > 1.05;
+      apercu.push({g: titre, gid: g, i, st, cls, m, unite, li: ul.lastElementChild,
+        txt: fort ? `de ${(lo < 10 ? n1 : n0)(lo)} à ${md(d3.max(mes))} par an` : !c0 ? "—" : r0 ? md(r0.v) + " par an" : montant(num(c0.valeur), c0.unite)});
     });
   });
-  table($("#tb-idees"), [
-    {t: "Idée", f: r => h("a", {href: "#/idees/" + r.i.id}, r.i.idee)},
-    {t: "Ordre de grandeur", f: r => r.txt},
-    {t: "Où en est-elle ?", f: r => badge(r.st, r.cls)},
-  ], apercu, {group: r => r.g, caption: "Les idées en un coup d'œil"});
+  const trier = () => {
+    const cle = $("input[name=tri-idees]:checked")?.value || "montant";
+    const fais = r => ORDRE_STATUTS.indexOf(r.i.statut), mt = r => r.m === null ? -1 : Math.abs(r.m);
+    const rows = [...apercu].sort(cle === "faisable" ? (a, b) => fais(a) - fais(b) || mt(b) - mt(a)
+      : cle === "theme" ? (a, b) => 0 : (a, b) => mt(b) - mt(a));
+    table($("#tb-idees"), [
+      {t: "Idée", f: r => h("a", {href: "#/idees/" + r.i.id}, r.i.idee)},
+      {t: "Ordre de grandeur", f: r => r.txt},
+      {t: "Où en est-elle ?", f: r => badge(r.st, r.cls)},
+    ], rows, {group: cle === "theme" ? r => r.g : null, caption: "Les idées en un coup d'œil"});
+    // Cartes : même ordre à l'intérieur de chaque thème
+    Object.keys(GROUPES_IDEES).forEach(g => rows.filter(r => r.gid === g).forEach(r => r.li?.parentElement.append(r.li)));
+    const avec = rows.filter(r => r.m !== null);
+    legend($("#lg-idees"), ORDRE_STATUTS.filter(s => avec.some(r => r.i.statut === s)).map(s => [STATUTS_IDEES[s][0], css(COULEUR_STATUT[s])]));
+    $("#ch-idees").textContent = "";
+    hbars($("#ch-idees"), avec.map(r => ({label: r.i.idee + r.unite, v: r.m, color: css(COULEUR_STATUT[r.i.statut] || "--s5")})),
+      {label: "Montant de chaque idée, en milliards d'euros par an : " + avec.map(r => `${r.i.idee} ${r.m < 0 ? "coûterait" : "rapporterait"} ${n1(Math.abs(r.m))}`).join(" ; "),
+       fmt: v => (v < 0 ? "−" : "+") + (Math.abs(v) < 0.1 ? n0(Math.abs(v) * 1000) + " M€" : n1(Math.abs(v)) + " Md€"), tick: v => n0(v)});
+    const sans = rows.filter(r => r.m === null).map(r => r.i.idee);
+    $("#nt-idees").textContent = sans.length ? `Pas de chiffrage de la mesure elle-même, seulement la taille de la dépense ou du flux en jeu : ${sans.join(", ")}. Voir leur carte.` : "";
+  };
+  $$("input[name=tri-idees]").forEach(x => x.onchange = trier);
+  trierIdees = trier;  // redessiné au changement de taille ou de thème (DESSINS)
+  trier();
 }
+let trierIdees = null;
+function drawIdees() { if (trierIdees) trierIdees(); }
 
 function vueDemain() {
   const sd = projSeries("dette_pct", false).map(s => ({...s, fin: s.pts[s.pts.length - 1]}));
@@ -1304,6 +1340,7 @@ const DESSINS = {
   programmes: [drawApp, drawDef, drawSens],
   equilibre: [drawInc],
   demain: [drawProj],
+  idees: [drawIdees],
 };
 let vueCourante = null, pret = false, premier = true;
 
