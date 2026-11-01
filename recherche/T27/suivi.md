@@ -375,3 +375,15 @@ Reste ouvert : 3 cas de plus à recours complet (RSA jeunes, chèque bois, aide 
 | G3.5 | `h_charges` : Crépon-Desplatz daté, `charges_bw_smic` ajouté | texte seulement |
 
 Corrections : `G3/corrections_parametres.csv` ; scripts `distributif.py`, `projection.py` ; historique tenu à la main pour les fichiers hors `appliquer_corrections.py`.
+
+## 11. Bilan du groupe 4 (01/11/2026)
+
+| Point | Fait | Effet |
+|---|---|---|
+| G4.1 (décision de l'utilisateur, 01/11/2026) | Colonne `famille` dans `idees_chiffres.csv`, pour les seuls chiffres qui prévoient le rendement ou le coût d'une mesure ; sous chaque carte, « Avec la règle du site (« règle », × facteur) : … », même facteur que dans les programmes ; contrôle dans `garde_fous.py` | 5 chiffres corrigés à l'affichage, chiffre de la source gardé en principal |
+| G4.2, G4.3 | Fonctionnaires (« Réforme structurelle », 7,8 → 6,5 et 14 → 11) ; héritages CAE (« Élasticité succession », plus de 9) | cartes |
+| G4.4 | Solde net avec l'UE : −7,9 (2024, medium) → −9,5 Md€ (2025, jaune PLF 2027, méthode comptable, high) ; méthode de la Commission (−6,4) dans la note ; dépenses de l'UE en France 16,391 (2025) ; textes de la carte mis à jour | carte |
+| G4.5 | Coût d'un centime : 0,475 gardé (calcul), recoupé par les volumes DGEC 2024 (0,477) ; aucun chiffrage officiel récent | carte (note) |
+| G4.6 | En attente de l'utilisateur ; proposition : clore, le « % du déficit » suffit | — |
+
+Choix de l'intégrateur à signaler : « recettes attendues du plan contre la fraude » (1 Md€) dans la famille `effet_promis`, comme `ens_fraude` (× 0,33).
