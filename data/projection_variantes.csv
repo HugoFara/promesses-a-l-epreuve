@@ -13,6 +13,20 @@ Biais mesuré sur la première publication (EFB),"Référence corrigée, stress 
 Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2030,1,4.83,-0.0,126.7,1.72,0.0,0.0,10.4,3401
 Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2031,1,4.97,-0.0,128.2,1.72,0.0,0.0,15.6,3497
 Biais mesuré sur la première publication (EFB),"Référence corrigée, stress +25 pb",2032,1,5.11,-0.0,129.8,1.72,0.0,0.0,21.1,3595
+Biais mesuré sur la première publication (EFB),RN 2027 (programme 2024),2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),RN 2027 (programme 2024),2027,0,7.31,-0.0,123.9,0.43,-58.8,0.0,0.0,3135
+Biais mesuré sur la première publication (EFB),RN 2027 (programme 2024),2028,0,7.01,-0.0,127.7,1.08,-62.1,0.0,3.4,3220
+Biais mesuré sur la première publication (EFB),RN 2027 (programme 2024),2029,0,6.73,-0.0,131.0,1.72,-64.7,0.0,8.5,3308
+Biais mesuré sur la première publication (EFB),RN 2027 (programme 2024),2030,1,6.97,-0.0,134.4,1.72,-67.7,0.0,15.5,3401
+Biais mesuré sur la première publication (EFB),RN 2027 (programme 2024),2031,1,7.21,-0.0,137.9,1.72,-70.4,0.0,23.6,3497
+Biais mesuré sur la première publication (EFB),RN 2027 (programme 2024),2032,1,7.47,-0.0,141.6,1.72,-73.4,0.0,32.6,3595
+Biais mesuré sur la première publication (EFB),"RN 2027 (programme 2024), stress +25 pb",2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
+Biais mesuré sur la première publication (EFB),"RN 2027 (programme 2024), stress +25 pb",2027,0,7.34,-0.0,124.0,0.43,-58.8,0.0,0.9,3135
+Biais mesuré sur la première publication (EFB),"RN 2027 (programme 2024), stress +25 pb",2028,0,7.08,-0.0,127.8,1.08,-62.1,0.0,5.6,3220
+Biais mesuré sur la première publication (EFB),"RN 2027 (programme 2024), stress +25 pb",2029,0,6.84,-0.0,131.2,1.72,-64.7,0.0,12.0,3308
+Biais mesuré sur la première publication (EFB),"RN 2027 (programme 2024), stress +25 pb",2030,1,7.11,-0.0,134.7,1.72,-67.7,0.0,20.5,3401
+Biais mesuré sur la première publication (EFB),"RN 2027 (programme 2024), stress +25 pb",2031,1,7.4,-0.0,138.4,1.72,-70.4,0.0,30.3,3497
+Biais mesuré sur la première publication (EFB),"RN 2027 (programme 2024), stress +25 pb",2032,1,7.7,-0.0,142.3,1.72,-73.4,0.0,40.8,3595
 Biais mesuré sur la première publication (EFB),Panier LFI intégral,2026,0,5.4,-0.0,119.3,-0.0,0.0,0.0,0.0,3051
 Biais mesuré sur la première publication (EFB),Panier LFI intégral,2027,0,7.68,-0.0,124.3,0.43,-70.5,0.0,0.0,3135
 Biais mesuré sur la première publication (EFB),Panier LFI intégral,2028,0,7.25,-0.0,128.3,1.08,-69.2,0.0,4.0,3220

@@ -127,6 +127,7 @@ class LigneApplication(Ligne):
     statut_reference: Optional[Statut] = None; source_reference: OptStr = None
     facteur_reference: float = 1.0; note_reference: OptStr = None; confiance_reference: Annotated[Optional[Confiance], BeforeValidator(_vide_none)] = None; note_confiance: OptStr = None
     facteur_reference_bas: OptFloat = None; facteur_reference_haut: OptFloat = None; facteur_reference_2028: OptFloat = None
+    facteur_reference_loi_votee: OptFloat = None  # programmes 2027 : variante « loi votée seule » (T29)
     facteur_interaction: OptFloat = None; facteur_interaction_bas: OptFloat = None; facteur_interaction_haut: OptFloat = None
     recours_complet_suppose: Annotated[Optional[Literal["oui", "non"]], BeforeValidator(_vide_none)] = None
     source_recours: OptStr = None

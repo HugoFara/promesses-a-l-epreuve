@@ -17,6 +17,7 @@ erreurs, alertes = [], []
 regles = {r["regle"]: r for r in rows("regles.csv")}
 familles = {r["famille"]: r for r in rows("familles.csv")}
 # Règles qui tiennent à la référence ou à un choix de financement, pas à la nature de la mesure
+progs_2027_g = {r["programme"] for r in rows("application_programmes.csv") if "2027" in r["scrutin"]}
 HORS_FAMILLE = {"Déjà dans la référence", "Déjà en partie dans la référence", "Règle d'or"}
 
 for nom in ("application_lignes", "paniers"):
@@ -67,7 +68,7 @@ for nom in ("application_lignes", "paniers"):
         if statut == "partielle" and f_ref >= 1 and not r.get("note_reference"):
             erreurs.append(f"DOUBLE COMPTE {lid} : mesure partielle sans décote ni explication")
         # Variante « loi votée seule » (T26) : une décote qui vient en partie d'un projet de budget 2027 a son facteur sans ce projet
-        if (nom == "paniers" and statut == "partielle" and f_ref < 1 and not r.get("facteur_reference_loi_votee")
+        if ((nom == "paniers" or r.get("programme") in progs_2027_g) and statut == "partielle" and f_ref < 1 and not r.get("facteur_reference_loi_votee")
                 and any(t in (r.get("source_reference") or "") for t in ("PLF 2027", "PLFSS 2027"))):
             erreurs.append(f"LOI VOTÉE {lid} : recoupement en partie tiré d'un PLF/PLFSS 2027, facteur_reference_loi_votee vide")
         if statut in ("votée", "proposée", "partielle") and not r.get("source_reference"):
