@@ -1,0 +1,74 @@
+Cas-type annexe 9 : réduction 8528.50 € (attendu 8 528,54)
+
+== Variante centrale (loglin, brut progressif, lam 0,9, s27=0,973, I/P 3,3 Md€)
+  rg_sur_maladie                                  1.375
+  L_sur_maladie                                   0.559
+  fam_sur_mal                                     0.373
+  part_masse_1_2                                  0.500
+  part_etp_sup_3_5                                0.058
+  phi_moyen_1_3                                   0.021
+  gel_sur_rgdu                                    0.066
+  rgdu_sur_rg_bandeaux_2024                       0.968
+  F_rgdu_seule_cibleSmic_cap                      0.762
+  F_rgdu_seule_cibleSmic_remplacement             0.837
+  F_rgdu_seule_cibleSmic_recouvrement             0.676
+  F_rgdu_seule_cibleRef_cap                       0.762
+  F_rgdu_seule_cibleRef_remplacement              0.837
+  F_rgdu_seule_cibleRef_recouvrement              0.676
+  F_rgdu_gel_cibleSmic_cap                        0.675
+  F_rgdu_gel_cibleSmic_remplacement               0.515
+  F_rgdu_gel_cibleSmic_recouvrement               0.623
+  F_rgdu_gel_cibleRef_cap                         0.786
+  F_rgdu_gel_cibleRef_remplacement                0.868
+  F_rgdu_gel_cibleRef_recouvrement                0.623
+  F_reference_2027_cibleSmic_cap                  0.608
+  F_reference_2027_cibleSmic_remplacement         0.313
+  F_reference_2027_cibleSmic_recouvrement         0.574
+  F_reference_2027_cibleRef_cap                   0.760
+  F_reference_2027_cibleRef_remplacement          0.869
+  F_reference_2027_cibleRef_recouvrement          0.574
+
+== Sensibilités (432 combinaisons de paramètres ; définitions détaillées dans notes.md § 1.4)
+  ( 432 combinaisons )
+
+== Effet de la seule dispersion (lam), autres paramètres centraux
+  lam 0.75  L/mal 0.462  fam/mal 0.341  masse 1-2 0.622  F_ref_cap 0.793  F_ref_cibleSmic 0.621  F_ref_recouv 0.586  F_rgdu 0.781
+  lam 0.80  L/mal 0.497  fam/mal 0.351  masse 1-2 0.582  F_ref_cap 0.774  F_ref_cibleSmic 0.610  F_ref_recouv 0.577  F_rgdu 0.770
+  lam 0.85  L/mal 0.530  fam/mal 0.365  masse 1-2 0.539  F_ref_cap 0.769  F_ref_cibleSmic 0.608  F_ref_recouv 0.574  F_rgdu 0.763
+  lam 0.90  L/mal 0.559  fam/mal 0.373  masse 1-2 0.500  F_ref_cap 0.760  F_ref_cibleSmic 0.608  F_ref_recouv 0.574  F_rgdu 0.762
+  lam 0.95  L/mal 0.587  fam/mal 0.377  masse 1-2 0.464  F_ref_cap 0.740  F_ref_cibleSmic 0.597  F_ref_recouv 0.565  F_rgdu 0.755
+  lam 1.00  L/mal 0.616  fam/mal 0.382  masse 1-2 0.430  F_ref_cap 0.719  F_ref_cibleSmic 0.582  F_ref_recouv 0.552  F_rgdu 0.734
+  F_rgdu_seule_cibleSmic_cap                    min 0.734  med 0.760  max 0.780
+  F_rgdu_gel_cibleRef_cap                       min 0.745  med 0.784  max 0.822
+  F_rgdu_gel_cibleSmic_cap                      min 0.627  med 0.665  max 0.699
+  F_reference_2027_cibleRef_cap                 min 0.702  med 0.755  max 0.809
+  F_reference_2027_cibleSmic_cap                min 0.549  med 0.596  max 0.638
+  F_reference_2027_cibleRef_remplacement        min 0.801  med 0.866  max 0.939
+  F_reference_2027_cibleRef_recouvrement        min 0.526  med 0.565  max 0.600
+  F_rgdu_seule_cibleRef_recouvrement            min 0.657  med 0.675  max 0.691
+  F_rgdu_gel_cibleRef_recouvrement              min 0.588  med 0.616  max 0.642
+  rg_sur_maladie                                min 1.261  med 1.372  max 1.497
+  L_sur_maladie                                 min 0.475  med 0.552  max 0.616
+  fam_sur_mal                                   min 0.342  med 0.369  max 0.382
+  part_masse_1_2                                min 0.430  med 0.516  max 0.613
+  part_etp_sup_3_5                              min 0.035  med 0.052  max 0.085
+  gel_sur_rgdu                                  min 0.059  med 0.067  max 0.082
+
+== Comparaison avec l'agent A (sans assiette) : A, B = transpositions de A ; cap = cible B-W absolue ; recouv = part non obtenue
+  mienne (Insee, lam)    RGDU seule   A 0.644  B 0.463  cap 0.762  recouv 0.676
+  mienne (Insee, lam)    RGDU + gel   A 0.592  B 0.425  cap 0.686  recouv 0.630
+  agent A (bandes)       RGDU seule   A 0.638  B 0.471  cap 0.736  recouv 0.664
+  agent A (bandes)       RGDU + gel   A 0.581  B 0.427  cap 0.659  recouv 0.613
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 0.8, profil (0.7, 1.0) : 0.26
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 0.8, profil (0.7, 1.3) : 0.29
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 0.8, profil (0.7, 1.8) : 0.32
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 0.9, profil (0.7, 1.0) : 0.30
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 0.9, profil (0.7, 1.3) : 0.33
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 0.9, profil (0.7, 1.8) : 0.38
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 1.0, profil (0.7, 1.0) : 0.34
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 1.0, profil (0.7, 1.3) : 0.37
+  part de l'art. 7 (I/P) au-dessus de 1,6 Smic, lam 1.0, profil (0.7, 1.8) : 0.41
+  part des EQTP entre 1.6 et 2.0 Smic (ma distribution, lam 0,9) : 0.177
+  part des EQTP entre 2.0 et 2.5 Smic (ma distribution, lam 0,9) : 0.111
+  part des EQTP entre 2.5 et 3.0 Smic (ma distribution, lam 0,9) : 0.062
+  part des EQTP entre 3.0 et 3.5 Smic (ma distribution, lam 0,9) : 0.033

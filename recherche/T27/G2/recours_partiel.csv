@@ -1,0 +1,12 @@
+id,retenu,hypothese_recours_ex_ante,ex_ante,ex_post_central,facteur_realise_ex_ante,url,citation,page,confiance,note
+pa_2016,oui,50 % (66 % des sommes),3.95,4.1,1.038,https://www.senat.fr/cra/s20151130/s20151130_1.html,"si nous prenons pour hypothèse un taux de recours de 50 %, cela signifierait 66 % pour les sommes à financer","Sénat, compte rendu analytique du 30/11/2015 (secrétaire d’État Ségolène Neuville)",high,Facteur calculé ; archivé sources/T27/G2/C/senat_cra_s20151130.html
+cheque_energie_gen_2018,oui,taux d’usage ≥ 90 %,0.5634,0.4223,0.750,https://www.ccomptes.fr/sites/default/files/2022-02/20220224-rapport-cheque-energie.pdf,les indicateurs retenus dans les projets annuels de performance (PAP) reposent sur des taux d'usage de 90 % et plus entre 2018 et 2020,p. 43 du PDF,high,Citation reprise de data/raw/mesures_cout.csv ; même dispositif que la ligne suivante
+cheque_energie_elarg_2019,oui,taux d’usage ≥ 90 %,0.8573,0.6857,0.800,https://www.ccomptes.fr/sites/default/files/2022-02/20220224-rapport-cheque-energie.pdf,les indicateurs retenus dans les projets annuels de performance (PAP) reposent sur des taux d'usage de 90 % et plus entre 2018 et 2020,p. 43 du PDF,high,Même dispositif que cheque_energie_gen_2018
+pass_sport_2021,oui,37 % de la cible,0.100,0.0656,0.656,https://www.ccomptes.fr/sites/default/files/2023-10/NEB-2021-Sport-jeunesse-vie-associative.pdf,l'objectif était donc de toucher un peu moins de 2 millions de jeunes soit 37% de la cible,p. 72 du PDF,medium,Citation reprise de data/raw/mesures_cout.csv ; campagne inachevée au 31/12/2021
+indemnite_carburant_2023,variante,≈70 % (calculé),0.700,0.433,0.619,,,,low,"Recours implicite calculé (700 M€ / (10 M × 100 €)), non écrit par la source ; seulement en variante"
+pa_2019,non,non trouvée,8.8,9.6,1.091,,,,,Hypothèse de recours de l’ex ante non trouvée
+cir_2008,non,non écrite,2.7,5.05,1.870,,,,,Crédit d’impôt ; aucune hypothèse de recours dans les sources de la ligne
+cite_2015,non,non écrite,1.4,1.7,1.214,,,,,Idem
+RESUME_4_lignes,,,,,0.811,,,,calcul,"Moyenne des 4 lignes retenues ; médiane 0,775"
+RESUME_3_cas,,,,,0.823,,,,calcul,"Chèque énergie 2018-2019 compté une fois (0,775) ; médiane 0,775"
+RESUME_variante_carburant,,,,,0.772,,,,calcul,"4 cas dédoublonnés avec indemnite_carburant_2023 ; médiane 0,715"
