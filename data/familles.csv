@@ -19,7 +19,8 @@ frais_mutation,Droits de mutation immobiliers (frais de notaire),Aucune,Coût m�
 gratuite_service_public,"Gratuité ou baisse des tarifs d'un service public (école, transports…)",Aucune,Coût mécanique : recettes des usagers perdues
 impot_multinationales,Imposition minimale ou unitaire des multinationales,Médiane des estimations,Base nouvelle sans consensus : médiane des chiffrages indépendants
 impot_patrimoine,Impôt sur la fortune (ISF / IFI),Élasticité patrimoine,Élasticité de l'assiette taxable du patrimoine
-impot_revenu,Impôt sur le revenu et CSG (barème),Élasticité revenus,Élasticité du revenu imposable
+impot_revenu,Impôt sur le revenu et CSG (barème) : hausse ou baisse concentrée sur les hauts revenus,Élasticité revenus,Élasticité du revenu imposable
+impot_revenu_large,"Impôt sur le revenu : baisse ou hausse qui touche une large part des foyers (part fiscale, exonération par âge…)",Aucune,"Élasticité du revenu imposable de l'ensemble des foyers ≈0,05 (eti_fr, Cabannes-Houdré-Landais) : correction négligeable, moins de 5 % du rendement statique"
 impot_revenu_capital,Imposition des revenus du capital (prélèvement forfaitaire unique…),Élasticité capital,Élasticité des revenus du capital déclarés
 impot_societes,Impôt et surtaxe sur les sociétés (pérennes),Élasticité IS,Élasticité de l'assiette de l'IS
 impots_production,"Impôts de production (CVAE, C3S)",Aucune,Le chiffrage de départ intègre déjà le retour d'impôt sur les sociétés

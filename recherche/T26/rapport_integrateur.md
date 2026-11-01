@@ -119,3 +119,14 @@ L'utilisateur a validé les recommandations et laissé à l'intégrateur le choi
 `e_carence` : note mise à jour (instrument toujours absent ; à revoir après le 19/12/2026). `check_regression.py` : RN indépendant −63,4, corrigé −52,86 ; financement du panier LFI 37,6. `TEST_WEB_STRICT=1 bash scripts/run_all.sh` passe ; fiches vérifiées à l'écran (1400 × 1000 et 390 × 844) : `rn24_audiovisuel`, `rn24_taux`, `l_bandeaux`, `l_brunes`, `ens_retention`.
 
 Reste ouvert : § 8, et la relecture du modèle de l'agent A pour `l_bandeaux`.
+
+## 10. Clôture du groupe 1 (01/11/2026, suite)
+
+| Point | Décision | Effet sur le solde corrigé |
+|---|---|---|
+| `l_bandeaux`, relecture indépendante (`relecture/notes.md`) | 0,4 → **0,55** [0,45 ; 0,65] ; loi votée seule 0,55 → 0,65 ; variante « dégel » 0,715 → 0,63 [0,50 ; 0,75]. Le premier modèle faisait la moyenne avec une transposition (RGDU entière jusqu'à 1,88 SMIC) qui décrit une autre mesure que le barème chiffré, et retirait tout l'effet de l'art. 7 au-dessus de 1,6 SMIC. Les deux modèles s'accordent sur la formule et les données. Confiance low (modèle) | financement LFI 37,6 → 39,3 |
+| `eps_capital` (`parts/notes_C.md`) | bornes 0,5 et 1,17 (dispersion entre spécifications du papier) ; centre 0,77 inchangé. Paramètre de la règle « Élasticité capital » : `nfp_flat` et `l_pfu_i` (la note de l'agent ne citait que la première) | fourchettes seulement |
+| Médecins en formation (`ens_autres_dep_reste`) | 29 % du poste déjà prévu par les objectifs 2021-2025 : facteur 0,863 → 0,853 | Ensemble 2024 −20,15 → −20,12 |
+| `rn24_heritage` | aucune méthode publiée : fragilité dite dans la justification, confiance medium | aucun |
+
+Corrections : `corrections_C.csv`, `corrections_relecture.csv`, et 3 lignes d'historique écrites à la main pour `variantes_sensibilite.csv`. Reste du groupe 1 : `e_carence` après le 19/12/2026. Suite du travail : `recherche/T27/suivi.md` (groupes 2 à 6).

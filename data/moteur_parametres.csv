@@ -5,7 +5,7 @@ ratio_effet_promis,0,0.29,1.1,ratio réalisé / promis,backtest,cice_emploi tepa
 facteur_reforme,0.822,0.842,0.862,ratio réalisé / annoncé,backtest,retraites_2023 woerth_2010,medium,"Ratios réalisé / annoncé à prix constants : retraites 2023 (0,822) et 2010 (0,862) ; central = moyenne"
 part_substitution,0.2,0.2,0.4,part des économies compensée,elasticite,retraite_report,high,Bas = central = France 2010 ; haut = Pays-Bas
 taux_recours,0.48,0.65,0.67,taux de recours,elasticite,nr_rsa nr_pa,high,"Central = 1 − non-recours RSA ; bas = prime d'activité (1 − 0,52) ; haut = 1 − 0,33 (RSA)"
-eps_capital,,0.77,,élasticité au taux net,elasticite,capital_fr,medium,
+eps_capital,0.5,0.77,1.17,élasticité au taux net,elasticite,capital_fr,medium,"Lefebvre, Lehmann et Sicsic (IZA DP 16112) : 0,767 (e.-t. 0,011) ; bas 0,5 (instruments de Weber, tableau 4) ; haut 1,17 (maximum du tableau 3, contrôles de Kopczuk)"
 eps_top,0.15,0.175,0.2,élasticité au taux net,elasticite,eti_top,high,
 eps_succession,0.08,0.16,0.34,élasticité au taux net,elasticite,succession_us,high,
 s_patrimoine,0.14,0.15,0.15,part de base perdue par point de taux à long terme,elasticite,wealth_nl wealth_dk,high,"Pays-Bas −1,4 % par 0,1 pt ; Danemark −30 % à 8 ans pour 2 %"

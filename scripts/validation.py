@@ -51,13 +51,19 @@ CALIBRATION = {
 # Règles restreintes après la validation : la version restreinte n'a pas d'équivalent testable dans l'échantillon
 RESTREINTES = {"Taux de recours": "restreinte le 14/10/2026 aux chiffrages qui supposent un recours complet ; les chiffrages "
                "officiels testés (prime d'activité, CIR, CITE) intégraient déjà un recours partiel : la version restreinte "
-               "n'est pas testée"}
+               "n'est pas testée. Recherche T27 : 2 cas passés à recours complet supposé (ACS 2005, ATI 2020, réalisé 2 à 3 % du chiffrage), "
+               "moins que les 5 cas requis (recherche/T27/G2/cas_recours.csv)"}
 # En dessous de ce nombre de cas observés, une règle n'est dite ni confirmée ni contredite (décision du 16/10/2026)
 MIN_CAS = 5
 # Règles dont le test sur le passé est mal posé : le facteur ne se compare pas au réalisé disponible
-NON_CONCLUANTES = {"Recette ponctuelle": "le facteur 0 signifie « ne pas compter la recette dans le solde durable » ; "
-                   "le comparer au rendement de la première année donne une erreur de 100 % par construction. Indicateur "
-                   "à définir (recette encore perçue après la durée annoncée, recherche/T18/rapport.md)"}
+NON_CONCLUANTES = {}
+# Règles jugées par un indicateur propre, faute de comparaison facteur/réalisé possible (T27, 01/11/2026).
+# « Recette ponctuelle » : le facteur 0 signifie « ne pas compter la recette dans le solde durable » ; le comparer au
+# rendement de la première année donne une erreur de 100 % par construction. Indicateur : la recette est-elle encore
+# perçue deux ans après (N+2) ? Cas et sources : recherche/T27/G2/recette_ponctuelle_n2.csv.
+INDICATEUR_PROPRE = {"Recette ponctuelle": (5, 6, "indicateur « recette encore perçue à N+2 » : la règle a raison pour 5 cas sur 6 "
+                     "(4 sur 6 si l'on compte la taxe de risque systémique doublée qui prend le relais de la contribution de 2012) ; "
+                     "le STDR rapportait encore 2,5 Md€ à N+2")}
 
 
 def facteurs_centraux():
@@ -168,7 +174,7 @@ def main():
                 "inchanges": sum(l["verdict"] == "inchangé" for l in sel)}
 
     # Règles au test mal posé (NON_CONCLUANTES) : hors des statistiques d'ensemble, montrées seulement dans leur ligne
-    officiel = [l for l in lignes if l["source"] == "officiel" and l["regle"] not in NON_CONCLUANTES]
+    officiel = [l for l in lignes if l["source"] == "officiel" and l["regle"] not in NON_CONCLUANTES and l["regle"] not in INDICATEUR_PROPRE]
     groupes = [
         ("Chiffrages officiels, statistique principale", officiel),
         ("  dont hors calibration (test)", [l for l in officiel if l["echantillon"] == "test"]),
@@ -205,6 +211,10 @@ def main():
             continue
         if not tous:
             st, note = "non testée", f"aucune mesure {'française ' if etr else ''}passée de ce type dans le backtest"
+        elif regle in INDICATEUR_PROPRE:
+            juste, n, texte = INDICATEUR_PROPRE[regle]
+            st = "trop peu de cas" if n < MIN_CAS else "confirmée" if juste > n / 2 else "contredite" if juste < n / 2 else "mitigée"
+            note = texte
         elif regle in NON_CONCLUANTES:
             st, note = "non concluante", f"{len(sel)} cas ; {NON_CONCLUANTES[regle]}"
         elif not sel:

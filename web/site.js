@@ -1157,7 +1157,8 @@ function statutRegle(regle) {
   const v = D.validation_regles.find(r => r.regle === regle);
   if (!v) return null;
   const k = {"confirmée": "ok", "contredite": "bad", "mitigée": "warn"}[v.statut] || "";
-  const phrase = v.statut === "confirmée" ? `Testée sur ${v.n} mesure${v.n > 1 ? "s" : ""} passée${v.n > 1 ? "s" : ""}, elle a amélioré les chiffrages.`
+  const phrase = v.statut === "confirmée" && v.note.startsWith("indicateur") ? `Testée sur ${v.n} mesures passées, elle a vu juste dans la plupart des cas.`
+    : v.statut === "confirmée" ? `Testée sur ${v.n} mesure${v.n > 1 ? "s" : ""} passée${v.n > 1 ? "s" : ""}, elle a amélioré les chiffrages.`
     : v.statut === "contredite" ? "Testée sur le passé, elle n'a pas amélioré les chiffrages : ce montant est à prendre avec prudence."
     : v.statut === "mitigée" ? "Testée sur le passé, elle a donné des résultats partagés."
     : v.statut === "trop peu de cas" ? `Testée sur seulement ${v.n} mesure${v.n > 1 ? "s" : ""} passée${v.n > 1 ? "s" : ""} : trop peu pour conclure.`

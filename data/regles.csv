@@ -1,6 +1,6 @@
 regle,facteur,variable,references,base
 Aucune,1,0,,Coût mécanique : pas d'élasticité applicable
-Médiane des estimations,1,0,,Facteur 1 appliqué à la médiane des chiffrages indépendants
+Médiane des estimations,1,0,,"Facteur 1 appliqué à la médiane des chiffrages indépendants du parti (candidat et chiffrages partisans exclus, comme pour la fourchette) ; une dépendance entre chiffreurs est dite dans la fiche. Test sur le passé non jugeable à ce jour : 2 cas, à chiffreurs non indépendants"
 Taux d'intérêt,1,0,taux_100pb spread_dette,Ligne déjà calculée (spread × dette) : pas de correction supplémentaire. Une ligne dont le montant du chiffreur contient déjà un surcoût de taux sort de l'assiette de ce calcul
 Règle d'or,1,0,,Investissement financé par emprunt : compté à part (déficit volontaire)
 Recette ponctuelle,0,0,,Recette non récurrente : nulle dans un solde 2027
@@ -13,9 +13,9 @@ Substitution retraites,0.8,0,retraite_report,"≈20 % du coût compensé par moi
 Taux de recours,0.65,0,nr_rsa,"Prestation à la demande : recours ≈65 % comme le RSA. NE S'APPLIQUE QUE si le chiffrage de départ suppose un recours complet (colonne recours_complet_suppose = oui, vérifiée dans la source) : les chiffrages officiels intègrent déjà un recours partiel (validation, 14/10/2026)"
 Élasticité capital,0.45,0,capital_fr dividendes_fr pfu,"Backtest flat tax −55 % ; élasticité ≈0,77"
 Élasticité patrimoine,0.97,0,isf_departs isf_bunching_fr isf_ifi wealth_nl wealth_dk,"Horizon 3 ans, preuves françaises : ISF→IFI coûté 3 % sous son chiffrage statique (backtest), départs nets ≈0,4 % de la base par an, élasticités aux seuils non significatives ; réponses étrangères de long terme (−14 % à −30 %) en borne haute"
-Élasticité revenus,0.9,0,eti_top,"Élasticité 0,15-0,2 pour le top 0,1 %"
+Élasticité revenus,0.9,0,eti_top,"Élasticité 0,15-0,2 pour le top 0,1 %. Champ : hausse ou baisse de l'impôt sur le revenu concentrée sur les hauts revenus ; une mesure qui touche une large part des foyers relève de la famille impot_revenu_large"
 Élasticité succession,0.9,0,succession_us,"Élasticité ≈0,16 au taux net"
-Élasticité IS,0.94,0,is_shifting cebge_2025 ce_is_5pct_2013,"Horizon 1-2 ans, rendements observés : surtaxe 2025 à 94 % de son chiffrage, surtaxe 2013 au-dessus ; borne basse de moyen terme 0,73 (semi-élasticité 0,8 %/pt appliquée à tout l'IS)"
+Élasticité IS,0.94,0,is_shifting cebge_2025 ce_is_5pct_2013,"Horizon 1-2 ans, rendements observés : surtaxe 2025 à 94 % de son chiffrage, surtaxe 2013 au-dessus ; borne basse de moyen terme 0,73 (semi-élasticité 0,8 %/pt appliquée à tout l'IS). Champ : taux et surtaxes de l'IS, et mesures d'assiette qui ramènent des bénéfices à l'IS (rn24_armateurs)"
 Élasticité carburants,0.7,0,carbu_ct carbu_lt,"ε ≈ −0,3 (CT) à −0,65 (LT)"
 Élasticité SMIC (hypothèse : emplois perdus),1.1,0,smic,"Élasticité emploi ≈ −0,17 : coût alourdi par les emplois perdus"
 Effet emploi du SMIC,0.47,0,smic_fr smic,"Montant (Md€) des allocations et cotisations perdues : |élasticité au coût| × hausse moyenne du coût × effectif 1-1,15 SMIC × coût d'un emploi perdu ; ligne de statique −1"

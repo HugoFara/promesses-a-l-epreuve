@@ -4,18 +4,18 @@ Effet emploi du SMIC,non testée,0,aucune mesure passée de ce type dans le back
 Effet promis,confirmée,13,"10 améliorée(s), 3 dégradée(s) ; erreur médiane 82 % → 29 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 0 dégradée(s), erreur médiane 100 % → 29 %"
 Médiane des estimations,non testée,0,aucune mesure passée de ce type dans le backtest
 Nouvelle assiette,confirmée,5,"4 améliorée(s), 1 dégradée(s) ; erreur médiane 62 % → 46 % ; cas dont l'agent d'attribution ignorait l'issue : 2 améliorée(s), 1 dégradée(s), erreur médiane 25 % → 41 %"
-Recette ponctuelle,non concluante,6,"6 cas ; le facteur 0 signifie « ne pas compter la recette dans le solde durable » ; le comparer au rendement de la première année donne une erreur de 100 % par construction. Indicateur à définir (recette encore perçue après la durée annoncée, recherche/T18/rapport.md)"
+Recette ponctuelle,confirmée,6,"indicateur « recette encore perçue à N+2 » : la règle a raison pour 5 cas sur 6 (4 sur 6 si l'on compte la taxe de risque systémique doublée qui prend le relais de la contribution de 2012) ; le STDR rapportait encore 2,5 Md€ à N+2"
 Règle d'or,non testée,0,aucune mesure passée de ce type dans le backtest
 Réforme structurelle,trop peu de cas,2,"1 améliorée(s), 1 dégradée(s) ; erreur médiane 78 % → 78 % ; aucun cas dont l'agent d'attribution ignorait l'issue"
 Substitution retraites,trop peu de cas,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 14 % → 6 % (1 cas à réalisé non observé écarté(s)) ; aucun cas dont l'agent d'attribution ignorait l'issue"
 Taux d'intérêt,non testée,0,aucune mesure passée de ce type dans le backtest
-Taux de recours,non testée (restreinte),18,"restreinte le 14/10/2026 aux chiffrages qui supposent un recours complet ; les chiffrages officiels testés (prime d'activité, CIR, CITE) intégraient déjà un recours partiel : la version restreinte n'est pas testée (version d'origine : 10 améliorée(s), 8 dégradée(s))"
+Taux de recours,non testée (restreinte),15,"restreinte le 14/10/2026 aux chiffrages qui supposent un recours complet ; les chiffrages officiels testés (prime d'activité, CIR, CITE) intégraient déjà un recours partiel : la version restreinte n'est pas testée. Recherche T27 : 2 cas passés à recours complet supposé (ACS 2005, ATI 2020, réalisé 2 à 3 % du chiffrage), moins que les 5 cas requis (recherche/T27/G2/cas_recours.csv) (version d'origine : 8 améliorée(s), 7 dégradée(s))"
 Taxe sur les rachats d'actions,non testée,0,"aucune mesure française passée de ce type dans le backtest ; cas étrangers, hors statut (1, us) : 0 améliorée(s), 1 dégradée(s), erreur médiane 42 % → 45 %"
 Élasticité IS,trop peu de cas,2,"1 améliorée(s), 1 dégradée(s) ; erreur médiane 75 % → 75 % (4 cas à réalisé non observé écarté(s)) ; cas dont l'agent d'attribution ignorait l'issue : 0 améliorée(s), 1 dégradée(s), erreur médiane 50 % → 56 %"
 Élasticité SMIC (hypothèse : emplois perdus),non testée,0,aucune mesure passée de ce type dans le backtest
 Élasticité capital,trop peu de cas,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 55 % → 1 % ; aucun cas dont l'agent d'attribution ignorait l'issue"
-Élasticité carburants,non testée,0,"aucune mesure française passée de ce type dans le backtest ; cas étrangers, hors statut (7, bc, ca) : 3 améliorée(s), 4 dégradée(s), erreur médiane 13 % → 18 %"
+Élasticité carburants,non testée,0,"aucune mesure française passée de ce type dans le backtest ; cas étrangers, hors statut (3, bc, ca) : 0 améliorée(s), 3 dégradée(s), erreur médiane 10 % → 29 %"
 Élasticité patrimoine,mitigée,9,"5 améliorée(s), 4 dégradée(s) ; erreur médiane 16 % → 17 % ; cas dont l'agent d'attribution ignorait l'issue : 1 améliorée(s), 2 dégradée(s), erreur médiane 44 % → 41 %"
-Élasticité revenus,trop peu de cas,3,"1 améliorée(s), 2 dégradée(s) ; erreur médiane 58 % → 68 % ; cas dont l'agent d'attribution ignorait l'issue : 0 améliorée(s), 1 dégradée(s), erreur médiane 8 % → 18 %"
+Élasticité revenus,trop peu de cas,2,"1 améliorée(s), 1 dégradée(s) ; erreur médiane 69 % → 69 % (1 cas à réalisé non observé écarté(s)) ; aucun cas dont l'agent d'attribution ignorait l'issue"
 Élasticité succession,trop peu de cas,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 67 % → 57 % ; cas dont l'agent d'attribution ignorait l'issue : 1 améliorée(s), 0 dégradée(s), erreur médiane 67 % → 57 %"
 Élasticité électricité,trop peu de cas,1,"1 améliorée(s), 0 dégradée(s) ; erreur médiane 12 % → 10 % ; cas dont l'agent d'attribution ignorait l'issue : 1 améliorée(s), 0 dégradée(s), erreur médiane 12 % → 10 %"
