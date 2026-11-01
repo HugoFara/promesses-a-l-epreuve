@@ -395,3 +395,14 @@ Choix de l'intégrateur à signaler : « recettes attendues du plan contre la fr
 - G5.6 : 32 lignes de `calibration_instituts.csv`, « non jugeable » (journal écrit à la main).
 - G5.7 : ligne d'état datée en tête de 14 rapports ; T21 point 6 (G6.10) clos sans action. 10 points de `T18/rapport_fusion.md` § 6 hors de ce suivi renvoient au journal du 16/10.
 - Reste à vérifier : la prolongation du gel du SMIC de référence est dite « proposée par le PLFSS 2027 » dans plusieurs fichiers, mais la citation lue vient du PLF 2027 (art. 49). Si elle passe par le PLFSS, le rejet à l'Assemblée la touche aussi. La date d'examen au Sénat (09/11) ne vient que d'une source secondaire. Carte `etrangers_prestations` : proposition dans `G5/notes.md`, non appliquée.
+
+## 13. Bilan du groupe 6 (01/11/2026)
+
+| Point | Fait | Effet |
+|---|---|---|
+| G6.3 | Réalisés trouvés : ASPA (calcul, medium), ASF, heures supplémentaires et emplois d'avenir 2012 ; PPV non publiée, CVAE reportée à 2030. **Non appliqué, décision de l'utilisateur** : `erreur_ligne` passerait de 14,9 % (n = 22) à 22,2 % (n = 25), ou 16,0 % avec l'ASPA du seul régime général ; résultat instable. Propositions ligne par ligne dans `G6/calibration/notes.md` | aucun pour l'instant |
+| G6.4, G6.5 | 4 cas nouveaux dans `mesures_cout.csv` (prime à la conversion 2018 et 2019, garantie jeunes 2017, tabac 2018), attribués à l'aveugle (« Aucune », `G6/cas/attribution_aveugle.csv`, issue connue pour 3 sur 4) ; 2 dans la statistique. Introuvables : sous-indexation des pensions 2019, bascule CSG 2018, CSS, assurance chômage 2019 et 2023, suramortissement, Duflot | statistique sur le passé seulement |
+| G6.6 | `nr_css_rsa` ajouté (≈20 %, 2023) ; pas d'estimation nationale après 2021 pour la CSS, ni d'estimation officielle pour les APL et l'AAH | aucun |
+| G6.7 | Table TVA par poste COICOP (`G6/divers/tva_coicop.csv`, 67 postes) prête ; code de « Mon foyer » non fait. À vérifier avant de coder : taux des margarines en 2026 (20 % ou 5,5 %) | aucun pour l'instant |
+| G6.9 | Note de `ttf_relevement_2025` réécrite (0,3 → 0,4 % au 1/4/2025, LFI 2025 art. 98) | aucun |
+| G6.1, G6.2, G6.8 | Décisions de l'utilisateur (tickets #3 et #7 ; cas-types à ajouter à « Mon foyer ») | — |

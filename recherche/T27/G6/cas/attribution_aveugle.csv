@@ -1,0 +1,5 @@
+id,famille,regle,justification,issue_connue
+prime_conversion_2018,aides_transition_ecologique,Aucune,"Subvention à l'achat de véhicules propres pour les ménages : coût mécanique sans élasticité propre à la famille.",oui
+prime_conversion_2019,aides_transition_ecologique,Aucune,"Même dispositif de subvention aux ménages pour la transition écologique, conditions seulement modifiées.",oui
+garantie_jeunes_2017,prestation_nouvelle,Aucune,"Allocation sous condition de ressources (famille prestation_nouvelle, règle Taux de recours) mais la règle ne s'applique que si le chiffrage suppose un recours complet, ce que les chiffrages officiels n'font pas : raison forte pour Aucune.",non
+tabac_droits_2018,residu,Aucune,"Aucune famille ne couvre les accises sur le tabac (carburants et électricité hors sujet, effet_promis vise un changement de comportement promis) : poste non détaillé, pas de correction.",oui
