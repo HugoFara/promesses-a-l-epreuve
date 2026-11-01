@@ -1,0 +1,6 @@
+id,famille,regle,justification,issue_connue
+fraude_plan_2026,effet_promis,Effet promis,"Recette attendue d'un changement de comportement des fraudeurs et d'un meilleur contrôle, sans assiette ni coût mécanique.",non
+urssaf_travail_dissimule_2023,effet_promis,Effet promis,"Objectif de redressements attendu d'une action de contrôle, donc d'un effet promis et non d'un calcul mécanique.",non
+uk_accord_suisse_2013,contribution_exceptionnelle,Recette ponctuelle,"Prélèvement libératoire unique sur des avoirs non déclarés, recette non récurrente par nature.",oui
+uk_mtd_tva_2019,effet_promis,Effet promis,"Gain de recouvrement de TVA attendu d'un changement de comportement des assujettis (moins d'erreurs) après obligation numérique.",non
+uk_hmrc_conformite_sr2010,effet_promis,Effet promis,"Recettes supplémentaires attendues d'un surcroît de moyens de contrôle, soit un effet comportemental promis.",oui
