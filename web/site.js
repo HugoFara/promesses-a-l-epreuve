@@ -295,9 +295,9 @@ function hbars(box, rows, o) {
   const H = d3.sum(rowH) + fs * 2;
   const {svg, W} = svgIn(box, H, o.label);
   const vals = rows.map(r => r.v);
-  const lo = Math.min(0, d3.min(vals)), hi = Math.max(0, d3.max(vals));
-  const vw = txtW(svg, "−000 %", fs) + 8;
-  const x = d3.scaleLinear([lo, hi], [vw, W - vw]).nice();
+  const lo = Math.min(0, d3.min(vals)), hi = Math.max(0, d3.max(vals), o.max || 0);  // o.max : échelle commune à plusieurs graphiques
+  const vw = Math.max(txtW(svg, "−000 %", fs), ...rows.map(r => o.fmt ? txtW(svg, o.fmt(r.v), fs) : 0), o.max && o.fmt ? txtW(svg, o.fmt(o.max), fs) : 0) + 8;  // place des étiquettes de valeur
+  const x = d3.scaleLinear([lo, hi], [lo < 0 ? vw : 8, W - vw]).nice();  // pas de marge à gauche sans valeur négative
   const yEnd = H - fs * 1.6;
   x.ticks(W < 480 ? 4 : 6).forEach(t => {
     svg.append("line").attr("x1", x(t)).attr("x2", x(t)).attr("y1", 0).attr("y2", yEnd).attr("stroke", t === 0 ? css("--axis") : css("--grid"));
@@ -1030,21 +1030,28 @@ function vueIdees() {
   const trier = () => {
     const cle = $("input[name=tri-idees]:checked")?.value || "montant";
     const fais = r => ORDRE_STATUTS.indexOf(r.i.statut), mt = r => r.m === null ? -1 : Math.abs(r.m);
-    const rows = [...apercu].sort(cle === "faisable" ? (a, b) => fais(a) - fais(b) || mt(b) - mt(a)
-      : cle === "theme" ? (a, b) => 0 : (a, b) => mt(b) - mt(a));
+    const grp = r => Object.keys(GROUPES_IDEES).indexOf(r.gid);
+    // Les trois groupes restent séparés (ce qui rapporte, ce qui coûte) ; le tri joue à l'intérieur de chacun
+    const rows = [...apercu].sort((a, b) => grp(a) - grp(b) || (cle === "faisable" ? fais(a) - fais(b) || mt(b) - mt(a) : mt(b) - mt(a)));
     table($("#tb-idees"), [
       {t: "Idée", f: r => h("a", {href: "#/idees/" + r.i.id}, r.i.idee)},
       {t: "Ordre de grandeur", f: r => r.txt},
       {t: "Où en est-elle ?", f: r => badge(r.st, r.cls)},
-    ], rows, {group: cle === "theme" ? r => r.g : null, caption: "Les idées en un coup d'œil"});
-    // Cartes : même ordre à l'intérieur de chaque thème
-    Object.keys(GROUPES_IDEES).forEach(g => rows.filter(r => r.gid === g).forEach(r => r.li?.parentElement.append(r.li)));
+    ], rows, {group: r => r.g, caption: "Les idées en un coup d'œil"});
+    rows.forEach(r => r.li?.parentElement.append(r.li));  // cartes : même ordre dans leur groupe
     const avec = rows.filter(r => r.m !== null);
     legend($("#lg-idees"), ORDRE_STATUTS.filter(s => avec.some(r => r.i.statut === s)).map(s => [STATUTS_IDEES[s][0], css(COULEUR_STATUT[s])]));
-    $("#ch-idees").textContent = "";
-    hbars($("#ch-idees"), avec.map(r => ({label: r.i.idee + r.unite, v: r.m, color: css(COULEUR_STATUT[r.i.statut] || "--s5")})),
-      {label: "Montant de chaque idée, en milliards d'euros par an : " + avec.map(r => `${r.i.idee} ${r.m < 0 ? "coûterait" : "rapporterait"} ${n1(Math.abs(r.m))}`).join(" ; "),
-       fmt: v => (v < 0 ? "−" : "+") + (Math.abs(v) < 0.1 ? n0(Math.abs(v) * 1000) + " M€" : n1(Math.abs(v)) + " Md€"), tick: v => n0(v)});
+    const box = $("#ch-idees"); box.textContent = "";
+    const echelle = d3.max(avec, r => Math.abs(r.m));  // même échelle pour les trois groupes
+    Object.entries(GROUPES_IDEES).forEach(([g, titre]) => {
+      const rs = avec.filter(r => r.gid === g);
+      if (!rs.length) return;
+      const sous = h("div", {class: "chart"});
+      box.append(h("h4", {}, titre + (g === "baisses" ? " : ce que cela coûterait" : " : ce que cela rapporterait")), sous);
+      hbars(sous, rs.map(r => ({label: r.i.idee + r.unite, v: Math.abs(r.m), color: css(COULEUR_STATUT[r.i.statut] || "--s5")})),
+        {max: echelle, label: titre + ", en milliards d'euros par an : " + rs.map(r => `${r.i.idee} ${n1(Math.abs(r.m))}`).join(" ; "),
+         fmt: v => (Math.abs(v) < 0.1 ? n0(Math.abs(v) * 1000) + " M€" : n1(Math.abs(v)) + " Md€"), tick: v => n0(v)});
+    });
     const sans = rows.filter(r => r.m === null).map(r => r.i.idee);
     $("#nt-idees").textContent = sans.length ? `Pas de chiffrage de la mesure elle-même, seulement la taille de la dépense ou du flux en jeu : ${sans.join(", ")}. Voir leur carte.` : "";
   };
